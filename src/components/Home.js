@@ -73,6 +73,7 @@ function Home() {
           state: {
             words: wordsFetched,
             translation: translationFetched,
+            wordCount: wordCount,
           },
         });
       } else {
@@ -98,7 +99,7 @@ function Home() {
           <button
             className={`col gamemode ${gamemode === 1 ? "clicked" : ""}`}
             onClick={() => setGamemode(1)}
-            disabled={true}>
+            disabled>
             Online
           </button>
         </div>

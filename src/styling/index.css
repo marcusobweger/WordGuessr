@@ -3,3 +3,7 @@ body {
   background-color: rgb(30, 17, 37);
   text-align: center;
 }
+::selection {
+  background: white;
+  color: rgb(30, 17, 37);
+}

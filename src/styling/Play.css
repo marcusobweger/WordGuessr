@@ -1,0 +1,96 @@
+h1 {
+  color: white;
+  font-family: Roboto, Arial, sans-serif;
+  font-size: 100px;
+  font-weight: 500;
+}
+.header-container {
+  display: flex;
+  align-items: center; /* Align logo and title vertically */
+  justify-content: center; /* Center the content horizontally */
+  gap: 12px; /* Space between the logo and title */
+  flex-wrap: wrap; /* Allow wrapping for small screens */
+  text-align: center; /* Center the text when stacked */
+}
+
+.logo {
+  width: 100px;
+  height: auto;
+}
+
+.title {
+  font-size: clamp(40px, 5vw, 100px);
+  font-family: Roboto, Arial, sans-serif;
+  font-weight: 500;
+  color: white;
+  margin: 0;
+}
+.skipButton {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: rgb(43, 226, 83);
+  height: 80px;
+}
+
+.homeButton {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 80px;
+}
+
+.home {
+  width: 40px;
+}
+.skip {
+  width: 40px;
+}
+
+.page {
+  font-family: Roboto, Arial, sans-serif;
+  font-size: 100px;
+  color: white;
+  background-color: blueviolet;
+  font-weight: 500;
+  border-radius: 15px;
+  border-style: solid;
+  border-color: transparent;
+  align-items: center; /* Align logo and title vertically */
+  justify-content: center;
+  text-align: center;
+  margin-bottom: 12px;
+}
+.translation {
+  width: 100%;
+  font-size: clamp(60px, 5vw, 100px);
+}
+.inputfield {
+  font-size: clamp(40px, 5vw, 100px);
+  width: 80%;
+  height: 140px;
+  border-radius: 15px;
+  border-style: solid;
+  border-color: white;
+  border-width: 4px;
+  color: white;
+  background-color: transparent;
+  text-align: center;
+  transition: transform 0.08s ease;
+  margin-bottom: 10px;
+}
+.inputfield:focus {
+  outline: transparent;
+}
+.inputfield:active {
+  transform: scale(0.98);
+}
+
+::placeholder {
+  color: rgb(179, 179, 179);
+  font-size: clamp(40px, 5vw, 100px);
+}
+.progressNumber {
+  font-size: clamp(30px, 5vw, 40px);
+  text-align: end;
+}

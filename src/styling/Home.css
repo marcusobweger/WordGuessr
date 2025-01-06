@@ -9,7 +9,7 @@ button {
   font-size: 20px;
   font-weight: 500;
   border-radius: 15px;
-  border-style: solid;
+  border-style: hidden;
   transition: transform 0.1s ease;
   height: 110px;
   font-size: 40px;
@@ -45,7 +45,7 @@ h1 {
 
 .title {
   font-size: clamp(
-    35px,
+    40px,
     5vw,
     100px
   ); /* Dynamically resize title based on viewport width */
