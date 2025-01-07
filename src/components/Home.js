@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useContext } from "react";
 import { useNavigate } from "react-router-dom";
 import japan from "../icons/japan.png";
 import korea from "../icons/south-korea.png";
@@ -7,9 +7,11 @@ import italy from "../icons/italy.png";
 import france from "../icons/france.png";
 import spain from "../icons/spain.png";
 import "../styling/Home.css";
-import logo from "../icons/wordguessr_logo1.png";
+import { AppContext } from "../App";
+import { fetchRandomWords, fetchTranslation } from "./utils";
 
 function Home() {
+  const { homeState, setHomeState } = useContext(AppContext);
   const [gamemode, setGamemode] = useState(0);
   const [sourceLang, setSourceLang] = useState("en");
   const [targetLang, setTargetLang] = useState("ja");
@@ -20,40 +22,25 @@ function Home() {
   const [isLoading, setIsLoading] = useState(false);
 
   const navigate = useNavigate();
+  useEffect(() => {
+    const savedGamemode = localStorage.getItem("gamemode");
+    if (savedGamemode) setGamemode(parseInt(savedGamemode));
+    const savedSourceLang = localStorage.getItem("sourceLang");
+    if (savedSourceLang) setSourceLang(savedSourceLang);
+    const savedTargetLang = localStorage.getItem("targetLang");
+    if (savedTargetLang) setTargetLang(savedTargetLang);
+    const savedWordCount = localStorage.getItem("wordCount");
+    if (savedWordCount) setWordCount(parseInt(savedWordCount));
+  }, []);
+  useEffect(() => {
+    setHomeState(isLoading);
+  }, [isLoading]);
 
-  const fetchRandomWords = async () => {
-    try {
-      const response = await fetch(
-        `https://random-word-api.herokuapp.com/word?length=${
-          Math.floor(Math.random() * 6) + 4
-        }&number=${wordCount}`
-      );
-      if (!response.ok) {
-        throw new Error("Network response was not ok");
-      }
-      const data = await response.json();
-      return data;
-    } catch (error) {
-      console.error("Error fetching random words:", error);
-      return [];
-    }
-  };
-  const fetchTranslation = async (wordsFetched) => {
-    const baseUrl = "https://lingva.ml/api/v1";
-    const endpoint = `${baseUrl}/${sourceLang}/${targetLang}/${wordsFetched}`;
-    try {
-      const response = await fetch(endpoint);
-      if (!response.ok) {
-        throw new Error(`Error: ${response.statusText}`);
-      }
-      const data = await response.json();
-      //console.log(data);
-      //console.log(data.translation.replace(/\s+/g, "").split(/[、,]/));
-      return data.translation.replace(/\s+/g, "").split(/[、,]/);
-    } catch (error) {
-      console.error("Error fetching translation:", error);
-      return [];
-    }
+  const savePreferences = () => {
+    localStorage.setItem("gamemode", gamemode);
+    localStorage.setItem("sourceLang", sourceLang);
+    localStorage.setItem("targetLang", targetLang);
+    localStorage.setItem("wordCount", wordCount);
   };
 
   const handlePlay = async () => {
@@ -61,19 +48,28 @@ function Home() {
     let wordsFetched = [];
     let translationFetched = [];
     try {
-      wordsFetched = await fetchRandomWords();
+      wordsFetched = await fetchRandomWords(wordCount);
       setWords(wordsFetched);
-      translationFetched = await fetchTranslation(wordsFetched);
+      translationFetched = await fetchTranslation(
+        wordsFetched,
+        sourceLang,
+        targetLang
+      );
       setTranslation(translationFetched);
     } catch (error) {
       console.error("Error during the play process:", error);
     } finally {
       if (wordsFetched.length > 0 && translationFetched.length > 0) {
+        savePreferences();
+
         navigate("/play", {
           state: {
+            gamemode: gamemode,
+            sourceLang: sourceLang,
+            targetLang: targetLang,
+            wordCount: wordCount,
             words: wordsFetched,
             translation: translationFetched,
-            wordCount: wordCount,
           },
         });
       } else {
@@ -84,10 +80,6 @@ function Home() {
 
   return (
     <div className="container">
-      <div className="header-container">
-        <img className="logo" src={logo} alt="logo"></img>
-        <h1 className="title">WordGuessr</h1>
-      </div>
       <div className="container">
         <div className="row mb-3 gap-3">
           <button
@@ -168,7 +160,7 @@ function Home() {
           </button>
         </div>
         <div className="play row mb-3 gap-3 justify-content-md-center">
-          <button className="col" onClick={handlePlay}>
+          <button className="col" onClick={handlePlay} disabled={isLoading}>
             {isLoading ? (
               <div className="spinner-border text-light" role="status">
                 <span className="visually-hidden">Loading...</span>
