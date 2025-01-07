@@ -25,6 +25,7 @@
 }
 
 button {
+  transform: scale(1);
   background-color: blueviolet;
   color: white;
   font-family: Roboto, Arial, sans-serif;
@@ -32,16 +33,25 @@ button {
   font-weight: 500;
   border-radius: 15px;
   border-style: hidden;
-  transition: transform 0.1s ease;
   height: 110px;
   font-size: 40px;
 }
-button:active {
-  transform: scale(0.9);
-}
+
 button.clicked {
   background-color: rgb(43, 226, 83);
 }
 button:disabled {
   cursor: not-allowed;
+}
+button:hover:not(.clicked) {
+  background-color: rgb(49, 23, 73);
+  animation: bounce 0.4s ease;
+}
+@keyframes bounce {
+  0% {
+    background-color: blueviolet;
+  }
+  100% {
+    background-color: rgb(49, 23, 73); /* Return to original size */
+  }
 }

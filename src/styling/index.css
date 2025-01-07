@@ -1,7 +1,11 @@
 body {
   font-family: "Roboto";
-  background-color: rgb(30, 17, 37);
   text-align: center;
+  background: repeating-linear-gradient(
+    90deg,
+    rgb(30, 17, 37),
+    rgb(49, 23, 73)
+  );
 }
 ::selection {
   background: white;
