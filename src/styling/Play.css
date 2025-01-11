@@ -5,6 +5,9 @@
   background-color: rgb(43, 226, 83);
   height: 80px;
 }
+.skipButton:hover:not(.clicked, :disabled) {
+  background-color: rgb(43, 226, 83);
+}
 
 .homeButton {
   display: flex;
@@ -78,4 +81,13 @@
   display: flex;
   font-size: clamp(30px, 5vw, 40px);
   justify-content: end;
+}
+.progress {
+  height: 30px;
+  font-size: 30px;
+  border-radius: 15px;
+}
+.fire {
+  margin-left: 10px;
+  height: clamp(40px, 10vw, 100px);
 }
