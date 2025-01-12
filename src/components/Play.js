@@ -53,6 +53,7 @@ function Play() {
   useEffect(() => {
     if (finished) return;
     const timer = setInterval(() => {
+      console.log("ran");
       setTimeLeft((prevTime) => {
         if (prevTime === 0) {
           handleSkip();
@@ -64,6 +65,7 @@ function Play() {
 
     return () => clearInterval(timer);
   }, [currentIndex, finished]);
+
   useEffect(() => {
     if (finished) setIsNewPb(false);
     switch (wordCount) {
@@ -102,47 +104,59 @@ function Play() {
 
   const inputRef = useRef(null);
 
+  function feedbackTimeout() {
+    setTimeout(() => {
+      setFeedback("");
+    }, 2000);
+    return () => clearTimeout;
+  }
+
   const handleGuessSubmit = (e) => {
     e.preventDefault();
-    if (
-      guess.trim().toLowerCase() === retryWords[currentIndex].toLowerCase() ||
-      guess.trim().toLowerCase() === words[currentIndex].toLowerCase()
-    ) {
-      setFeedback("Correct!");
-      setScore(score + (timeLeft * 90 + 1000));
-      setGuess("");
-      setTimeLeft(100);
-
+    if (guess !== "") {
       if (
-        currentIndex < retryTranslation.length - 1 ||
-        currentIndex < translation.length - 1
+        guess.trim().toLowerCase() === retryWords[currentIndex].toLowerCase() ||
+        guess.trim().toLowerCase() === words[currentIndex].toLowerCase()
       ) {
-        setCurrentIndex(currentIndex + 1);
+        setFeedback("correct!");
+        feedbackTimeout();
+        setScore(score + (timeLeft * 90 + 1000));
+        setGuess("");
+        setTimeLeft(100);
+
+        if (
+          currentIndex < retryTranslation.length - 1 ||
+          currentIndex < translation.length - 1
+        ) {
+          setCurrentIndex(currentIndex + 1);
+        } else {
+          setFinished(true);
+        }
+      } else if (
+        guess
+          .trim()
+          .toLowerCase()
+          .includes(
+            retryWords[currentIndex].toLowerCase().substring(0, 3),
+            retryWords[currentIndex].toLowerCase().substring(3, 6)
+          ) ||
+        guess
+          .trim()
+          .toLowerCase()
+          .includes(
+            words[currentIndex].toLowerCase().substring(0, 3),
+            words[currentIndex].toLowerCase().substring(3, 6)
+          )
+      ) {
+        setFeedback("close!");
+        feedbackTimeout();
+        setCloseGuess((timeLeft * 90 + 1000) / 2);
+        setGuess("");
       } else {
-        setFinished(true);
+        setFeedback("incorrect!");
+        feedbackTimeout();
+        setGuess("");
       }
-    } else if (
-      guess
-        .trim()
-        .toLowerCase()
-        .includes(
-          retryWords[currentIndex].toLowerCase().substring(0, 3),
-          retryWords[currentIndex].toLowerCase().substring(3, 6)
-        ) ||
-      guess
-        .trim()
-        .toLowerCase()
-        .includes(
-          words[currentIndex].toLowerCase().substring(0, 3),
-          words[currentIndex].toLowerCase().substring(3, 6)
-        )
-    ) {
-      setFeedback("Close!");
-      setCloseGuess((timeLeft * 90 + 1000) / 2);
-      setGuess("");
-    } else {
-      setFeedback("Incorrect! Try again.");
-      setGuess("");
     }
   };
 
@@ -157,6 +171,7 @@ function Play() {
       }
       setCurrentIndex(currentIndex + 1);
       setGuess("");
+      setFeedback("");
       setTimeLeft(100);
     } else {
       setFinished(true);
@@ -171,7 +186,9 @@ function Play() {
   const handleRetry = async () => {
     setRetryLoading(true);
     setScore(0);
+    setCloseGuess(0);
     setFeedback("");
+    setGuess("");
 
     let wordsFetched = [];
     let translationFetched = [];
@@ -201,7 +218,7 @@ function Play() {
     <div className="container">
       {!finished ? (
         <>
-          <div className="container page">
+          <div className="container page mb-3">
             <div className="row align-items-center">
               <div className="col-10 col-sm-10 col-lg-11">
                 <ProgressBar timeLeft={timeLeft} />
@@ -217,7 +234,7 @@ function Play() {
                 {retryTranslation[currentIndex]}
               </div>
             </div>
-            <div className="row">
+            <div className="row mb-2">
               <form onSubmit={handleGuessSubmit}>
                 <input
                   ref={inputRef}
@@ -225,25 +242,19 @@ function Play() {
                   type="text"
                   value={guess}
                   onChange={(e) => setGuess(e.target.value)}
-                  placeholder="enter here"
+                  placeholder={feedback !== "" ? feedback : "enter here"}
                   autoFocus
                   maxLength={12}
                 />
               </form>
             </div>
-
-            <div>{feedback}</div>
           </div>
           <div className="container">
-            <div className="row d-flex flex-nowrap justify-content-between">
-              <button
-                className="homeButton col-lg-3 col-sm-6 col-6"
-                onClick={handleHome}>
+            <div className="row d-flex flex-nowrap justify-content-between gap-3">
+              <button className="homeButton col-lg-3 col" onClick={handleHome}>
                 <img className="home" src={home} alt="home"></img>
               </button>
-              <button
-                className="skipButton col-lg-3 col-sm-6 col-6"
-                onClick={handleSkip}>
+              <button className="skipButton col-lg-3 col" onClick={handleSkip}>
                 <img className="skip" src={share} alt="skip"></img>
               </button>
             </div>
@@ -251,7 +262,7 @@ function Play() {
         </>
       ) : (
         <>
-          <div className="container page">
+          <div className="container page mb-3">
             <Summary
               highScore3={highScore3}
               highScore5={highScore5}
@@ -263,14 +274,12 @@ function Play() {
             />
           </div>
           <div className="container">
-            <div className="row d-flex flex-nowrap justify-content-between">
-              <button
-                className="homeButton col-lg-3 col-sm-6 col-6"
-                onClick={handleHome}>
+            <div className="row d-flex flex-nowrap justify-content-between gap-3">
+              <button className="homeButton col-lg-3 col" onClick={handleHome}>
                 <img className="home" src={home} alt="home"></img>
               </button>
               <button
-                className="retryButton col-lg-3 col-sm-6 col-6"
+                className="retryButton col-lg-3 col"
                 onClick={handleRetry}>
                 {retryLoading ? (
                   <div className="spinner-border text-light" role="status">
