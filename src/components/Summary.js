@@ -10,6 +10,13 @@ const Summary = ({
   wordCount,
   score,
   isNewPb,
+  words,
+  retryWords,
+  translation,
+  retryTranslation,
+  guesses,
+  scores,
+  times,
 }) => {
   function highScore() {
     switch (wordCount) {
@@ -24,12 +31,28 @@ const Summary = ({
     }
   }
   const WordCard = () => {
-    return (
-      <div className="row gap-3">
-        <div className="wordCard col">test</div>
-        <div className="wordCard col">test</div>
+    return Array.from({ length: wordCount }, (_, index) => (
+      <div key={index} className="wordCard col">
+        <div className="row align-items-center justify-content-between">
+          <div className="col-2 col-sm-2 col-lg-1 wordCardTime">
+            {times[index] !== 0 ? (
+              <>time:&nbsp;{times[index] / 10}s</>
+            ) : (
+              <>&nbsp;</>
+            )}
+          </div>
+          <div className="col-2 col-sm-2 col-lg-1 wordCardNumber">
+            {index + 1}/{wordCount}
+          </div>
+        </div>
+        <div>
+          {!retryTranslation ? translation[index] : retryTranslation[index]}
+        </div>
+        <div>{!retryWords ? words[index] : retryWords[index]}</div>
+        <div>your guess:&nbsp;{guesses[index]}</div>
+        <div>score:&nbsp;{scores[index]}</div>
       </div>
-    );
+    ));
   };
 
   return (
@@ -55,7 +78,9 @@ const Summary = ({
           )}
         </div>
       </div>
-      <WordCard />
+      <div className="row gap-3 wordCardRow">
+        <WordCard />
+      </div>
     </div>
   );
 };

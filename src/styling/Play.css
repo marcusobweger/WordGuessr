@@ -100,3 +100,16 @@
   background-color: rgb(77, 38, 114);
   border-radius: 15px;
 }
+.wordCardRow {
+  margin-bottom: 12px;
+}
+.wordCardNumber {
+  display: flex;
+  font-size: clamp(20px, 5vw, 30px);
+  justify-content: end;
+}
+.wordCardTime {
+  display: flex;
+  font-size: clamp(20px, 5vw, 30px);
+  justify-content: start;
+}

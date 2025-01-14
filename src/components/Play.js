@@ -26,7 +26,10 @@ function Play() {
   const [highScore10, setHighScore10] = useState(0);
   const [highScore15, setHighScore15] = useState(0);
   const [isNewPb, setIsNewPb] = useState(false);
-  const [closeGuess, setCloseGuess] = useState(false);
+  const [closeGuessCounter, setCloseGuessCounter] = useState(0);
+  const [guesses, setGuesses] = useState([]);
+  const [scores, setScores] = useState([]);
+  const [times, setTimes] = useState([]);
 
   const { words, translation, wordCount, gamemode, sourceLang, targetLang } =
     location.state || {
@@ -38,6 +41,9 @@ function Play() {
       targetLang: null,
     };
   useEffect(() => {
+    setGuesses(Array(wordCount).fill("no guess"));
+    setScores(Array(wordCount).fill(0));
+    setTimes(Array(wordCount).fill(0));
     setRetryWords(words);
     setRetryTranslation(translation);
     const savedHighScore3 = localStorage.getItem("highScore3");
@@ -104,6 +110,28 @@ function Play() {
 
   const inputRef = useRef(null);
 
+  const saveGuessAtIndex = (newGuess, index) => {
+    setGuesses((prevGuess) => {
+      const updatedGuesses = [...prevGuess];
+      updatedGuesses.splice(index, 1, newGuess);
+      return updatedGuesses;
+    });
+  };
+  const saveScoreAtIndex = (newScore, index) => {
+    setScores((prevScore) => {
+      const updatedScores = [...prevScore];
+      updatedScores.splice(index, 1, newScore);
+      return updatedScores;
+    });
+  };
+  const saveTimeAtIndex = (newTime, index) => {
+    setTimes((prevTime) => {
+      const updatedTimes = [...prevTime];
+      updatedTimes.splice(index, 1, newTime);
+      return updatedTimes;
+    });
+  };
+
   function feedbackTimeout() {
     setTimeout(() => {
       setFeedback("");
@@ -121,8 +149,12 @@ function Play() {
         setFeedback("correct!");
         feedbackTimeout();
         setScore(score + (timeLeft * 90 + 1000));
+        saveScoreAtIndex(timeLeft * 90 + 1000, currentIndex);
+        saveTimeAtIndex(100 - timeLeft, currentIndex);
         setGuess("");
         setTimeLeft(100);
+        setCloseGuessCounter(0);
+        saveGuessAtIndex(guess, currentIndex);
 
         if (
           currentIndex < retryTranslation.length - 1 ||
@@ -150,11 +182,18 @@ function Play() {
       ) {
         setFeedback("close!");
         feedbackTimeout();
-        setCloseGuess((timeLeft * 90 + 1000) / 2);
+
+        if (closeGuessCounter === 0) {
+          setScore((timeLeft * 90 + 1000) / 2);
+          saveScoreAtIndex((timeLeft * 90 + 1000) / 2, currentIndex);
+          setCloseGuessCounter(closeGuessCounter + 1);
+        }
+        saveGuessAtIndex(guess, currentIndex);
         setGuess("");
       } else {
         setFeedback("incorrect!");
         feedbackTimeout();
+        saveGuessAtIndex(guess, currentIndex);
         setGuess("");
       }
     }
@@ -165,14 +204,11 @@ function Play() {
       currentIndex < retryTranslation.length - 1 ||
       currentIndex < translation.length - 1
     ) {
-      if (closeGuess > 0) {
-        setScore(score + closeGuess);
-        setCloseGuess(0);
-      }
       setCurrentIndex(currentIndex + 1);
       setGuess("");
       setFeedback("");
       setTimeLeft(100);
+      setCloseGuessCounter(0);
     } else {
       setFinished(true);
     }
@@ -186,9 +222,12 @@ function Play() {
   const handleRetry = async () => {
     setRetryLoading(true);
     setScore(0);
-    setCloseGuess(0);
+    setCloseGuessCounter(0);
     setFeedback("");
     setGuess("");
+    setGuesses(Array(wordCount).fill("no guess"));
+    setScores(Array(wordCount).fill(0));
+    setTimes(Array(wordCount).fill(0));
 
     let wordsFetched = [];
     let translationFetched = [];
@@ -262,17 +301,26 @@ function Play() {
         </>
       ) : (
         <>
-          <div className="container page mb-3">
-            <Summary
-              highScore3={highScore3}
-              highScore5={highScore5}
-              highScore10={highScore10}
-              highScore15={highScore15}
-              score={score}
-              wordCount={wordCount}
-              isNewPb={isNewPb}
-            />
-          </div>
+          {!retryLoading && (
+            <div className="container page mb-3">
+              <Summary
+                highScore3={highScore3}
+                highScore5={highScore5}
+                highScore10={highScore10}
+                highScore15={highScore15}
+                score={score}
+                wordCount={wordCount}
+                isNewPb={isNewPb}
+                words={words}
+                retryWords={retryWords}
+                translation={translation}
+                retryTranslation={retryTranslation}
+                guesses={guesses}
+                scores={scores}
+                times={times}
+              />
+            </div>
+          )}
           <div className="container">
             <div className="row d-flex flex-nowrap justify-content-between gap-3">
               <button className="homeButton col-lg-3 col" onClick={handleHome}>
