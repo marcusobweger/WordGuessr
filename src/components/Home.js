@@ -1,11 +1,11 @@
 import React, { useEffect, useState, useContext } from "react";
 import { useNavigate } from "react-router-dom";
-import japan from "../icons/japan.png";
-import korea from "../icons/south-korea.png";
-import germany from "../icons/germany.png";
-import italy from "../icons/italy.png";
-import france from "../icons/france.png";
-import spain from "../icons/spain.png";
+import ja from "../icons/japan.png";
+import ko from "../icons/south-korea.png";
+import de from "../icons/germany.png";
+import it from "../icons/italy.png";
+import fr from "../icons/france.png";
+import es from "../icons/spain.png";
 import "../styling/Home.css";
 import { AppContext } from "../App";
 import { fetchRandomWords, fetchTranslation } from "./utils";
@@ -100,37 +100,37 @@ function Home() {
             className={`col language ${targetLang === "ja" ? "clicked" : ""}`}
             disabled={isLoading}
             onClick={() => setTargetLang("ja")}>
-            <img className="icons" src={japan} alt="japanese"></img>
+            <img className="icons" src={ja} alt="japanese"></img>
           </button>
           <button
             className={`col language ${targetLang === "ko" ? "clicked" : ""}`}
             disabled={isLoading}
             onClick={() => setTargetLang("ko")}>
-            <img className="icons" src={korea} alt="korean"></img>
+            <img className="icons" src={ko} alt="korean"></img>
           </button>
           <button
             className={`col language ${targetLang === "de" ? "clicked" : ""}`}
             disabled={isLoading}
             onClick={() => setTargetLang("de")}>
-            <img className="icons" src={germany} alt="german"></img>
+            <img className="icons" src={de} alt="german"></img>
           </button>
           <button
             className={`col language ${targetLang === "it" ? "clicked" : ""}`}
             disabled={isLoading}
             onClick={() => setTargetLang("it")}>
-            <img className="icons" src={italy} alt="italian"></img>
+            <img className="icons" src={it} alt="italian"></img>
           </button>
           <button
             className={`col language ${targetLang === "fr" ? "clicked" : ""}`}
             disabled={isLoading}
             onClick={() => setTargetLang("fr")}>
-            <img className="icons" src={france} alt="french"></img>
+            <img className="icons" src={fr} alt="french"></img>
           </button>
           <button
             className={`col language ${targetLang === "es" ? "clicked" : ""}`}
             disabled={isLoading}
             onClick={() => setTargetLang("es")}>
-            <img className="icons" src={spain} alt="spanish"></img>
+            <img className="icons" src={es} alt="spanish"></img>
           </button>
         </div>
         <div className="row mb-3 gap-3">

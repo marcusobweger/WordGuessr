@@ -105,11 +105,35 @@
 }
 .wordCardNumber {
   display: flex;
-  font-size: clamp(20px, 5vw, 30px);
+  font-size: clamp(30px, 5vw, 35px);
   justify-content: end;
+  align-items: center;
 }
 .wordCardTime {
   display: flex;
-  font-size: clamp(20px, 5vw, 30px);
+  font-size: clamp(30px, 5vw, 35px);
   justify-content: start;
+  align-items: center;
+}
+.time {
+  height: clamp(26px, 5vw, 32px);
+  width: auto;
+  margin-right: 6px;
+}
+.wordCardScore {
+  display: flex;
+  font-size: clamp(30px, 5vw, 35px);
+  justify-content: center;
+  align-items: center;
+}
+.icons {
+  height: clamp(55px, 10vw, 70px);
+
+  width: auto;
+}
+.wordCardWords {
+  display: flex;
+  font-size: clamp(45px, 10vw, 60px);
+  justify-content: center;
+  align-items: center;
 }

@@ -1,6 +1,14 @@
 import React from "react";
 import fire from "../icons/fire.png";
 import CountUp from "react-countup";
+import time from "../icons/time.png";
+import ja from "../icons/japan.png";
+import ko from "../icons/south-korea.png";
+import de from "../icons/germany.png";
+import it from "../icons/italy.png";
+import fr from "../icons/france.png";
+import es from "../icons/spain.png";
+import en from "../icons/united-states.png";
 
 const Summary = ({
   highScore3,
@@ -17,6 +25,8 @@ const Summary = ({
   guesses,
   scores,
   times,
+  sourceLang,
+  targetLang,
 }) => {
   function highScore() {
     switch (wordCount) {
@@ -30,27 +40,54 @@ const Summary = ({
         return highScore15;
     }
   }
+  const iconMap = {
+    ja: ja,
+    ko: ko,
+    de: de,
+    it: it,
+    fr: fr,
+    es: es,
+    en: en,
+  };
+
   const WordCard = () => {
+    const targetLangIcon = iconMap[targetLang];
+    const sourceLangIcon = iconMap[sourceLang];
     return Array.from({ length: wordCount }, (_, index) => (
       <div key={index} className="wordCard col">
-        <div className="row align-items-center justify-content-between">
-          <div className="col-2 col-sm-2 col-lg-1 wordCardTime">
-            {times[index] !== 0 ? (
-              <>time:&nbsp;{times[index] / 10}s</>
+        <div className="row">
+          <div className="col wordCardTime">
+            <img src={time} className="time" alt="time icon"></img>
+            {times[index] !== 0 ? <>{times[index] / 10}s</> : <>-:-</>}
+          </div>
+          <div className="col wordCardScore">
+            {scores[index] !== 0 ? (
+              <>
+                <CountUp end={scores[index]} duration={3} separator="" />
+              </>
             ) : (
-              <>&nbsp;</>
+              <>-:-</>
             )}
           </div>
-          <div className="col-2 col-sm-2 col-lg-1 wordCardNumber">
+          <div className="col wordCardNumber">
             {index + 1}/{wordCount}
           </div>
         </div>
-        <div>
+        <div className="row wordCardWords">
+          <img
+            className="icons"
+            src={targetLangIcon}
+            alt={`${targetLang} icon`}></img>
           {!retryTranslation ? translation[index] : retryTranslation[index]}
         </div>
-        <div>{!retryWords ? words[index] : retryWords[index]}</div>
-        <div>your guess:&nbsp;{guesses[index]}</div>
-        <div>score:&nbsp;{scores[index]}</div>
+        <div className="row wordCardWords">
+          <img
+            className="icons"
+            src={sourceLangIcon}
+            alt={`${sourceLang} icon`}></img>
+          {!retryWords ? words[index] : retryWords[index]}
+        </div>
+        <div className="row">your guess:&nbsp;{guesses[index]}</div>
       </div>
     ));
   };
@@ -59,7 +96,7 @@ const Summary = ({
     <div className="container">
       <div className="row">
         <div className="title score col-12 col-sm-12 col-lg-6">
-          Score:&nbsp; <CountUp end={score} duration={3} separator="" />
+          Score: <CountUp end={score} duration={3} separator="" />
           {isNewPb && (
             <img src={fire} className="fire" alt="new highScore"></img>
           )}
@@ -67,7 +104,7 @@ const Summary = ({
         <div className="title score col-12 col-sm-12 col-lg-6">
           {isNewPb ? (
             <>
-              Best:&nbsp;
+              Best:
               <CountUp end={highScore()} duration={3} separator="" />
             </>
           ) : (

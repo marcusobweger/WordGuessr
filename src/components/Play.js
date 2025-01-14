@@ -318,6 +318,8 @@ function Play() {
                 guesses={guesses}
                 scores={scores}
                 times={times}
+                sourceLang={sourceLang}
+                targetLang={targetLang}
               />
             </div>
           )}
