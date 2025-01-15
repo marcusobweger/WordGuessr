@@ -9,6 +9,7 @@ import it from "../icons/italy.png";
 import fr from "../icons/france.png";
 import es from "../icons/spain.png";
 import en from "../icons/united-states.png";
+import user from "../icons/user.png";
 
 const Summary = ({
   highScore3,
@@ -61,13 +62,7 @@ const Summary = ({
             {times[index] !== 0 ? <>{times[index] / 10}s</> : <>-:-</>}
           </div>
           <div className="col wordCardScore">
-            {scores[index] !== 0 ? (
-              <>
-                <CountUp end={scores[index]} duration={3} separator="" />
-              </>
-            ) : (
-              <>-:-</>
-            )}
+            <CountUp end={scores[index]} duration={3} separator="" />
           </div>
           <div className="col wordCardNumber">
             {index + 1}/{wordCount}
@@ -87,7 +82,10 @@ const Summary = ({
             alt={`${sourceLang} icon`}></img>
           {!retryWords ? words[index] : retryWords[index]}
         </div>
-        <div className="row wordCardWords">{guesses[index]}</div>
+        <div className="row wordCardWords">
+          <img src={user} className="wordCardIcons" alt="user's guess"></img>
+          {guesses[index]}
+        </div>
       </div>
     ));
   };

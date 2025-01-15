@@ -5,6 +5,14 @@
   gap: 20px;
   flex-wrap: wrap;
   text-align: center;
+  position: sticky;
+  top: 0;
+  background: repeating-linear-gradient(
+    90deg,
+    rgb(30, 17, 37),
+    rgb(49, 23, 73)
+  );
+  z-index: 1000;
 }
 
 .logo {

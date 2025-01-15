@@ -72,35 +72,45 @@ function Play() {
   }, [currentIndex, finished]);
 
   useEffect(() => {
-    if (finished) setIsNewPb(false);
+    let scoreSum = 0;
+
+    if (finished) {
+      setIsNewPb(false);
+
+      scores.forEach((myScore) => {
+        scoreSum += myScore;
+      });
+      setScore(scoreSum);
+    }
+
     switch (wordCount) {
       case 3:
-        if (score > highScore3) {
-          setHighScore3(score);
-          localStorage.setItem("highScore3", score);
+        if (scoreSum > highScore3) {
+          setHighScore3(scoreSum);
+          localStorage.setItem("highScore3", scoreSum);
           setIsNewPb(true);
         }
         break;
       case 5:
-        if (score > highScore5) {
-          setHighScore5(score);
-          localStorage.setItem("highScore5", score);
+        if (scoreSum > highScore5) {
+          setHighScore5(scoreSum);
+          localStorage.setItem("highScore5", scoreSum);
           setIsNewPb(true);
         }
         break;
 
       case 10:
-        if (score > highScore10) {
-          setHighScore10(score);
-          localStorage.setItem("highScore10", score);
+        if (scoreSum > highScore10) {
+          setHighScore10(scoreSum);
+          localStorage.setItem("highScore10", scoreSum);
           setIsNewPb(true);
         }
         break;
 
       case 15:
-        if (score > highScore15) {
-          setHighScore15(score);
-          localStorage.setItem("highScore15", score);
+        if (scoreSum > highScore15) {
+          setHighScore15(scoreSum);
+          localStorage.setItem("highScore15", scoreSum);
           setIsNewPb(true);
         }
         break;
@@ -147,7 +157,7 @@ function Play() {
       ) {
         setFeedback("correct!");
         feedbackTimeout();
-        setScore(score + (timeLeft * 90 + 1000));
+
         saveScoreAtIndex(timeLeft * 90 + 1000, currentIndex);
         saveTimeAtIndex(100 - timeLeft, currentIndex);
         setGuess("");
@@ -183,11 +193,11 @@ function Play() {
         feedbackTimeout();
 
         if (closeGuessCounter === 0) {
-          setScore((timeLeft * 90 + 1000) / 2);
           saveScoreAtIndex((timeLeft * 90 + 1000) / 2, currentIndex);
           setCloseGuessCounter(closeGuessCounter + 1);
+          saveGuessAtIndex(guess, currentIndex);
+          saveTimeAtIndex(100 - timeLeft, currentIndex);
         }
-        saveGuessAtIndex(guess, currentIndex);
         setGuess("");
       } else {
         setFeedback("incorrect!");
@@ -301,7 +311,7 @@ function Play() {
       ) : (
         <>
           {!retryLoading && (
-            <div className="container page mb-3">
+            <div className="container page">
               <Summary
                 highScore3={highScore3}
                 highScore5={highScore5}

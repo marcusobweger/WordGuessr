@@ -21,6 +21,9 @@ function Home() {
   const [translation, setTranslation] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
 
+  const targetLanguages = ["ja", "ko", "de", "it", "fr", "es"];
+  const wordCounts = [3, 5, 10, 15];
+
   const navigate = useNavigate();
   useEffect(() => {
     const savedGamemode = localStorage.getItem("gamemode");
@@ -35,6 +38,15 @@ function Home() {
   useEffect(() => {
     setHomeState(isLoading);
   }, [isLoading]);
+
+  const iconMap = {
+    ja: ja,
+    ko: ko,
+    de: de,
+    it: it,
+    fr: fr,
+    es: es,
+  };
 
   const savePreferences = () => {
     localStorage.setItem("gamemode", gamemode);
@@ -77,6 +89,35 @@ function Home() {
       }
     }
   };
+  const LanguageButtons = () => {
+    return Array.from({ length: targetLanguages.length }, (_, index) => (
+      <button
+        key={index}
+        className={`col language ${
+          targetLang === targetLanguages[index] ? "clicked" : ""
+        }`}
+        disabled={isLoading}
+        onClick={() => setTargetLang(targetLanguages[index])}>
+        <img
+          className="icons"
+          src={iconMap[targetLanguages[index]]}
+          alt={`${targetLang} icon`}></img>
+      </button>
+    ));
+  };
+  const WordCountButtons = () => {
+    return Array.from({ length: wordCounts.length }, (_, index) => (
+      <button
+        key={index}
+        className={`col wordCount ${
+          wordCount === wordCounts[index] ? "clicked" : ""
+        }`}
+        disabled={isLoading}
+        onClick={() => setWordCount(wordCounts[index])}>
+        {wordCounts[index]}
+      </button>
+    ));
+  };
 
   return (
     <div className="container">
@@ -96,68 +137,10 @@ function Home() {
           </button>
         </div>
         <div className="row buttonGaps">
-          <button
-            className={`col language ${targetLang === "ja" ? "clicked" : ""}`}
-            disabled={isLoading}
-            onClick={() => setTargetLang("ja")}>
-            <img className="icons" src={ja} alt="japanese"></img>
-          </button>
-          <button
-            className={`col language ${targetLang === "ko" ? "clicked" : ""}`}
-            disabled={isLoading}
-            onClick={() => setTargetLang("ko")}>
-            <img className="icons" src={ko} alt="korean"></img>
-          </button>
-          <button
-            className={`col language ${targetLang === "de" ? "clicked" : ""}`}
-            disabled={isLoading}
-            onClick={() => setTargetLang("de")}>
-            <img className="icons" src={de} alt="german"></img>
-          </button>
-          <button
-            className={`col language ${targetLang === "it" ? "clicked" : ""}`}
-            disabled={isLoading}
-            onClick={() => setTargetLang("it")}>
-            <img className="icons" src={it} alt="italian"></img>
-          </button>
-          <button
-            className={`col language ${targetLang === "fr" ? "clicked" : ""}`}
-            disabled={isLoading}
-            onClick={() => setTargetLang("fr")}>
-            <img className="icons" src={fr} alt="french"></img>
-          </button>
-          <button
-            className={`col language ${targetLang === "es" ? "clicked" : ""}`}
-            disabled={isLoading}
-            onClick={() => setTargetLang("es")}>
-            <img className="icons" src={es} alt="spanish"></img>
-          </button>
+          <LanguageButtons />
         </div>
         <div className="row buttonGaps">
-          <button
-            className={`col wordCount ${wordCount === 3 ? "clicked" : ""}`}
-            disabled={isLoading}
-            onClick={() => setWordCount(3)}>
-            3
-          </button>
-          <button
-            className={`col wordCount ${wordCount === 5 ? "clicked" : ""}`}
-            disabled={isLoading}
-            onClick={() => setWordCount(5)}>
-            5
-          </button>
-          <button
-            className={`col wordCount ${wordCount === 10 ? "clicked" : ""}`}
-            disabled={isLoading}
-            onClick={() => setWordCount(10)}>
-            10
-          </button>
-          <button
-            className={`col wordCount ${wordCount === 15 ? "clicked" : ""}`}
-            disabled={isLoading}
-            onClick={() => setWordCount(15)}>
-            15
-          </button>
+          <WordCountButtons />
         </div>
         <div className="play row buttonGaps justify-content-md-center">
           <button className="col" onClick={handlePlay} disabled={isLoading}>

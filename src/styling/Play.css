@@ -105,7 +105,6 @@
 .wordCardRow {
   margin-bottom: 12px;
   gap: 14px;
-  display: flex;
 }
 .wordCardNumber {
   display: flex;
@@ -139,4 +138,5 @@
   font-size: clamp(25px, 5vw, 30px);
   justify-content: center;
   align-items: center;
+  margin-bottom: 6px;
 }
