@@ -81,7 +81,7 @@ function Home() {
   return (
     <div className="container">
       <div className="container">
-        <div className="row mb-3 gap-3">
+        <div className="row buttonGaps">
           <button
             className={`col gamemode ${gamemode === 0 ? "clicked" : ""}`}
             onClick={() => setGamemode(0)}
@@ -95,7 +95,7 @@ function Home() {
             Online
           </button>
         </div>
-        <div className="row mb-3 gap-3">
+        <div className="row buttonGaps">
           <button
             className={`col language ${targetLang === "ja" ? "clicked" : ""}`}
             disabled={isLoading}
@@ -133,7 +133,7 @@ function Home() {
             <img className="icons" src={es} alt="spanish"></img>
           </button>
         </div>
-        <div className="row mb-3 gap-3">
+        <div className="row buttonGaps">
           <button
             className={`col wordCount ${wordCount === 3 ? "clicked" : ""}`}
             disabled={isLoading}
@@ -159,7 +159,7 @@ function Home() {
             15
           </button>
         </div>
-        <div className="play row mb-3 gap-3 justify-content-md-center">
+        <div className="play row buttonGaps justify-content-md-center">
           <button className="col" onClick={handlePlay} disabled={isLoading}>
             {isLoading ? (
               <div className="spinner-border text-light" role="status">

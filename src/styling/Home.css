@@ -2,3 +2,7 @@
   width: 100px;
   height: auto;
 }
+.buttonGaps {
+  gap: 14px;
+  margin-bottom: 14px;
+}

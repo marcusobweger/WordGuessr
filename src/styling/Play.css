@@ -44,6 +44,7 @@
   align-items: center; /* Align logo and title vertically */
   justify-content: center;
   text-align: center;
+  margin-bottom: 14px;
 }
 .translation {
   display: flex;
@@ -65,7 +66,7 @@
   background-color: transparent;
   text-align: center;
   transition: transform 0.08s ease;
-  margin-bottom: 10px;
+  margin-bottom: 14px;
 }
 .inputfield:focus {
   outline: transparent;
@@ -80,7 +81,7 @@
 }
 .progressNumber {
   display: flex;
-  font-size: clamp(30px, 5vw, 40px);
+  font-size: 30px;
   justify-content: end;
 }
 .progress {
@@ -90,50 +91,52 @@
 }
 .fire {
   margin-left: 10px;
-  height: clamp(45px, 10vw, 60px);
+  height: clamp(40px, 5vw, 60px);
 }
 .score {
-  font-size: clamp(45px, 10vw, 60px) !important;
+  font-size: clamp(40px, 5vw, 60px) !important;
 }
 
 .wordCard {
   background-color: rgb(77, 38, 114);
   border-radius: 15px;
+  min-width: 32%;
 }
 .wordCardRow {
   margin-bottom: 12px;
+  gap: 14px;
+  display: flex;
 }
 .wordCardNumber {
   display: flex;
-  font-size: clamp(30px, 5vw, 35px);
+  font-size: clamp(20px, 5vw, 25px);
   justify-content: end;
   align-items: center;
 }
 .wordCardTime {
   display: flex;
-  font-size: clamp(30px, 5vw, 35px);
+  font-size: clamp(20px, 5vw, 25px);
   justify-content: start;
   align-items: center;
 }
 .time {
-  height: clamp(26px, 5vw, 32px);
+  height: clamp(16px, 5vw, 22px);
   width: auto;
   margin-right: 6px;
 }
 .wordCardScore {
   display: flex;
-  font-size: clamp(30px, 5vw, 35px);
+  font-size: clamp(20px, 5vw, 25px);
   justify-content: center;
   align-items: center;
 }
-.icons {
-  height: clamp(55px, 10vw, 70px);
-
+.wordCardIcons {
+  height: clamp(30px, 5vw, 35px);
   width: auto;
 }
 .wordCardWords {
   display: flex;
-  font-size: clamp(45px, 10vw, 60px);
+  font-size: clamp(25px, 5vw, 30px);
   justify-content: center;
   align-items: center;
 }

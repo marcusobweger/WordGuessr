@@ -54,7 +54,7 @@ const Summary = ({
     const targetLangIcon = iconMap[targetLang];
     const sourceLangIcon = iconMap[sourceLang];
     return Array.from({ length: wordCount }, (_, index) => (
-      <div key={index} className="wordCard col">
+      <div key={index} className="wordCard col-12 col-sm-12 col-md col-lg">
         <div className="row">
           <div className="col wordCardTime">
             <img src={time} className="time" alt="time icon"></img>
@@ -75,19 +75,19 @@ const Summary = ({
         </div>
         <div className="row wordCardWords">
           <img
-            className="icons"
+            className="wordCardIcons"
             src={targetLangIcon}
             alt={`${targetLang} icon`}></img>
           {!retryTranslation ? translation[index] : retryTranslation[index]}
         </div>
         <div className="row wordCardWords">
           <img
-            className="icons"
+            className="wordCardIcons"
             src={sourceLangIcon}
             alt={`${sourceLang} icon`}></img>
           {!retryWords ? words[index] : retryWords[index]}
         </div>
-        <div className="row">your guess:&nbsp;{guesses[index]}</div>
+        <div className="row wordCardWords">{guesses[index]}</div>
       </div>
     ));
   };
@@ -96,7 +96,14 @@ const Summary = ({
     <div className="container">
       <div className="row">
         <div className="title score col-12 col-sm-12 col-lg-6">
-          Score: <CountUp end={score} duration={3} separator="" />
+          Score:
+          {score !== 0 ? (
+            <>
+              <CountUp end={score} duration={3} separator="" prefix=" " />
+            </>
+          ) : (
+            <>&nbsp;-:-</>
+          )}
           {isNewPb && (
             <img src={fire} className="fire" alt="new highScore"></img>
           )}
@@ -105,7 +112,7 @@ const Summary = ({
           {isNewPb ? (
             <>
               Best:
-              <CountUp end={highScore()} duration={3} separator="" />
+              <CountUp end={highScore()} duration={3} separator="" prefix=" " />
             </>
           ) : (
             <>{"Best: " + highScore()}</>
@@ -115,7 +122,7 @@ const Summary = ({
           )}
         </div>
       </div>
-      <div className="row gap-3 wordCardRow">
+      <div className="row wordCardRow">
         <WordCard />
       </div>
     </div>

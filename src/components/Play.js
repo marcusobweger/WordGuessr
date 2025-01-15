@@ -59,7 +59,6 @@ function Play() {
   useEffect(() => {
     if (finished) return;
     const timer = setInterval(() => {
-      console.log("ran");
       setTimeLeft((prevTime) => {
         if (prevTime === 0) {
           handleSkip();
@@ -257,12 +256,12 @@ function Play() {
     <div className="container">
       {!finished ? (
         <>
-          <div className="container page mb-3">
+          <div className="container page">
             <div className="row align-items-center">
-              <div className="col-10 col-sm-10 col-lg-11">
+              <div className="col-9 col-sm-9 col-lg-10">
                 <ProgressBar timeLeft={timeLeft} />
               </div>
-              <div className="col-2 col-sm-2 col-lg-1">
+              <div className="col-3 col-sm-3 col-lg-2">
                 <div className="progressNumber">
                   {currentIndex + 1}/{wordCount}
                 </div>
@@ -273,7 +272,7 @@ function Play() {
                 {retryTranslation[currentIndex]}
               </div>
             </div>
-            <div className="row mb-2">
+            <div className="row">
               <form onSubmit={handleGuessSubmit}>
                 <input
                   ref={inputRef}
