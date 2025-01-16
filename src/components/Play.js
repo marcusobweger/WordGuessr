@@ -1,4 +1,4 @@
-import React, { useState, useRef, useEffect } from "react";
+import React, { useState, useRef, useEffect, useContext } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import "../styling/Play.css";
 import home from "../icons/home.png";
@@ -19,7 +19,6 @@ function Play() {
   const [retryWords, setRetryWords] = useState([]);
   const [retryTranslation, setRetryTranslation] = useState([]);
   const [retryLoading, setRetryLoading] = useState(false);
-  const [timeLeft, setTimeLeft] = useState(100);
   const [score, setScore] = useState(0);
   const [highScore3, setHighScore3] = useState(0);
   const [highScore5, setHighScore5] = useState(0);
@@ -31,6 +30,8 @@ function Play() {
   const [scores, setScores] = useState([]);
   const [times, setTimes] = useState([]);
 
+  const inputRef = useRef(null);
+  const progressBarRef = useRef(null);
   const { words, translation, wordCount, gamemode, sourceLang, targetLang } =
     location.state || {
       words: null,
@@ -57,21 +58,6 @@ function Play() {
   }, []);
 
   useEffect(() => {
-    if (finished) return;
-    const timer = setInterval(() => {
-      setTimeLeft((prevTime) => {
-        if (prevTime === 0) {
-          handleSkip();
-          return 100;
-        }
-        return prevTime - 1;
-      });
-    }, 100);
-
-    return () => clearInterval(timer);
-  }, [currentIndex, finished]);
-
-  useEffect(() => {
     let scoreSum = 0;
 
     if (finished) {
@@ -81,43 +67,41 @@ function Play() {
         scoreSum += myScore;
       });
       setScore(scoreSum);
-    }
 
-    switch (wordCount) {
-      case 3:
-        if (scoreSum > highScore3) {
-          setHighScore3(scoreSum);
-          localStorage.setItem("highScore3", scoreSum);
-          setIsNewPb(true);
-        }
-        break;
-      case 5:
-        if (scoreSum > highScore5) {
-          setHighScore5(scoreSum);
-          localStorage.setItem("highScore5", scoreSum);
-          setIsNewPb(true);
-        }
-        break;
+      switch (wordCount) {
+        case 3:
+          if (scoreSum > highScore3) {
+            setHighScore3(scoreSum);
+            localStorage.setItem("highScore3", scoreSum);
+            setIsNewPb(true);
+          }
+          break;
+        case 5:
+          if (scoreSum > highScore5) {
+            setHighScore5(scoreSum);
+            localStorage.setItem("highScore5", scoreSum);
+            setIsNewPb(true);
+          }
+          break;
 
-      case 10:
-        if (scoreSum > highScore10) {
-          setHighScore10(scoreSum);
-          localStorage.setItem("highScore10", scoreSum);
-          setIsNewPb(true);
-        }
-        break;
+        case 10:
+          if (scoreSum > highScore10) {
+            setHighScore10(scoreSum);
+            localStorage.setItem("highScore10", scoreSum);
+            setIsNewPb(true);
+          }
+          break;
 
-      case 15:
-        if (scoreSum > highScore15) {
-          setHighScore15(scoreSum);
-          localStorage.setItem("highScore15", scoreSum);
-          setIsNewPb(true);
-        }
-        break;
+        case 15:
+          if (scoreSum > highScore15) {
+            setHighScore15(scoreSum);
+            localStorage.setItem("highScore15", scoreSum);
+            setIsNewPb(true);
+          }
+          break;
+      }
     }
   }, [finished]);
-
-  const inputRef = useRef(null);
 
   const saveGuessAtIndex = (newGuess, index) => {
     setGuesses((prevGuess) => {
@@ -157,11 +141,15 @@ function Play() {
       ) {
         setFeedback("correct!");
         feedbackTimeout();
-
-        saveScoreAtIndex(timeLeft * 90 + 1000, currentIndex);
-        saveTimeAtIndex(100 - timeLeft, currentIndex);
+        if (progressBarRef.current) {
+          let timeLeft = progressBarRef.current.getTimeLeft();
+          saveScoreAtIndex(
+            (timeLeft / 100).toFixed(0) * 90 + 1000,
+            currentIndex
+          );
+          saveTimeAtIndex(((10000 - timeLeft) / 100).toFixed(0), currentIndex);
+        }
         setGuess("");
-        setTimeLeft(100);
         setCloseGuessCounter(0);
         saveGuessAtIndex(guess, currentIndex);
 
@@ -172,6 +160,7 @@ function Play() {
           setCurrentIndex(currentIndex + 1);
         } else {
           setFinished(true);
+          setFeedback("");
         }
       } else if (
         guess
@@ -192,17 +181,24 @@ function Play() {
         setFeedback("close!");
         feedbackTimeout();
 
-        if (closeGuessCounter === 0) {
-          saveScoreAtIndex((timeLeft * 90 + 1000) / 2, currentIndex);
-          setCloseGuessCounter(closeGuessCounter + 1);
+        if (closeGuessCounter === 0 && progressBarRef.current) {
           saveGuessAtIndex(guess, currentIndex);
-          saveTimeAtIndex(100 - timeLeft, currentIndex);
+          let timeLeft = progressBarRef.current.getTimeLeft();
+          saveScoreAtIndex(
+            ((timeLeft / 100).toFixed(0) * 90 + 1000) / 2,
+            currentIndex
+          );
+          saveTimeAtIndex(((10000 - timeLeft) / 100).toFixed(0), currentIndex);
+          setCloseGuessCounter(closeGuessCounter + 1);
         }
+
         setGuess("");
       } else {
         setFeedback("incorrect!");
         feedbackTimeout();
-        saveGuessAtIndex(guess, currentIndex);
+        if (closeGuessCounter === 0) {
+          saveGuessAtIndex(guess, currentIndex);
+        }
         setGuess("");
       }
     }
@@ -216,7 +212,6 @@ function Play() {
       setCurrentIndex(currentIndex + 1);
       setGuess("");
       setFeedback("");
-      setTimeLeft(100);
       setCloseGuessCounter(0);
     } else {
       setFinished(true);
@@ -256,7 +251,6 @@ function Play() {
         setCurrentIndex(0);
         setRetryLoading(false);
         setFinished(false);
-        setTimeLeft(100);
       } else {
         console.error("Failed to fetch data for play.");
       }
@@ -269,7 +263,12 @@ function Play() {
           <div className="container page">
             <div className="row align-items-center">
               <div className="col-9 col-sm-9 col-lg-10">
-                <ProgressBar timeLeft={timeLeft} />
+                <ProgressBar
+                  ref={progressBarRef}
+                  handleSkip={handleSkip}
+                  currentIndex={currentIndex}
+                  finished={finished}
+                />
               </div>
               <div className="col-3 col-sm-3 col-lg-2">
                 <div className="progressNumber">
@@ -289,7 +288,10 @@ function Play() {
                   className="inputfield"
                   type="text"
                   value={guess}
-                  onChange={(e) => setGuess(e.target.value)}
+                  onChange={(e) => {
+                    setGuess(e.target.value);
+                    setFeedback("");
+                  }}
                   placeholder={feedback !== "" ? feedback : "enter here"}
                   autoFocus
                   maxLength={12}
@@ -355,4 +357,5 @@ function Play() {
     </div>
   );
 }
+
 export default Play;

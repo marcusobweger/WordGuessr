@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import fire from "../icons/fire.png";
 import CountUp from "react-countup";
 import time from "../icons/time.png";
@@ -39,6 +39,8 @@ const Summary = ({
         return highScore10;
       case 15:
         return highScore15;
+      default:
+        return null;
     }
   }
   const iconMap = {
