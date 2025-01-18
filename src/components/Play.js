@@ -32,15 +32,14 @@ function Play() {
 
   const inputRef = useRef(null);
   const progressBarRef = useRef(null);
-  const { words, translation, wordCount, gamemode, sourceLang, targetLang } =
-    location.state || {
-      words: null,
-      translation: null,
-      wordCount: null,
-      gamemode: null,
-      sourceLang: null,
-      targetLang: null,
-    };
+  const { words, translation, wordCount, gamemode, sourceLang, targetLang } = location.state || {
+    words: null,
+    translation: null,
+    wordCount: null,
+    gamemode: null,
+    sourceLang: null,
+    targetLang: null,
+  };
   useEffect(() => {
     setGuesses(Array(wordCount).fill("no guess"));
     setScores(Array(wordCount).fill(0));
@@ -143,20 +142,14 @@ function Play() {
         feedbackTimeout();
         if (progressBarRef.current) {
           let timeLeft = progressBarRef.current.getTimeLeft();
-          saveScoreAtIndex(
-            (timeLeft / 100).toFixed(0) * 90 + 1000,
-            currentIndex
-          );
+          saveScoreAtIndex((timeLeft / 100).toFixed(0) * 90 + 1000, currentIndex);
           saveTimeAtIndex(((10000 - timeLeft) / 100).toFixed(0), currentIndex);
         }
         setGuess("");
         setCloseGuessCounter(0);
         saveGuessAtIndex(guess, currentIndex);
 
-        if (
-          currentIndex < retryTranslation.length - 1 ||
-          currentIndex < translation.length - 1
-        ) {
+        if (currentIndex < retryTranslation.length - 1 || currentIndex < translation.length - 1) {
           setCurrentIndex(currentIndex + 1);
         } else {
           setFinished(true);
@@ -184,10 +177,7 @@ function Play() {
         if (closeGuessCounter === 0 && progressBarRef.current) {
           saveGuessAtIndex(guess, currentIndex);
           let timeLeft = progressBarRef.current.getTimeLeft();
-          saveScoreAtIndex(
-            ((timeLeft / 100).toFixed(0) * 90 + 1000) / 2,
-            currentIndex
-          );
+          saveScoreAtIndex(((timeLeft / 100).toFixed(0) * 90 + 1000) / 2, currentIndex);
           saveTimeAtIndex(((10000 - timeLeft) / 100).toFixed(0), currentIndex);
           setCloseGuessCounter(closeGuessCounter + 1);
         }
@@ -205,10 +195,7 @@ function Play() {
   };
 
   const handleSkip = () => {
-    if (
-      currentIndex < retryTranslation.length - 1 ||
-      currentIndex < translation.length - 1
-    ) {
+    if (currentIndex < retryTranslation.length - 1 || currentIndex < translation.length - 1) {
       setCurrentIndex(currentIndex + 1);
       setGuess("");
       setFeedback("");
@@ -237,13 +224,7 @@ function Play() {
     let translationFetched = [];
     try {
       wordsFetched = await fetchRandomWords(wordCount);
-      setRetryWords(wordsFetched);
-      translationFetched = await fetchTranslation(
-        wordsFetched,
-        sourceLang,
-        targetLang
-      );
-      setRetryTranslation(translationFetched);
+      translationFetched = await fetchTranslation(wordsFetched, sourceLang, targetLang);
     } catch (error) {
       console.error("Error during the play process:", error);
     } finally {
@@ -251,6 +232,8 @@ function Play() {
         setCurrentIndex(0);
         setRetryLoading(false);
         setFinished(false);
+        setRetryTranslation(translationFetched);
+        setRetryWords(wordsFetched);
       } else {
         console.error("Failed to fetch data for play.");
       }
@@ -277,9 +260,7 @@ function Play() {
               </div>
             </div>
             <div className="row">
-              <div className="translation">
-                {retryTranslation[currentIndex]}
-              </div>
+              <div className="translation">{retryTranslation[currentIndex]}</div>
             </div>
             <div className="row">
               <form onSubmit={handleGuessSubmit}>
@@ -312,36 +293,33 @@ function Play() {
         </>
       ) : (
         <>
-          {!retryLoading && (
-            <div className="container page">
-              <Summary
-                highScore3={highScore3}
-                highScore5={highScore5}
-                highScore10={highScore10}
-                highScore15={highScore15}
-                score={score}
-                wordCount={wordCount}
-                isNewPb={isNewPb}
-                words={words}
-                retryWords={retryWords}
-                translation={translation}
-                retryTranslation={retryTranslation}
-                guesses={guesses}
-                scores={scores}
-                times={times}
-                sourceLang={sourceLang}
-                targetLang={targetLang}
-              />
-            </div>
-          )}
+          <div className="container page">
+            <Summary
+              highScore3={highScore3}
+              highScore5={highScore5}
+              highScore10={highScore10}
+              highScore15={highScore15}
+              score={score}
+              wordCount={wordCount}
+              isNewPb={isNewPb}
+              words={words}
+              retryWords={retryWords}
+              translation={translation}
+              retryTranslation={retryTranslation}
+              guesses={guesses}
+              scores={scores}
+              times={times}
+              sourceLang={sourceLang}
+              targetLang={targetLang}
+            />
+          </div>
+
           <div className="container">
             <div className="row d-flex flex-nowrap justify-content-between gap-3">
               <button className="homeButton col-lg-3 col" onClick={handleHome}>
                 <img className="home" src={home} alt="home"></img>
               </button>
-              <button
-                className="retryButton col-lg-3 col"
-                onClick={handleRetry}>
+              <button className="retryButton col-lg-3 col" onClick={handleRetry}>
                 {retryLoading ? (
                   <div className="spinner-border text-light" role="status">
                     <span className="visually-hidden">Loading...</span>

@@ -1,0 +1,67 @@
+.navbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  position: sticky;
+  padding-left: 30px;
+  padding-right: 30px;
+  padding-bottom: 0;
+  padding-top: 0;
+  margin: 0;
+  top: 0;
+  background: repeating-linear-gradient(90deg, rgb(30, 17, 37), rgb(49, 23, 73));
+  /*
+  background: blueviolet;
+  margin-bottom: 14px;
+  */
+  z-index: 1000;
+  flex-wrap: nowrap;
+  gap: 10px;
+}
+
+.logo {
+  width: clamp(60px, 10vw, 90px);
+  height: auto;
+  padding: 0;
+  margin: 0;
+}
+
+.title {
+  font-size: clamp(30px, 10vw, 80px);
+  font-family: Roboto, Arial, sans-serif;
+  font-weight: 500;
+  color: white;
+  margin: 0;
+  padding: 0;
+  text-decoration: none;
+}
+
+.leftSection {
+  display: flex;
+  align-items: center;
+}
+.logoLink {
+  display: flex;
+  align-items: center;
+  text-decoration: none;
+}
+
+.rightSection {
+  display: flex;
+  align-items: center;
+}
+.loginButton {
+  height: clamp(50px, 5vw, 60px);
+  font-size: clamp(20px, 5vw, 30px);
+  padding-left: 20px;
+  padding-right: 20px;
+  border-color: blueviolet;
+  border-style: solid;
+  border-width: 3px;
+  background-color: transparent;
+}
+.loginButton.hover {
+  background-color: blueviolet;
+}
+.profileIcon {
+}

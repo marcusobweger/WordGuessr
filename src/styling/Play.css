@@ -140,3 +140,6 @@
   align-items: center;
   margin-bottom: 6px;
 }
+.retryLoadingButton {
+  background-color: transparent !important;
+}
