@@ -2,11 +2,11 @@
   display: flex;
   justify-content: center;
   align-items: center;
-  background-color: rgb(43, 226, 83);
+  background-color: var(--green);
   height: 80px;
 }
 .skipButton:hover:not(.clicked, :disabled) {
-  background-color: rgb(43, 226, 83);
+  background-color: var(--green);
 }
 
 .homeButton {
@@ -33,24 +33,20 @@
 }
 
 .page {
-  font-family: Roboto, Arial, sans-serif;
   font-size: 100px;
-  color: white;
-  background-color: blueviolet;
-  font-weight: 500;
+  color: var(--text-color);
+  background-color: var(--light-purple);
   border-radius: 15px;
   border-style: solid;
   border-color: transparent;
-  align-items: center; /* Align logo and title vertically */
+  align-items: center;
   justify-content: center;
-  text-align: center;
   margin-bottom: 14px;
 }
 .translation {
   display: flex;
   justify-content: center;
   align-items: center;
-  text-align: center;
   width: 100%;
   font-size: clamp(40px, 5vw, 100px);
 }
@@ -60,9 +56,9 @@
   height: 140px;
   border-radius: 15px;
   border-style: solid;
-  border-color: white;
+  border-color: var(--text-color);
   border-width: 4px;
-  color: white;
+  color: var(--text-color);
   background-color: transparent;
   text-align: center;
   transition: transform 0.08s ease;
@@ -76,7 +72,7 @@
 }
 
 ::placeholder {
-  color: rgb(179, 179, 179);
+  color: var(--grey);
   font-size: clamp(40px, 5vw, 100px);
 }
 .progressNumber {
@@ -94,11 +90,11 @@
   height: clamp(40px, 5vw, 60px);
 }
 .score {
-  font-size: clamp(40px, 5vw, 60px) !important;
+  font-size: clamp(40px, 5vw, 60px);
 }
 
 .wordCard {
-  background-color: rgb(77, 38, 114);
+  background-color: var(--middle-purple);
   border-radius: 15px;
   min-width: 32%;
 }
@@ -139,7 +135,4 @@
   justify-content: center;
   align-items: center;
   margin-bottom: 6px;
-}
-.retryLoadingButton {
-  background-color: transparent !important;
 }

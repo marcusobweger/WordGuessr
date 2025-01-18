@@ -130,6 +130,9 @@ function Play() {
     }, 2000);
     return () => clearTimeout;
   }
+  useEffect(() => {
+    if (feedback !== "") feedbackTimeout();
+  }, [feedback]);
 
   const handleGuessSubmit = (e) => {
     e.preventDefault();
@@ -139,7 +142,7 @@ function Play() {
         guess.trim().toLowerCase() === words[currentIndex].toLowerCase()
       ) {
         setFeedback("correct!");
-        feedbackTimeout();
+
         if (progressBarRef.current) {
           let timeLeft = progressBarRef.current.getTimeLeft();
           saveScoreAtIndex((timeLeft / 100).toFixed(0) * 90 + 1000, currentIndex);
@@ -172,7 +175,6 @@ function Play() {
           )
       ) {
         setFeedback("close!");
-        feedbackTimeout();
 
         if (closeGuessCounter === 0 && progressBarRef.current) {
           saveGuessAtIndex(guess, currentIndex);
@@ -185,7 +187,6 @@ function Play() {
         setGuess("");
       } else {
         setFeedback("incorrect!");
-        feedbackTimeout();
         if (closeGuessCounter === 0) {
           saveGuessAtIndex(guess, currentIndex);
         }

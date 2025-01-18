@@ -1,10 +1,8 @@
 button {
   transform: scale(1);
-  background-color: blueviolet;
-  color: white;
-  font-family: Roboto, Arial, sans-serif;
+  background-color: var(--light-purple);
+  color: var(--text-color);
   font-size: 20px;
-  font-weight: 500;
   border-radius: 15px;
   border-style: hidden;
   height: 110px;
@@ -16,11 +14,11 @@ button:active:not(:disabled) {
 }
 
 button.clicked {
-  background-color: rgb(43, 226, 83);
+  background-color: var(--green);
 }
 button:disabled {
   cursor: not-allowed;
 }
 button:hover:not(.clicked, :disabled) {
-  background-color: rgb(77, 38, 114);
+  background-color: var(--middle-purple);
 }

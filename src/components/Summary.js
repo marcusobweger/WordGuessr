@@ -39,7 +39,7 @@ const Summary = ({
   return (
     <div className="container">
       <div className="row">
-        <div className="title score col-12 col-sm-12 col-lg-6">
+        <div className="score col-12 col-sm-12 col-lg-6">
           Score:
           {score !== 0 ? (
             <>
@@ -50,7 +50,7 @@ const Summary = ({
           )}
           {isNewPb && <img src={fire} className="fire" alt="new highScore"></img>}
         </div>
-        <div className="title score col-12 col-sm-12 col-lg-6">
+        <div className="score col-12 col-sm-12 col-lg-6">
           {isNewPb ? (
             <>
               Best:

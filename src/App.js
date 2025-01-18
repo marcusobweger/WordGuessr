@@ -6,6 +6,7 @@ import About from "./components/About";
 import Summary from "./components/Summary";
 import Login from "./components/Login";
 import Profile from "./components/Profile";
+import LeaderBoard from "./components/LeaderBoard";
 import "../src/styling/App.css";
 import NavBar from "./components/NavBar";
 export const AppContext = createContext();
@@ -22,6 +23,7 @@ function App() {
           <Route path="/about" element={<About />} />
           <Route path="/login" element={<Login />} />
           <Route path="/profile" element={<Profile />} />
+          <Route path="/leaderboard" element={<LeaderBoard />} />
           {/*not found*/}
           <Route path="*" element={<Navigate to="/" replace />} />
         </Routes>
