@@ -67,6 +67,11 @@
 .inputfield:focus {
   outline: transparent;
 }
+@media (max-width: 992px) {
+  .inputfield {
+    width: 100%;
+  }
+}
 .inputfield:active {
   transform: scale(0.98);
 }

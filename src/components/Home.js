@@ -62,11 +62,7 @@ function Home() {
     try {
       wordsFetched = await fetchRandomWords(wordCount);
       setWords(wordsFetched);
-      translationFetched = await fetchTranslation(
-        wordsFetched,
-        sourceLang,
-        targetLang
-      );
+      translationFetched = await fetchTranslation(wordsFetched, sourceLang, targetLang);
       setTranslation(translationFetched);
     } catch (error) {
       console.error("Error during the play process:", error);
@@ -93,9 +89,7 @@ function Home() {
     return Array.from({ length: targetLanguages.length }, (_, index) => (
       <button
         key={index}
-        className={`col language ${
-          targetLang === targetLanguages[index] ? "clicked" : ""
-        }`}
+        className={`col language ${targetLang === targetLanguages[index] ? "clicked" : ""}`}
         disabled={isLoading}
         onClick={() => setTargetLang(targetLanguages[index])}>
         <img
@@ -109,9 +103,7 @@ function Home() {
     return Array.from({ length: wordCounts.length }, (_, index) => (
       <button
         key={index}
-        className={`col wordCount ${
-          wordCount === wordCounts[index] ? "clicked" : ""
-        }`}
+        className={`col wordCount ${wordCount === wordCounts[index] ? "clicked" : ""}`}
         disabled={isLoading}
         onClick={() => setWordCount(wordCounts[index])}>
         {wordCounts[index]}

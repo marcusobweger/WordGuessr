@@ -32,6 +32,8 @@ function Play() {
 
   const inputRef = useRef(null);
   const progressBarRef = useRef(null);
+  const feedbackTimeoutRef = useRef(null);
+
   const { words, translation, wordCount, gamemode, sourceLang, targetLang } = location.state || {
     words: null,
     translation: null,
@@ -123,15 +125,22 @@ function Play() {
       return updatedTimes;
     });
   };
-
-  function feedbackTimeout() {
-    setTimeout(() => {
-      setFeedback("");
-    }, 2000);
-    return () => clearTimeout;
-  }
   useEffect(() => {
-    if (feedback !== "") feedbackTimeout();
+    if (feedback !== "") {
+      if (feedbackTimeoutRef.current) {
+        clearTimeout(feedbackTimeoutRef.current);
+      }
+      feedbackTimeoutRef.current = setTimeout(() => {
+        setFeedback("");
+        feedbackTimeoutRef.current = null;
+      }, 2000);
+    }
+    return () => {
+      if (feedbackTimeoutRef.current) {
+        clearTimeout(feedbackTimeoutRef.current);
+        feedbackTimeoutRef.current = null;
+      }
+    };
   }, [feedback]);
 
   const handleGuessSubmit = (e) => {
@@ -199,7 +208,7 @@ function Play() {
     if (currentIndex < retryTranslation.length - 1 || currentIndex < translation.length - 1) {
       setCurrentIndex(currentIndex + 1);
       setGuess("");
-      setFeedback("");
+      setFeedback("skipped!");
       setCloseGuessCounter(0);
     } else {
       setFinished(true);
@@ -272,11 +281,10 @@ function Play() {
                   value={guess}
                   onChange={(e) => {
                     setGuess(e.target.value);
-                    setFeedback("");
                   }}
                   placeholder={feedback !== "" ? feedback : "enter here"}
                   autoFocus
-                  maxLength={12}
+                  maxLength={15}
                 />
               </form>
             </div>

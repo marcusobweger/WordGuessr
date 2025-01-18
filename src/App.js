@@ -12,6 +12,7 @@ import NavBar from "./components/NavBar";
 export const AppContext = createContext();
 function App() {
   const [homeState, setHomeState] = useState(null);
+
   return (
     <AppContext.Provider value={{ homeState, setHomeState }}>
       <Router>

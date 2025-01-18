@@ -1,10 +1,18 @@
 export const fetchRandomWords = async (wordCount) => {
+  const API1 = `https://random-word-api.herokuapp.com/word?number=${wordCount}`;
+  const API2 = `https://random-word-api.vercel.app/api?words=${wordCount}`;
+
+  function randomApi() {
+    const number = Math.round(Math.random());
+    if (number === 0) {
+      return API1;
+    } else {
+      return API2;
+    }
+  }
+
   try {
-    const response = await fetch(
-      `https://random-word-api.herokuapp.com/word?length=${
-        Math.floor(Math.random() * 6) + 4
-      }&number=${wordCount}`
-    );
+    const response = await fetch(randomApi());
     if (!response.ok) {
       throw new Error("Network response was not ok");
     }
@@ -15,11 +23,7 @@ export const fetchRandomWords = async (wordCount) => {
     return [];
   }
 };
-export const fetchTranslation = async (
-  wordsFetched,
-  sourceLang,
-  targetLang
-) => {
+export const fetchTranslation = async (wordsFetched, sourceLang, targetLang) => {
   const baseUrl = "https://lingva.ml/api/v1";
   const endpoint = `${baseUrl}/${sourceLang}/${targetLang}/${wordsFetched}`;
   try {
