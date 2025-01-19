@@ -26,7 +26,7 @@
 }
 
 .title {
-  font-size: clamp(30px, 10vw, 80px);
+  font-size: clamp(30px, 10vw, 60px);
   color: var(--text-color);
   margin: 0;
   padding: 0;
@@ -34,6 +34,9 @@
 }
 @media (max-width: 1200px) {
   .title {
+    display: none;
+  }
+  .about {
     display: none;
   }
 }
@@ -58,7 +61,10 @@
 .user {
   height: clamp(35px, 5vw, 50px);
   width: auto;
-  padding-left: 2vw;
+}
+.crown {
+  height: clamp(35px, 5vw, 50px);
+  width: auto;
 }
 .rightNavButtons {
   height: clamp(50px, 5vw, 60px);
@@ -66,4 +72,12 @@
   padding-left: 2vw;
   padding-right: 2vw;
   background-color: transparent;
+}
+.codeButton {
+  border-style: solid;
+  border-color: var(--light-purple);
+  border-width: 2px;
+}
+.codeButton:hover {
+  background-color: var(--light-purple) !important;
 }

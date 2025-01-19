@@ -11,7 +11,7 @@ import { AppContext } from "../App";
 import { fetchRandomWords, fetchTranslation } from "./utils";
 
 function Home() {
-  const { homeState, setHomeState } = useContext(AppContext);
+  const { setHomeState } = useContext(AppContext);
   const [gamemode, setGamemode] = useState(0);
   const [sourceLang, setSourceLang] = useState("en");
   const [targetLang, setTargetLang] = useState("ja");
@@ -89,7 +89,7 @@ function Home() {
     return Array.from({ length: targetLanguages.length }, (_, index) => (
       <button
         key={index}
-        className={`col language ${targetLang === targetLanguages[index] ? "clicked" : ""}`}
+        className={`col ${targetLang === targetLanguages[index] ? "clicked" : ""}`}
         disabled={isLoading}
         onClick={() => setTargetLang(targetLanguages[index])}>
         <img
@@ -103,46 +103,75 @@ function Home() {
     return Array.from({ length: wordCounts.length }, (_, index) => (
       <button
         key={index}
-        className={`col wordCount ${wordCount === wordCounts[index] ? "clicked" : ""}`}
+        className={`col ${wordCount === wordCounts[index] ? "clicked" : ""}`}
         disabled={isLoading}
         onClick={() => setWordCount(wordCounts[index])}>
         {wordCounts[index]}
       </button>
     ));
   };
-
-  return (
-    <div className="container">
-      <div className="container">
-        <div className="row buttonGaps">
-          <button
-            className={`col gamemode ${gamemode === 0 ? "clicked" : ""}`}
-            onClick={() => setGamemode(0)}
-            disabled={isLoading}>
-            Solo
-          </button>
-          <button
-            className={`col gamemode ${gamemode === 1 ? "clicked" : ""}`}
-            onClick={() => setGamemode(1)}
-            disabled>
-            Online
-          </button>
-        </div>
+  const Settings = () => {
+    return (
+      <>
         <div className="row buttonGaps">
           <LanguageButtons />
         </div>
         <div className="row buttonGaps">
           <WordCountButtons />
         </div>
-        <div className="play row buttonGaps justify-content-md-center">
+      </>
+    );
+  };
+  const Gamemode = () => {
+    return (
+      <>
+        <div className="row buttonGaps">
+          <button
+            className={`col ${gamemode === 0 ? "clicked" : ""}`}
+            onClick={() => setGamemode(0)}
+            disabled={isLoading}>
+            Solo
+          </button>
+          <button
+            className={`col ${gamemode === 1 ? "clicked" : ""}`}
+            onClick={() => setGamemode(1)}
+            disabled={isLoading}>
+            Online
+          </button>
+          <button
+            className={`col-12 col-sm ${gamemode === 2 ? "clicked" : ""}`}
+            onClick={() => setGamemode(2)}
+            disabled={isLoading}>
+            Private
+          </button>
+        </div>
+      </>
+    );
+  };
+  const PlayButtonContent = () => {
+    if (isLoading) {
+      return (
+        <div className="spinner-border text-light" role="status">
+          <span className="visually-hidden">Loading...</span>
+        </div>
+      );
+    } else if (gamemode === 1) {
+      return "Join Queue";
+    } else if (gamemode === 2) {
+      return "Create Lobby";
+    } else if (gamemode === 0) {
+      return "Play";
+    }
+  };
+
+  return (
+    <div className="container">
+      <div className="container">
+        <Gamemode />
+        <Settings />
+        <div className="play row buttonGaps">
           <button className="col" onClick={handlePlay} disabled={isLoading}>
-            {isLoading ? (
-              <div className="spinner-border text-light" role="status">
-                <span className="visually-hidden">Loading...</span>
-              </div>
-            ) : (
-              "Play"
-            )}
+            <PlayButtonContent />
           </button>
         </div>
       </div>

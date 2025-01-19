@@ -4,7 +4,7 @@
   --light-purple: blueviolet;
   --dark-purple: rgb(30, 17, 37);
   --middle-purple: rgb(77, 38, 114);
-  --bg-fade: repeating-linear-gradient(90deg, rgb(82, 47, 101), rgb(49, 23, 73));
+  --bg-fade: repeating-linear-gradient(90deg, rgb(49, 23, 73), rgb(56, 32, 69));
   --text-color: white;
   --grey: rgb(179, 179, 179);
 }

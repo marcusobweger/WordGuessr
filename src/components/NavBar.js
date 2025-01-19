@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import logo from "../icons/wordguessr_logo1.png";
 import user from "../icons/user.png";
+import crown from "../icons/crown.png";
 import "../styling/NavBar.css";
 
 const NavBar = () => {
@@ -18,8 +19,11 @@ const NavBar = () => {
         </Link>
       </div>
       <div className="rightSection">
+        <Link to="/play" className="link">
+          <button className="rightNavButtons">Enter Code</button>
+        </Link>
         <Link to="/leaderboard" className="link">
-          <button className="rightNavButtons">Leaderboard</button>
+          <img src={crown} alt="Leaderboard" className="crown" />
         </Link>
         <Link to="/about" className="link">
           <button className="rightNavButtons">About</button>

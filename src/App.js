@@ -14,7 +14,7 @@ function App() {
   const [homeState, setHomeState] = useState(null);
 
   return (
-    <AppContext.Provider value={{ homeState, setHomeState }}>
+    <AppContext.Provider value={{ setHomeState }}>
       <Router>
         <NavBar />
         <Routes>
