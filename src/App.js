@@ -11,7 +11,7 @@ import "../src/styling/App.css";
 import NavBar from "./components/NavBar";
 export const AppContext = createContext();
 function App() {
-  const [homeState, setHomeState] = useState(null);
+  const [homeState, setHomeState] = useState(false);
 
   return (
     <AppContext.Provider value={{ setHomeState }}>

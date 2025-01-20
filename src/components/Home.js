@@ -16,9 +16,6 @@ function Home() {
   const [sourceLang, setSourceLang] = useState("en");
   const [targetLang, setTargetLang] = useState("ja");
   const [wordCount, setWordCount] = useState(3);
-
-  const [words, setWords] = useState([]);
-  const [translation, setTranslation] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
 
   const targetLanguages = ["ja", "ko", "de", "it", "fr", "es"];
@@ -54,16 +51,13 @@ function Home() {
     localStorage.setItem("targetLang", targetLang);
     localStorage.setItem("wordCount", wordCount);
   };
-
   const handlePlay = async () => {
     setIsLoading(true);
     let wordsFetched = [];
     let translationFetched = [];
     try {
       wordsFetched = await fetchRandomWords(wordCount);
-      setWords(wordsFetched);
       translationFetched = await fetchTranslation(wordsFetched, sourceLang, targetLang);
-      setTranslation(translationFetched);
     } catch (error) {
       console.error("Error during the play process:", error);
     } finally {
@@ -149,18 +143,20 @@ function Home() {
     );
   };
   const PlayButtonContent = () => {
-    if (isLoading) {
+    if (!isLoading) {
+      if (gamemode === 1) {
+        return "Join Queue";
+      } else if (gamemode === 2) {
+        return "Create Lobby";
+      } else if (gamemode === 0) {
+        return "Play";
+      }
+    } else {
       return (
         <div className="spinner-border text-light" role="status">
           <span className="visually-hidden">Loading...</span>
         </div>
       );
-    } else if (gamemode === 1) {
-      return "Join Queue";
-    } else if (gamemode === 2) {
-      return "Create Lobby";
-    } else if (gamemode === 0) {
-      return "Play";
     }
   };
 
