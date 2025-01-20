@@ -4,7 +4,7 @@ import "../styling/Play.css";
 import home from "../icons/home.png";
 import share from "../icons/share.png";
 import retry from "../icons/reload.png";
-import { fetchRandomWords, fetchTranslation } from "./utils";
+import { fetchRandomWords, fetchTranslation } from "../utils/utils";
 import ProgressBar from "./ProgressBar";
 import Summary from "./Summary";
 

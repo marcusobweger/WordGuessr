@@ -1,0 +1,57 @@
+.page {
+  font-size: clamp(40px, 5vw, 60px);
+}
+.login-text {
+  margin: 14px;
+}
+
+.inputfield {
+  font-size: clamp(30px, 5vw, 40px);
+  height: 100px;
+  width: 100%;
+}
+::placeholder {
+  color: var(--grey);
+  font-size: clamp(30px, 5vw, 40px);
+}
+.submit-button {
+  background-color: transparent !important;
+  height: 100px !important;
+}
+.submit-button:hover {
+  background-color: transparent !important;
+}
+.submit-button:active {
+  color: var(--grey);
+}
+.sign-in-buttons {
+  height: 80px !important;
+  background-color: var(--text-color) !important;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  transition: ease 0.2s;
+}
+.sign-in-buttons:hover {
+  rotate: 3deg;
+  transform: scale(1.1);
+}
+.sign-in-button-row {
+  display: flex;
+  justify-content: space-between;
+  margin-right: 0px;
+  margin-left: 0px;
+}
+
+.sign-in-icons {
+  width: 50px;
+  height: auto;
+}
+.or-text {
+  font-size: 25px;
+  color: var(--grey);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-bottom: 14px;
+}

@@ -8,7 +8,7 @@ import fr from "../icons/france.png";
 import es from "../icons/spain.png";
 import "../styling/Home.css";
 import { AppContext } from "../App";
-import { fetchRandomWords, fetchTranslation } from "./utils";
+import { fetchRandomWords, fetchTranslation } from "../utils/utils";
 
 function Home() {
   const { setHomeState } = useContext(AppContext);

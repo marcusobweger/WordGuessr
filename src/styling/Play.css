@@ -64,6 +64,9 @@
   transition: transform 0.08s ease;
   margin-bottom: 14px;
 }
+.passwordField {
+  margin-bottom: 0 !important;
+}
 .inputfield:focus {
   outline: transparent;
 }
