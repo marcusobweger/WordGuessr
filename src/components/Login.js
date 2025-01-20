@@ -9,7 +9,7 @@ const Login = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   return (
-    <div className="container col-4">
+    <div className="container col-md-6 col-xl-4">
       <div className="container page">
         <div className="row">
           <div className="col login-text">Welcome!</div>
