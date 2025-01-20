@@ -5,14 +5,14 @@
   margin: 14px;
 }
 
-.inputfield {
-  font-size: clamp(30px, 5vw, 40px);
+.login-inputfield {
+  font-size: clamp(20px, 5vw, 30px);
   height: 100px;
   width: 100%;
 }
-::placeholder {
+.login-inputfield::placeholder {
   color: var(--grey);
-  font-size: clamp(30px, 5vw, 40px);
+  font-size: clamp(20px, 5vw, 30px);
 }
 .submit-button {
   background-color: transparent !important;

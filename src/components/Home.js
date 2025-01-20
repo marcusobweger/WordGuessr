@@ -9,6 +9,8 @@ import es from "../icons/spain.png";
 import "../styling/Home.css";
 import { AppContext } from "../App";
 import { fetchRandomWords, fetchTranslation } from "../utils/utils";
+import { collection, doc, addDoc } from "firebase/firestore";
+import db from "../utils/firebase";
 
 function Home() {
   const { setHomeState } = useContext(AppContext);
@@ -51,6 +53,22 @@ function Home() {
     localStorage.setItem("targetLang", targetLang);
     localStorage.setItem("wordCount", wordCount);
   };
+  const addLobby = async (words, translation) => {
+    try {
+      const docRef = await addDoc(collection(db, "lobbies"), {
+        players: [],
+        gamemode: gamemode,
+        sourceLang: sourceLang,
+        targetLang: targetLang,
+        wordCount: wordCount,
+        words: words,
+        translation: translation,
+      });
+      console.log("Document written with ID: ", docRef.id);
+    } catch (e) {
+      console.error("Error adding document: ", e);
+    }
+  };
   const handlePlay = async () => {
     setIsLoading(true);
     let wordsFetched = [];
@@ -63,7 +81,9 @@ function Home() {
     } finally {
       if (wordsFetched.length > 0 && translationFetched.length > 0) {
         savePreferences();
-
+        if (gamemode === 1) {
+          addLobby(wordsFetched, translationFetched);
+        }
         navigate("/play", {
           state: {
             gamemode: gamemode,

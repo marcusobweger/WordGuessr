@@ -29,7 +29,7 @@ const Login = () => {
         <div className="row">
           <form onSubmit={console.log("submitted")} className="col">
             <input
-              className="inputfield"
+              className="inputfield login-inputfield"
               type="text"
               value={email}
               onChange={(e) => {
@@ -37,17 +37,17 @@ const Login = () => {
               }}
               placeholder="Email"
               autoFocus
-              maxLength={25}
+              maxLength={35}
             />
             <input
-              className="inputfield passwordField"
+              className="inputfield login-inputfield passwordField"
               type="text"
               value={password}
               onChange={(e) => {
                 setPassword(e.target.value);
               }}
               placeholder="Password"
-              maxLength={20}
+              maxLength={25}
             />
           </form>
         </div>

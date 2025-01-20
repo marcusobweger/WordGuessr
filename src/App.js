@@ -9,13 +9,10 @@ import Profile from "./components/Profile";
 import LeaderBoard from "./components/LeaderBoard";
 import "../src/styling/App.css";
 import NavBar from "./components/NavBar";
-import { initializeApp } from "firebase/app";
-import { firebaseConfig } from "./utils/firebaseConfig";
 export const AppContext = createContext();
 function App() {
   const [homeState, setHomeState] = useState(false);
 
-  const app = initializeApp(firebaseConfig);
   return (
     <AppContext.Provider value={{ setHomeState }}>
       <Router>
