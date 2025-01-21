@@ -1,4 +1,4 @@
-import React, { useState, createContext } from "react";
+import React, { useState, createContext, useEffect } from "react";
 import { BrowserRouter as Router, Routes, Route, Navigate } from "react-router-dom";
 import Home from "./components/Home";
 import Play from "./components/Play";
@@ -9,9 +9,25 @@ import Profile from "./components/Profile";
 import LeaderBoard from "./components/LeaderBoard";
 import "../src/styling/App.css";
 import NavBar from "./components/NavBar";
+import { getAuth, signInAnonymously } from "firebase/auth";
+
 export const AppContext = createContext();
 function App() {
+  const auth = getAuth();
   const [homeState, setHomeState] = useState(false);
+
+  useEffect(() => {
+    signInAnonymously(auth)
+      .then(() => {
+        console.log("user signed in");
+        localStorage.setItem("isUser", true);
+      })
+      .catch((error) => {
+        const errorCode = error.code;
+        const errorMessage = error.message;
+        console.log(errorCode, errorMessage);
+      });
+  }, []);
 
   return (
     <AppContext.Provider value={{ setHomeState }}>
