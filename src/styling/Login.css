@@ -7,16 +7,21 @@
 
 .login-inputfield {
   font-size: clamp(20px, 5vw, 30px);
-  height: 100px;
+  height: 80px;
   width: 100%;
+  margin: 0;
+  margin-bottom: 14px;
 }
 .login-inputfield::placeholder {
   color: var(--grey);
   font-size: clamp(20px, 5vw, 30px);
 }
 .submit-button {
+  font-size: clamp(20px, 5vw, 30px);
   background-color: transparent !important;
-  height: 100px !important;
+  height: 60px;
+  display: flex;
+  justify-self: center;
 }
 .submit-button:hover {
   background-color: transparent !important;
@@ -54,4 +59,13 @@
   justify-content: center;
   align-items: center;
   margin-bottom: 14px;
+}
+.guest-button {
+  font-size: clamp(20px, 5vw, 30px);
+  height: 80px !important;
+  margin: 14px;
+  background-color: var(--green);
+}
+.guest-button:hover:not(.clicked, :disabled) {
+  background-color: var(--green);
 }

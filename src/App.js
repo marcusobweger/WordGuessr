@@ -7,28 +7,13 @@ import Summary from "./components/Summary";
 import Login from "./components/Login";
 import Profile from "./components/Profile";
 import LeaderBoard from "./components/LeaderBoard";
-import "../src/styling/App.css";
 import NavBar from "./components/NavBar";
-import { getAuth, signInAnonymously } from "firebase/auth";
+import EnterCode from "./components/EnterCode";
+import "../src/styling/App.css";
 
 export const AppContext = createContext();
 function App() {
-  const auth = getAuth();
   const [homeState, setHomeState] = useState(false);
-
-  useEffect(() => {
-    signInAnonymously(auth)
-      .then(() => {
-        console.log("user signed in");
-        localStorage.setItem("isUser", true);
-      })
-      .catch((error) => {
-        const errorCode = error.code;
-        const errorMessage = error.message;
-        console.log(errorCode, errorMessage);
-      });
-  }, []);
-
   return (
     <AppContext.Provider value={{ setHomeState }}>
       <Router>
@@ -41,6 +26,7 @@ function App() {
           <Route path="/login" element={<Login />} />
           <Route path="/profile" element={<Profile />} />
           <Route path="/leaderboard" element={<LeaderBoard />} />
+          <Route path="/enter-code" element={<EnterCode />} />
           {/*not found*/}
           <Route path="*" element={<Navigate to="/" replace />} />
         </Routes>

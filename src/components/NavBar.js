@@ -19,7 +19,7 @@ const NavBar = () => {
         </Link>
       </div>
       <div className="rightSection">
-        <Link to="/play" className="link">
+        <Link to="/enter-code" className="link">
           <button className="rightNavButtons">Enter Code</button>
         </Link>
         <Link to="/leaderboard" className="link">

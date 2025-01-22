@@ -7,6 +7,8 @@ import retry from "../icons/reload.png";
 import { fetchRandomWords, fetchTranslation } from "../utils/utils";
 import ProgressBar from "./ProgressBar";
 import Summary from "./Summary";
+import { user, db } from "../utils/firebase";
+import { onSnapshot, query, collection, getDocs, doc } from "firebase/firestore";
 
 function Play() {
   const location = useLocation();
@@ -33,7 +35,7 @@ function Play() {
   const inputRef = useRef(null);
   const progressBarRef = useRef(null);
   const feedbackTimeoutRef = useRef(null);
-
+  /*
   const { words, translation, wordCount, gamemode, sourceLang, targetLang } = location.state || {
     words: null,
     translation: null,
@@ -42,7 +44,33 @@ function Play() {
     sourceLang: null,
     targetLang: null,
   };
+  */
+  let words;
+  let translation;
+  let wordCount;
+  let gamemode;
+  let sourceLang;
+  let targetLang;
+  const searchOpenLobby = async () => {
+    const q = query(collection(db, "lobbies").where("players", "arrayContains", user.uid));
+    let currentDoc;
+    let currentDocData;
+    const querySnapshot = await getDocs(q);
+    if (!querySnapshot.empty) {
+      currentDoc = querySnapshot.docs[0];
+      currentDocData = currentDoc.data();
+      console.log(currentDocData.sourceLang);
+      const docRef = doc(db, "lobbies", currentDoc.id);
+      const unsub = onSnapshot(docRef, (doc) => {
+        console.log("Current data: ", doc.data());
+      });
+
+      console.log(currentDocData.players);
+    }
+  };
+
   useEffect(() => {
+    searchOpenLobby();
     setGuesses(Array(wordCount).fill("no guess"));
     setScores(Array(wordCount).fill(0));
     setTimes(Array(wordCount).fill(0));

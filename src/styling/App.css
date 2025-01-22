@@ -2,7 +2,6 @@ button {
   transform: scale(1);
   background-color: var(--light-purple);
   color: var(--text-color);
-  font-size: 20px;
   border-radius: 15px;
   border-style: hidden;
   height: 110px;
