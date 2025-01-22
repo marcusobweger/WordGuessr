@@ -26,7 +26,7 @@ function App() {
           <Route path="/login" element={<Login />} />
           <Route path="/profile" element={<Profile />} />
           <Route path="/leaderboard" element={<LeaderBoard />} />
-          <Route path="/enter-code" element={<EnterCode />} />
+          <Route path="/code" element={<EnterCode />} />
           {/*not found*/}
           <Route path="*" element={<Navigate to="/" replace />} />
         </Routes>

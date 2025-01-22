@@ -1,14 +1,14 @@
 import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import logo from "../icons/wordguessr_logo1.png";
-import user from "../icons/user.png";
+import userImage from "../icons/user.png";
 import crown from "../icons/crown.png";
 import "../styling/NavBar.css";
+import { getAuth, updateProfile } from "firebase/auth";
 
 const NavBar = () => {
-  const navigate = useNavigate();
-
-  const [isUser, setIsUser] = useState(false);
+  const auth = getAuth();
+  const user = auth.currentUser;
 
   return (
     <nav className="navbar">
@@ -19,7 +19,7 @@ const NavBar = () => {
         </Link>
       </div>
       <div className="rightSection">
-        <Link to="/enter-code" className="link">
+        <Link to="/code" className="link">
           <button className="rightNavButtons">Enter Code</button>
         </Link>
         <Link to="/leaderboard" className="link">
@@ -28,8 +28,8 @@ const NavBar = () => {
         <Link to="/about" className="link">
           <button className="rightNavButtons">About</button>
         </Link>
-        <Link to={`${isUser ? "/profile" : "/login"}`} className="link">
-          <img src={user} alt="Profile" className="user" />
+        <Link to={`${user ? "/profile" : "/login"}`} className="link">
+          <img src={userImage} alt="Profile" className="user" />
         </Link>
       </div>
     </nav>

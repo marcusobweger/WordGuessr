@@ -12,7 +12,8 @@ import { fetchRandomWords, fetchTranslation } from "../utils/utils";
 
 //firebase
 import { collection, addDoc } from "firebase/firestore";
-import { db, auth, user } from "../utils/firebase";
+import { db, auth } from "../utils/firebase";
+import { onAuthStateChanged } from "firebase/auth";
 
 function Home() {
   const { setHomeState } = useContext(AppContext);
@@ -36,7 +37,18 @@ function Home() {
     if (savedTargetLang) setTargetLang(savedTargetLang);
     const savedWordCount = localStorage.getItem("wordCount");
     if (savedWordCount) setWordCount(parseInt(savedWordCount));
-    console.log(user);
+    onAuthStateChanged(auth, (user) => {
+      if (user) {
+        console.log(user.uid);
+        console.log(user.displayName);
+
+        const uid = user.uid;
+        // ...
+      } else {
+        // User is signed out
+        // ...
+      }
+    });
   }, []);
 
   useEffect(() => {
@@ -61,7 +73,7 @@ function Home() {
   const addLobby = async (words, translation, isOpen) => {
     try {
       const docRef = await addDoc(collection(db, "lobbies"), {
-        players: [user.uid],
+        //players: [user.uid],
         isOpen: isOpen,
         gamemode: gamemode,
         sourceLang: sourceLang,
