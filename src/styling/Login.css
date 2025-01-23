@@ -1,5 +1,5 @@
 .page {
-  font-size: clamp(40px, 5vw, 60px);
+  font-size: clamp(40px, 4vw, 60px);
 }
 .login-text {
   margin: 14px;
@@ -16,12 +16,21 @@
   color: var(--grey);
   font-size: clamp(20px, 5vw, 30px);
 }
+.error {
+  border-color: rgb(237, 49, 49);
+}
+.error::placeholder {
+  color: rgb(237, 49, 49);
+}
+.passwordfield {
+  margin-bottom: 0;
+}
 .submit-button {
-  font-size: clamp(20px, 5vw, 30px);
   background-color: transparent !important;
-  height: 60px;
+  height: 70px;
   display: flex;
   justify-self: center;
+  align-items: center;
 }
 .submit-button:hover {
   background-color: transparent !important;
@@ -69,4 +78,14 @@
 }
 .guest-button:hover:not(.clicked, :disabled) {
   background-color: var(--green);
+}
+.create-button {
+  color: var(--grey);
+  font-size: 25px;
+  display: flex;
+  justify-self: center;
+  align-items: center;
+  margin-bottom: 14px;
+  height: 40px;
+  background-color: transparent !important;
 }

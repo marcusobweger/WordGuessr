@@ -11,6 +11,7 @@ import NavBar from "./components/NavBar";
 import EnterCode from "./components/EnterCode";
 import "../src/styling/App.css";
 import { AuthProvider } from "./utils/authContext";
+import Signup from "./components/Signup";
 
 export const AppContext = createContext();
 function App() {
@@ -26,6 +27,7 @@ function App() {
             <Route path="/summary" element={<Summary />} />
             <Route path="/about" element={<About />} />
             <Route path="/login" element={<Login />} />
+            <Route path="/signup" element={<Signup />} />
             <Route path="/profile" element={<Profile />} />
             <Route path="/leaderboard" element={<LeaderBoard />} />
             <Route path="/code" element={<EnterCode />} />

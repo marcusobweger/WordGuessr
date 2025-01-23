@@ -3,16 +3,16 @@ import "../styling/Login.css";
 import google from "../icons/search.png";
 import github from "../icons/github.png";
 import apple from "../icons/apple-logo.png";
-import { doSignInWithEmailAndPassword, doSignInWithGoogle } from "../utils/authUtils";
+import { doCreateUserWithEmailAndPassword, doSignInWithGoogle } from "../utils/authUtils";
 import { useAuth } from "../utils/authContext";
 import EnterUserName from "./EnterUserName";
 import { useNavigate } from "react-router-dom";
 
-const Login = () => {
+const Signup = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [emailPlaceholder, setEmailPlaceholder] = useState("Email");
-  const [isSigningIn, setIsSigningIn] = useState(false);
+  const [isCreating, setIsCreating] = useState(false);
   const [isError, setIsError] = useState(false);
   const { userLoggedIn } = useAuth();
   const navigate = useNavigate();
@@ -32,36 +32,36 @@ const Login = () => {
     }
   }, [isError]);
 
-  const handleEmailSignIn = async (e) => {
+  const handleEmailCreate = async (e) => {
     e.preventDefault();
-    if (!isSigningIn) {
-      setIsSigningIn(true);
+    if (!isCreating) {
+      setIsCreating(true);
       try {
-        await doSignInWithEmailAndPassword(email, password);
+        await doCreateUserWithEmailAndPassword(email, password);
         setIsError(false);
-        setIsSigningIn(false);
+        setIsCreating(false);
       } catch (error) {
         console.log(error);
         setIsError(true);
-        setIsSigningIn(false);
+        setIsCreating(false);
       }
     }
   };
   const handleGoogleSignIn = async (e) => {
     e.preventDefault();
-    if (!isSigningIn) {
-      setIsSigningIn(true);
+    if (!isCreating) {
+      setIsCreating(true);
       try {
         await doSignInWithGoogle();
-        setIsSigningIn(false);
+        setIsCreating(false);
       } catch (error) {
         console.log(error);
-        setIsSigningIn(false);
+        setIsCreating(false);
       }
     }
   };
-  const handleNavigateSignup = () => {
-    navigate("/signup");
+  const handleNavigateLogin = () => {
+    navigate("/login");
   };
 
   return (
@@ -70,7 +70,7 @@ const Login = () => {
         <div className="container col-md-6 col-xl-4">
           <div className="container page">
             <div className="row">
-              <div className="col login-text">Welcome back!</div>
+              <div className="col login-text">Welcome!</div>
             </div>
             <div className="row buttonGaps sign-in-button-row">
               <button className=" col sign-in-buttons">
@@ -89,7 +89,7 @@ const Login = () => {
             </div>
             <div className="row or-text">or</div>
             <div className="row">
-              <form onSubmit={handleEmailSignIn} className="col">
+              <form onSubmit={handleEmailCreate} className="col">
                 <input
                   className={`${isError ? "error" : ""} inputfield login-inputfield row`}
                   type="text"
@@ -116,8 +116,8 @@ const Login = () => {
                 </button>
               </form>
             </div>
-            <button className="row create-button" onClick={handleNavigateSignup}>
-              Don't have an account?
+            <button className="row create-button" onClick={handleNavigateLogin}>
+              Already have an account?
             </button>
           </div>
         </div>
@@ -127,4 +127,4 @@ const Login = () => {
     </>
   );
 };
-export default Login;
+export default Signup;
