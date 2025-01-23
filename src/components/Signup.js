@@ -73,17 +73,17 @@ const Signup = () => {
               <div className="col login-text">Welcome!</div>
             </div>
             <div className="row buttonGaps sign-in-button-row">
-              <button className=" col sign-in-buttons">
+              <button className="shadow col sign-in-buttons">
                 <img
                   src={google}
                   alt="Sign in with Google"
                   onClick={handleGoogleSignIn}
                   className="sign-in-icons"></img>
               </button>
-              <button className=" col sign-in-buttons">
+              <button className="shadow col sign-in-buttons">
                 <img src={apple} alt="Sign in with Google" className="sign-in-icons"></img>
               </button>
-              <button className=" col sign-in-buttons">
+              <button className="shadow col sign-in-buttons">
                 <img src={github} alt="Sign in with Google" className="sign-in-icons"></img>
               </button>
             </div>

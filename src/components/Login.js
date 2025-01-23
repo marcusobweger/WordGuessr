@@ -73,25 +73,25 @@ const Login = () => {
               <div className="col login-text">Welcome back!</div>
             </div>
             <div className="row buttonGaps sign-in-button-row">
-              <button className=" col sign-in-buttons">
+              <button className="shadow col sign-in-buttons">
                 <img
                   src={google}
                   alt="Sign in with Google"
                   onClick={handleGoogleSignIn}
                   className="sign-in-icons"></img>
               </button>
-              <button className=" col sign-in-buttons">
+              <button className="shadow col sign-in-buttons">
                 <img src={apple} alt="Sign in with Google" className="sign-in-icons"></img>
               </button>
-              <button className=" col sign-in-buttons">
+              <button className="shadow col sign-in-buttons">
                 <img src={github} alt="Sign in with Google" className="sign-in-icons"></img>
               </button>
             </div>
             <div className="row or-text">or</div>
-            <div className="row">
+            <div className="row ">
               <form onSubmit={handleEmailSignIn} className="col">
                 <input
-                  className={`${isError ? "error" : ""} inputfield login-inputfield row`}
+                  className={`${isError ? "error" : ""} inputfield login-inputfield row `}
                   type="text"
                   value={email}
                   onChange={(e) => {
