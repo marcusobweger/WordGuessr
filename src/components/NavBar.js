@@ -4,11 +4,10 @@ import logo from "../icons/wordguessr_logo1.png";
 import userImage from "../icons/user.png";
 import crown from "../icons/crown.png";
 import "../styling/NavBar.css";
-import { getAuth, updateProfile } from "firebase/auth";
+import { useAuth } from "../utils/authContext";
 
 const NavBar = () => {
-  const auth = getAuth();
-  const user = auth.currentUser;
+  const { userLoggedIn } = useAuth();
 
   return (
     <nav className="navbar">
@@ -28,7 +27,7 @@ const NavBar = () => {
         <Link to="/about" className="link">
           <button className="rightNavButtons">About</button>
         </Link>
-        <Link to={`${user ? "/profile" : "/login"}`} className="link">
+        <Link to={`${userLoggedIn ? "/profile" : "/login"}`} className="link">
           <img src={userImage} alt="Profile" className="user" />
         </Link>
       </div>

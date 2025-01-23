@@ -7,7 +7,7 @@ import retry from "../icons/reload.png";
 import { fetchRandomWords, fetchTranslation } from "../utils/utils";
 import ProgressBar from "./ProgressBar";
 import Summary from "./Summary";
-import { user, db } from "../utils/firebase";
+import { db } from "../utils/firebase";
 import { onSnapshot, query, collection, getDocs, doc } from "firebase/firestore";
 
 function Play() {
@@ -52,7 +52,7 @@ function Play() {
   let sourceLang;
   let targetLang;
   const searchOpenLobby = async () => {
-    const q = query(collection(db, "lobbies").where("players", "arrayContains", user.uid));
+    const q = query(collection(db, "lobbies").where("players", "arrayContains", "user.uid"));
     let currentDoc;
     let currentDocData;
     const querySnapshot = await getDocs(q);

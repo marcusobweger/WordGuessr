@@ -3,53 +3,47 @@ import "../styling/Login.css";
 import google from "../icons/search.png";
 import github from "../icons/github.png";
 import apple from "../icons/apple-logo.png";
-import {
-  onAuthStateChanged,
-  createUserWithEmailAndPassword,
-  signInAnonymously,
-} from "firebase/auth";
-import { auth } from "../utils/firebase";
+import { doSignInWithEmailAndPassword, doSignInWithGoogle } from "../utils/authUtils";
+import { useAuth } from "../utils/authContext";
 import EnterUserName from "./EnterUserName";
 
 const Login = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [isUserLoggedIn, setIsUserLoggedIn] = useState(false);
+  const [isSigningIn, setIsSigningIn] = useState(false);
+  const { userLoggedIn } = useAuth();
 
-  const handleEmailSignIn = () => {
-    createUserWithEmailAndPassword(auth, email, password)
-      .then((userCredential) => {
-        console.log(userCredential.user.email);
-      })
-      .catch((error) => {
-        const errorCode = error.code;
-        const errorMessage = error.message;
-        console.log(errorCode, errorMessage);
-      });
+  const handleEmailSignIn = (e) => {
+    e.preventDefault();
+    if (!isSigningIn) {
+      setIsSigningIn(true);
+      try {
+        doSignInWithEmailAndPassword();
+        setIsSigningIn(false);
+      } catch (error) {
+        console.log(error);
+        setIsSigningIn(false);
+      }
+    }
   };
-  const handleGuestSignIn = () => {
-    console.log("guest");
-    signInAnonymously(auth)
-      .then(() => {
-        console.log("user signed in");
-
-        onAuthStateChanged(auth, (user) => {
-          if (user) {
-            setIsUserLoggedIn(true);
-          } else {
-          }
-        });
-      })
-      .catch((error) => {
-        const errorCode = error.code;
-        const errorMessage = error.message;
-        console.log(errorCode, errorMessage);
-      });
+  const handleGoogleSignIn = async (e) => {
+    e.preventDefault();
+    if (!isSigningIn) {
+      setIsSigningIn(true);
+      try {
+        await doSignInWithGoogle();
+        setIsSigningIn(false);
+      } catch (error) {
+        console.log(error);
+        setIsSigningIn(false);
+      }
+    }
   };
+  const handleGuestSignIn = () => {};
 
   return (
     <>
-      {!isUserLoggedIn ? (
+      {!userLoggedIn ? (
         <div className="container col-md-6 col-xl-4">
           <div className="container page">
             <div className="row">
@@ -57,7 +51,11 @@ const Login = () => {
             </div>
             <div className="row buttonGaps sign-in-button-row">
               <button className=" col sign-in-buttons">
-                <img src={google} alt="Sign in with Google" className="sign-in-icons"></img>
+                <img
+                  src={google}
+                  alt="Sign in with Google"
+                  onClick={handleGoogleSignIn}
+                  className="sign-in-icons"></img>
               </button>
               <button className=" col sign-in-buttons">
                 <img src={apple} alt="Sign in with Google" className="sign-in-icons"></img>

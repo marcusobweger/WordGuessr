@@ -65,6 +65,7 @@
   height: 80px !important;
   margin: 14px;
   background-color: var(--green);
+  color: var(--text-color);
 }
 .guest-button:hover:not(.clicked, :disabled) {
   background-color: var(--green);

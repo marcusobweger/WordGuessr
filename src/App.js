@@ -10,27 +10,30 @@ import LeaderBoard from "./components/LeaderBoard";
 import NavBar from "./components/NavBar";
 import EnterCode from "./components/EnterCode";
 import "../src/styling/App.css";
+import { AuthProvider } from "./utils/authContext";
 
 export const AppContext = createContext();
 function App() {
   const [homeState, setHomeState] = useState(false);
   return (
     <AppContext.Provider value={{ setHomeState }}>
-      <Router>
-        <NavBar />
-        <Routes>
-          <Route path="/" element={<Home />} />
-          <Route path="/play" element={homeState ? <Play /> : <Navigate to="/" replace />} />
-          <Route path="/summary" element={<Summary />} />
-          <Route path="/about" element={<About />} />
-          <Route path="/login" element={<Login />} />
-          <Route path="/profile" element={<Profile />} />
-          <Route path="/leaderboard" element={<LeaderBoard />} />
-          <Route path="/code" element={<EnterCode />} />
-          {/*not found*/}
-          <Route path="*" element={<Navigate to="/" replace />} />
-        </Routes>
-      </Router>
+      <AuthProvider>
+        <Router>
+          <NavBar />
+          <Routes>
+            <Route path="/" element={<Home />} />
+            <Route path="/play" element={homeState ? <Play /> : <Navigate to="/" replace />} />
+            <Route path="/summary" element={<Summary />} />
+            <Route path="/about" element={<About />} />
+            <Route path="/login" element={<Login />} />
+            <Route path="/profile" element={<Profile />} />
+            <Route path="/leaderboard" element={<LeaderBoard />} />
+            <Route path="/code" element={<EnterCode />} />
+            {/*not found*/}
+            <Route path="*" element={<Navigate to="/" replace />} />
+          </Routes>
+        </Router>
+      </AuthProvider>
     </AppContext.Provider>
   );
 }
