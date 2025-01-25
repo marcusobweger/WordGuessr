@@ -11,7 +11,7 @@ import { useAuth } from "../utils/authContext";
 import EnterUserName from "./EnterUserName";
 import { useNavigate } from "react-router-dom";
 
-const Login = () => {
+function Login() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [emailPlaceholder, setEmailPlaceholder] = useState("Email");
@@ -50,8 +50,7 @@ const Login = () => {
       }
     }
   };
-  const handleGoogleSignIn = async (e) => {
-    e.preventDefault();
+  const handleGoogleSignIn = async () => {
     if (!isSigningIn) {
       setIsSigningIn(true);
       try {
@@ -63,8 +62,7 @@ const Login = () => {
       }
     }
   };
-  const handleGithubSignIn = async (e) => {
-    e.preventDefault();
+  const handleGithubSignIn = async () => {
     if (!isSigningIn) {
       setIsSigningIn(true);
       try {
@@ -144,5 +142,5 @@ const Login = () => {
       )}
     </>
   );
-};
+}
 export default Login;

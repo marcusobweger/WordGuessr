@@ -8,41 +8,25 @@ import fr from "../icons/france.png";
 import es from "../icons/spain.png";
 import "../styling/Home.css";
 import { AppContext } from "../App";
-import { fetchRandomWords, fetchTranslation } from "../utils/utils";
-
-//firebase
-import { collection, addDoc } from "firebase/firestore";
-import { db, auth } from "../utils/firebase";
-import { onAuthStateChanged } from "firebase/auth";
-
+import { useAuth } from "../utils/authContext";
+import { useSettings } from "../utils/settingsContext";
+import useLobbyActions from "../utils/useLobbyActions";
+import { useLobby } from "../utils/lobbyContext";
 function Home() {
   const { setHomeState } = useContext(AppContext);
-  const [gamemode, setGamemode] = useState(0);
-  const [sourceLang, setSourceLang] = useState("en");
-  const [targetLang, setTargetLang] = useState("ja");
-  const [wordCount, setWordCount] = useState(3);
   const [isLoading, setIsLoading] = useState(false);
 
+  const navigate = useNavigate();
+  const { userLoggedIn } = useAuth();
+  const { settings, setSettings } = useSettings();
+  const { lobby } = useLobby();
+  const { searchOpenLobby } = useLobbyActions();
+
+  // values for generating buttons
   const targetLanguages = ["ja", "ko", "de", "it", "fr", "es"];
   const wordCounts = [3, 5, 10, 15];
 
-  const navigate = useNavigate();
-
-  useEffect(() => {
-    const savedGamemode = localStorage.getItem("gamemode");
-    if (savedGamemode) setGamemode(parseInt(savedGamemode));
-    const savedSourceLang = localStorage.getItem("sourceLang");
-    if (savedSourceLang) setSourceLang(savedSourceLang);
-    const savedTargetLang = localStorage.getItem("targetLang");
-    if (savedTargetLang) setTargetLang(savedTargetLang);
-    const savedWordCount = localStorage.getItem("wordCount");
-    if (savedWordCount) setWordCount(parseInt(savedWordCount));
-  }, []);
-
-  useEffect(() => {
-    setHomeState(isLoading);
-  }, [isLoading]);
-
+  // map icon names to corresponding strings for button generation
   const iconMap = {
     ja: ja,
     ko: ko,
@@ -52,58 +36,43 @@ function Home() {
     es: es,
   };
 
-  const savePreferences = () => {
-    localStorage.setItem("gamemode", gamemode);
-    localStorage.setItem("sourceLang", sourceLang);
-    localStorage.setItem("targetLang", targetLang);
-    localStorage.setItem("wordCount", wordCount);
-  };
-  const addLobby = async (words, translation, isOpen) => {
-    try {
-      const docRef = await addDoc(collection(db, "lobbies"), {
-        //players: [user.uid],
-        isOpen: isOpen,
-        gamemode: gamemode,
-        sourceLang: sourceLang,
-        targetLang: targetLang,
-        wordCount: wordCount,
-        words: words,
-        translation: translation,
+  // load preferences from LocalStorage
+  useEffect(() => {
+    const savedGamemode = localStorage.getItem("gamemode");
+    const savedSourceLang = localStorage.getItem("sourceLang");
+    const savedTargetLang = localStorage.getItem("targetLang");
+    const savedWordCount = localStorage.getItem("wordCount");
+    if (savedGamemode && savedSourceLang && savedTargetLang && savedWordCount)
+      setSettings({
+        ...settings,
+        gamemode: parseInt(savedGamemode),
+        sourceLang: savedSourceLang,
+        targetLang: savedTargetLang,
+        wordCount: parseInt(savedWordCount),
       });
-      console.log("Document written with ID: ", docRef.id);
-    } catch (e) {
-      console.error("Error adding document: ", e);
-    }
+    console.log(lobby);
+  }, []);
+  // save preferences to LocalStorage
+  const savePreferences = () => {
+    localStorage.setItem("gamemode", settings.gamemode);
+    localStorage.setItem("sourceLang", settings.sourceLang);
+    localStorage.setItem("targetLang", settings.targetLang);
+    localStorage.setItem("wordCount", settings.wordCount);
   };
 
-  const handleSolo = async () => {
-    let wordsFetched = [];
-    let translationFetched = [];
-    try {
-      wordsFetched = await fetchRandomWords(wordCount);
-      translationFetched = await fetchTranslation(wordsFetched, sourceLang, targetLang);
-    } catch (error) {
-      console.error("Error during the play process:", error);
-    } finally {
-      if (wordsFetched.length > 0 && translationFetched.length > 0) {
-        savePreferences();
-        await addLobby(wordsFetched, translationFetched, false);
-        //navigate("/play");
-      } else {
-        console.error("Failed to fetch data for play.");
-      }
-    }
-  };
+  useEffect(() => {
+    setHomeState(isLoading);
+  }, [isLoading]);
+
+  // executes when the play button is pressed, if userLoggedIn play directly else go to continue page
   const handlePlay = async () => {
     setIsLoading(true);
-    switch (gamemode) {
-      case 0:
-        handleSolo();
-        break;
-      case 1:
-        break;
-      case 2:
-        break;
+    savePreferences();
+    if (userLoggedIn) {
+      await searchOpenLobby();
+      navigate("/play");
+    } else {
+      navigate("/continue");
     }
   };
 
@@ -111,13 +80,13 @@ function Home() {
     return Array.from({ length: targetLanguages.length }, (_, index) => (
       <button
         key={index}
-        className={`col ${targetLang === targetLanguages[index] ? "clicked" : ""}`}
+        className={`col ${settings.targetLang === targetLanguages[index] ? "clicked" : ""}`}
         disabled={isLoading}
-        onClick={() => setTargetLang(targetLanguages[index])}>
+        onClick={() => setSettings({ ...settings, targetLang: targetLanguages[index] })}>
         <img
           className="icons"
           src={iconMap[targetLanguages[index]]}
-          alt={`${targetLang} icon`}></img>
+          alt={`${settings.targetLang} icon`}></img>
       </button>
     ));
   };
@@ -125,9 +94,9 @@ function Home() {
     return Array.from({ length: wordCounts.length }, (_, index) => (
       <button
         key={index}
-        className={`col ${wordCount === wordCounts[index] ? "clicked" : ""}`}
+        className={`col ${settings.wordCount === wordCounts[index] ? "clicked" : ""}`}
         disabled={isLoading}
-        onClick={() => setWordCount(wordCounts[index])}>
+        onClick={() => setSettings({ ...settings, wordCount: wordCounts[index] })}>
         {wordCounts[index]}
       </button>
     ));
@@ -149,20 +118,20 @@ function Home() {
       <>
         <div className="row buttonGaps">
           <button
-            className={`col ${gamemode === 0 ? "clicked" : ""}`}
-            onClick={() => setGamemode(0)}
+            className={`col ${settings.gamemode === 0 ? "clicked" : ""}`}
+            onClick={() => setSettings({ ...settings, gamemode: 0 })}
             disabled={isLoading}>
             Solo
           </button>
           <button
-            className={`col ${gamemode === 1 ? "clicked" : ""}`}
-            onClick={() => setGamemode(1)}
+            className={`col ${settings.gamemode === 1 ? "clicked" : ""}`}
+            onClick={() => setSettings({ ...settings, gamemode: 1 })}
             disabled={isLoading}>
             Online
           </button>
           <button
-            className={`col-12 col-sm ${gamemode === 2 ? "clicked" : ""}`}
-            onClick={() => setGamemode(2)}
+            className={`col-12 col-sm ${settings.gamemode === 2 ? "clicked" : ""}`}
+            onClick={() => setSettings({ ...settings, gamemode: 2 })}
             disabled={isLoading}>
             Private
           </button>
@@ -172,11 +141,11 @@ function Home() {
   };
   const PlayButtonContent = () => {
     if (!isLoading) {
-      if (gamemode === 1) {
+      if (settings.gamemode === 1) {
         return "Join Queue";
-      } else if (gamemode === 2) {
+      } else if (settings.gamemode === 2) {
         return "Create Lobby";
-      } else if (gamemode === 0) {
+      } else if (settings.gamemode === 0) {
         return "Play";
       }
     } else {

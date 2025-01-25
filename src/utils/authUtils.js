@@ -4,6 +4,7 @@ import {
   signInWithPopup,
   GoogleAuthProvider,
   GithubAuthProvider,
+  signInAnonymously,
 } from "firebase/auth";
 import { auth } from "./firebase";
 
@@ -20,6 +21,9 @@ export const doSignInWithGoogle = async () => {
 export const doSignInWithGithub = async () => {
   const provider = new GithubAuthProvider();
   return await signInWithPopup(auth, provider);
+};
+export const doSignInAnonymously = async () => {
+  return await signInAnonymously(auth);
 };
 export const doSignOut = async () => {
   return await auth.signOut();

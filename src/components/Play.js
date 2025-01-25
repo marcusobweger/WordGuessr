@@ -9,25 +9,26 @@ import ProgressBar from "./ProgressBar";
 import Summary from "./Summary";
 import { db } from "../utils/firebase";
 import { onSnapshot, query, collection, getDocs, doc } from "firebase/firestore";
+import { useSettings } from "../utils/settingsContext";
 
 function Play() {
-  const location = useLocation();
+  /*
   const navigate = useNavigate();
 
+  //local
   const [currentIndex, setCurrentIndex] = useState(0);
   const [guess, setGuess] = useState("");
   const [feedback, setFeedback] = useState("");
+  const [closeGuessCounter, setCloseGuessCounter] = useState(0);
+  const [isNewPb, setIsNewPb] = useState(false);
+
+  //user
+  const [highScores, setHighScores] = useState([]);
+
+  //lobby
   const [finished, setFinished] = useState(false);
-  const [retryWords, setRetryWords] = useState([]);
-  const [retryTranslation, setRetryTranslation] = useState([]);
   const [retryLoading, setRetryLoading] = useState(false);
   const [score, setScore] = useState(0);
-  const [highScore3, setHighScore3] = useState(0);
-  const [highScore5, setHighScore5] = useState(0);
-  const [highScore10, setHighScore10] = useState(0);
-  const [highScore15, setHighScore15] = useState(0);
-  const [isNewPb, setIsNewPb] = useState(false);
-  const [closeGuessCounter, setCloseGuessCounter] = useState(0);
   const [guesses, setGuesses] = useState([]);
   const [scores, setScores] = useState([]);
   const [times, setTimes] = useState([]);
@@ -35,55 +36,13 @@ function Play() {
   const inputRef = useRef(null);
   const progressBarRef = useRef(null);
   const feedbackTimeoutRef = useRef(null);
-  /*
-  const { words, translation, wordCount, gamemode, sourceLang, targetLang } = location.state || {
-    words: null,
-    translation: null,
-    wordCount: null,
-    gamemode: null,
-    sourceLang: null,
-    targetLang: null,
-  };
-  */
-  let words;
-  let translation;
-  let wordCount;
-  let gamemode;
-  let sourceLang;
-  let targetLang;
-  const searchOpenLobby = async () => {
-    const q = query(collection(db, "lobbies").where("players", "arrayContains", "user.uid"));
-    let currentDoc;
-    let currentDocData;
-    const querySnapshot = await getDocs(q);
-    if (!querySnapshot.empty) {
-      currentDoc = querySnapshot.docs[0];
-      currentDocData = currentDoc.data();
-      console.log(currentDocData.sourceLang);
-      const docRef = doc(db, "lobbies", currentDoc.id);
-      const unsub = onSnapshot(docRef, (doc) => {
-        console.log("Current data: ", doc.data());
-      });
 
-      console.log(currentDocData.players);
-    }
-  };
+  const { settings, setSettings } = useSettings();
 
   useEffect(() => {
-    searchOpenLobby();
-    setGuesses(Array(wordCount).fill("no guess"));
-    setScores(Array(wordCount).fill(0));
-    setTimes(Array(wordCount).fill(0));
-    setRetryWords(words);
-    setRetryTranslation(translation);
-    const savedHighScore3 = localStorage.getItem("highScore3");
-    if (savedHighScore3) setHighScore3(parseInt(savedHighScore3));
-    const savedHighScore5 = localStorage.getItem("highScore5");
-    if (savedHighScore5) setHighScore5(parseInt(savedHighScore5));
-    const savedHighScore10 = localStorage.getItem("highScore10");
-    if (savedHighScore10) setHighScore10(parseInt(savedHighScore10));
-    const savedHighScore15 = localStorage.getItem("highScore15");
-    if (savedHighScore15) setHighScore15(parseInt(savedHighScore15));
+    setGuesses(Array(settings.wordCount).fill("no guess"));
+    setScores(Array(settings.wordCount).fill(0));
+    setTimes(Array(settings.wordCount).fill(0));
   }, []);
 
   useEffect(() => {
@@ -97,7 +56,7 @@ function Play() {
       });
       setScore(scoreSum);
 
-      switch (wordCount) {
+      switch (settings.wordCount) {
         case 3:
           if (scoreSum > highScore3) {
             setHighScore3(scoreSum);
@@ -153,6 +112,14 @@ function Play() {
       return updatedTimes;
     });
   };
+  const saveHighScoreAtIndex = (newHighScore, index) => {
+    setHighScores((prevHighScore) => {
+      const updatedHighScores = [...prevHighScore];
+      updatedHighScores.splice(index, 1, newHighScore);
+      return updatedHighScores;
+    });
+  };
+  // handle the displayed feedback timeout
   useEffect(() => {
     if (feedback !== "") {
       if (feedbackTimeoutRef.current) {
@@ -254,9 +221,9 @@ function Play() {
     setCloseGuessCounter(0);
     setFeedback("");
     setGuess("");
-    setGuesses(Array(wordCount).fill("no guess"));
-    setScores(Array(wordCount).fill(0));
-    setTimes(Array(wordCount).fill(0));
+    setGuesses(Array(settings.wordCount).fill("no guess"));
+    setScores(Array(settings.wordCount).fill(0));
+    setTimes(Array(settings.wordCount).fill(0));
 
     let wordsFetched = [];
     let translationFetched = [];
@@ -371,6 +338,7 @@ function Play() {
       )}
     </div>
   );
+  */
 }
 
 export default Play;

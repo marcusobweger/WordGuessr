@@ -1,7 +1,7 @@
 import React from "react";
 import { doSignOut } from "../utils/authUtils";
 import { useNavigate } from "react-router-dom";
-const Profile = () => {
+function Profile() {
   const navigate = useNavigate();
   const handleSignOut = async () => {
     try {
@@ -17,5 +17,5 @@ const Profile = () => {
       <button onClick={handleSignOut}>Sign Out</button>
     </div>
   );
-};
+}
 export default Profile;
