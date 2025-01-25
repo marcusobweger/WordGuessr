@@ -22,10 +22,11 @@ const useLobbyActions = () => {
   const { currentUser } = useAuth();
 
   const listenToLobbyData = (lobbyId) => {
-    onSnapshot(doc(db, "lobbies", lobbyId), (doc) => {
+    const unsub = onSnapshot(doc(db, "lobbies", lobbyId), (doc) => {
       console.log(doc.data());
       setLobby(doc.data());
     });
+    unsub();
   };
   const searchOpenLobby = async () => {
     let querySnapshot;
@@ -122,16 +123,8 @@ const useLobbyActions = () => {
     console.log(docRef.id);
     listenToLobbyData(docRef.id);
   };
-  const updateLobby = async () => {};
-  const createNewUser = async (name) => {
-    await setDoc(doc(db, "users", currentUser.uid), {
-      name: name,
-      lobbyId: "",
-      highScores: [],
-    });
-  };
-  const updateUser = async () => {};
-  const getUserInformation = () => {};
-  return { searchOpenLobby, createNewUser };
+  const updateLobby = async () => {}; //handleRetry
+
+  return { searchOpenLobby };
 };
 export default useLobbyActions;

@@ -1,11 +1,11 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import useLobbyActions from "../utils/useLobbyActions";
+import useUserActions from "../utils/useUserActions";
 
 const EnterUserName = () => {
   const [userName, setUserName] = useState("");
   const navigate = useNavigate();
-  const { createNewUser } = useLobbyActions();
+  const { createNewUser } = useUserActions();
   const handleSetUserName = async (e) => {
     e.preventDefault();
     await createNewUser(userName);
