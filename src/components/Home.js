@@ -37,18 +37,6 @@ function Home() {
     if (savedTargetLang) setTargetLang(savedTargetLang);
     const savedWordCount = localStorage.getItem("wordCount");
     if (savedWordCount) setWordCount(parseInt(savedWordCount));
-    onAuthStateChanged(auth, (user) => {
-      if (user) {
-        console.log(user.uid);
-        console.log(user.displayName);
-
-        const uid = user.uid;
-        // ...
-      } else {
-        // User is signed out
-        // ...
-      }
-    });
   }, []);
 
   useEffect(() => {

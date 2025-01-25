@@ -2,8 +2,11 @@ import React, { useContext, useEffect, useState } from "react";
 import "../styling/Login.css";
 import google from "../icons/search.png";
 import github from "../icons/github.png";
-import apple from "../icons/apple-logo.png";
-import { doCreateUserWithEmailAndPassword, doSignInWithGoogle } from "../utils/authUtils";
+import {
+  doCreateUserWithEmailAndPassword,
+  doSignInWithGoogle,
+  doSignInWithGithub,
+} from "../utils/authUtils";
 import { useAuth } from "../utils/authContext";
 import EnterUserName from "./EnterUserName";
 import { useNavigate } from "react-router-dom";
@@ -60,6 +63,19 @@ const Signup = () => {
       }
     }
   };
+  const handleGithubSignIn = async (e) => {
+    e.preventDefault();
+    if (!isCreating) {
+      setIsCreating(true);
+      try {
+        await doSignInWithGithub();
+        setIsCreating(false);
+      } catch (error) {
+        console.log(error);
+        setIsCreating(false);
+      }
+    }
+  };
   const handleNavigateLogin = () => {
     navigate("/login");
   };
@@ -68,7 +84,7 @@ const Signup = () => {
     <>
       {!userLoggedIn ? (
         <div className="container col-md-6 col-xl-4">
-          <div className="container page">
+          <div className="container page shadow">
             <div className="row">
               <div className="col login-text">Welcome!</div>
             </div>
@@ -81,10 +97,11 @@ const Signup = () => {
                   className="sign-in-icons"></img>
               </button>
               <button className="shadow col sign-in-buttons">
-                <img src={apple} alt="Sign in with Google" className="sign-in-icons"></img>
-              </button>
-              <button className="shadow col sign-in-buttons">
-                <img src={github} alt="Sign in with Google" className="sign-in-icons"></img>
+                <img
+                  src={github}
+                  alt="Sign in with Github"
+                  onClick={handleGithubSignIn}
+                  className="sign-in-icons"></img>
               </button>
             </div>
             <div className="row or-text">or</div>

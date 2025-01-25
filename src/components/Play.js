@@ -281,7 +281,7 @@ function Play() {
     <div className="container">
       {!finished ? (
         <>
-          <div className="container page">
+          <div className="container page shadow">
             <div className="row align-items-center">
               <div className="col-9 col-sm-9 col-lg-10">
                 <ProgressBar
@@ -330,7 +330,7 @@ function Play() {
         </>
       ) : (
         <>
-          <div className="container page">
+          <div className="container page shadow">
             <Summary
               highScore3={highScore3}
               highScore5={highScore5}

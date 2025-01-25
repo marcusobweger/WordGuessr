@@ -31,6 +31,7 @@ function App() {
             <Route path="/profile" element={<Profile />} />
             <Route path="/leaderboard" element={<LeaderBoard />} />
             <Route path="/code" element={<EnterCode />} />
+
             {/*not found*/}
             <Route path="*" element={<Navigate to="/" replace />} />
           </Routes>
