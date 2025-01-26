@@ -16,18 +16,21 @@ import { fetchRandomWords, fetchTranslation } from "./utils";
 import { useAuth } from "./authContext";
 import { useLobbyId } from "./lobbyIdContext";
 import useUserListener from "./useUserListener";
+import { useNavigate } from "react-router-dom";
 
 const useLobbyActions = () => {
   const { settings } = useSettings();
   const { setLobbyId } = useLobbyId();
   const { currentUser } = useAuth();
   const userData = useUserListener();
+  const navigate = useNavigate();
 
   const searchOpenLobby = async () => {
     let querySnapshot;
     switch (settings.gamemode) {
       case 0:
         await createNewLobby();
+        navigate("/play");
         break;
       case 1:
         const q = query(
@@ -67,12 +70,15 @@ const useLobbyActions = () => {
             },
             { merge: true }
           );
+          navigate("/play");
         } else {
           await createNewLobby();
+          navigate("/play");
         }
         break;
       case 2:
         await createNewLobby();
+        navigate("/lobby");
         break;
     }
   };

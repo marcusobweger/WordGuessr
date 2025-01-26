@@ -20,6 +20,7 @@ export default function Continue() {
   }, [hasFinishedSigningIn]);
   useEffect(() => {
     if (userData) {
+      setIsLoading(false);
       if (userData.name === "Anonymous") {
         navigate("/username");
       } else {
@@ -38,13 +39,13 @@ export default function Continue() {
     navigate("/login");
   };
   const handleContinueAsGuest = async () => {
-    setIsLoading(true);
     if (!isSigningIn) {
+      setIsSigningIn(true);
+      setIsLoading(true);
       try {
         await doSignInAnonymously();
         setHasFinishedSigningIn(true);
-        setIsSigningIn(true);
-        setIsLoading(false);
+        setIsSigningIn(false);
       } catch (error) {
         console.log(error);
         setHasFinishedSigningIn(false);

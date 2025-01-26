@@ -69,7 +69,6 @@ function Home() {
     savePreferences();
     if (userLoggedIn) {
       await searchOpenLobby();
-      navigate("/play");
     } else {
       navigate("/continue");
     }
