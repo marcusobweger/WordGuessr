@@ -4,10 +4,14 @@ import { useAuth } from "./authContext";
 const useUserActions = () => {
   const { currentUser } = useAuth();
   const createNewUser = async () => {
-    await setDoc(doc(db, "users", currentUser.uid), {
-      name: "Anonymous",
-      highScores: [],
-    });
+    const docRef = doc(db, "users", currentUser.uid);
+    const userRef = await getDoc(docRef);
+    if (!userRef.exists()) {
+      await setDoc(docRef, {
+        name: "Anonymous",
+        highScores: [],
+      });
+    }
   };
   const updateUserName = async (name) => {
     await updateDoc(doc(db, "users", currentUser.uid), {
