@@ -16,36 +16,42 @@ import { AuthProvider } from "./utils/authContext";
 import Signup from "./components/Signup";
 import { SettingsProvider } from "./utils/settingsContext";
 import { LobbyProvider } from "./utils/lobbyContext";
+import { UserProvider } from "./utils/userContext";
 
 export const AppContext = createContext();
 function App() {
   const [homeState, setHomeState] = useState(false);
   return (
     <AppContext.Provider value={{ setHomeState }}>
-      <AuthProvider>
-        <SettingsProvider>
-          <LobbyProvider>
-            <Router>
-              <NavBar />
-              <Routes>
-                <Route path="/" element={<Home />} />
-                <Route path="/play" element={homeState ? <Play /> : <Navigate to="/" replace />} />
-                <Route path="/summary" element={<Summary />} />
-                <Route path="/about" element={<About />} />
-                <Route path="/login" element={<Login />} />
-                <Route path="/signup" element={<Signup />} />
-                <Route path="/profile" element={<Profile />} />
-                <Route path="/leaderboard" element={<LeaderBoard />} />
-                <Route path="/code" element={<EnterCode />} />
-                <Route path="/continue" element={<Continue />} />
-                <Route path="/lobby" element={<Lobby />} />
-                {/*not found*/}
-                <Route path="*" element={<Navigate to="/" replace />} />
-              </Routes>
-            </Router>
-          </LobbyProvider>
-        </SettingsProvider>
-      </AuthProvider>
+      <UserProvider>
+        <AuthProvider>
+          <SettingsProvider>
+            <LobbyProvider>
+              <Router>
+                <NavBar />
+                <Routes>
+                  <Route path="/" element={<Home />} />
+                  <Route
+                    path="/play"
+                    element={homeState ? <Play /> : <Navigate to="/" replace />}
+                  />
+                  <Route path="/summary" element={<Summary />} />
+                  <Route path="/about" element={<About />} />
+                  <Route path="/login" element={<Login />} />
+                  <Route path="/signup" element={<Signup />} />
+                  <Route path="/profile" element={<Profile />} />
+                  <Route path="/leaderboard" element={<LeaderBoard />} />
+                  <Route path="/code" element={<EnterCode />} />
+                  <Route path="/continue" element={<Continue />} />
+                  <Route path="/lobby" element={<Lobby />} />
+                  {/*not found*/}
+                  <Route path="*" element={<Navigate to="/" replace />} />
+                </Routes>
+              </Router>
+            </LobbyProvider>
+          </SettingsProvider>
+        </AuthProvider>
+      </UserProvider>
     </AppContext.Provider>
   );
 }

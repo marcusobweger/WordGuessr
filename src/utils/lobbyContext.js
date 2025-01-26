@@ -7,7 +7,7 @@ export const useLobby = () => {
 };
 
 export const LobbyProvider = ({ children }) => {
-  const [lobby, setLobby] = useState();
+  const [lobby, setLobby] = useState(null);
 
   const value = {
     lobby,

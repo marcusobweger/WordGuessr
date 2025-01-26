@@ -1,10 +1,12 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { doSignOut } from "../utils/authUtils";
 import { useNavigate } from "react-router-dom";
-import { useAuth } from "../utils/authContext";
+import useUserActions from "../utils/useUserActions";
+import { useUser } from "../utils/userContext";
 function Profile() {
   const navigate = useNavigate();
-  const { userData } = useAuth();
+  const { userData } = useUser();
+
   const handleSignOut = async () => {
     try {
       await doSignOut();

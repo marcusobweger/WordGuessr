@@ -12,6 +12,8 @@ import { useAuth } from "../utils/authContext";
 import { useSettings } from "../utils/settingsContext";
 import useLobbyActions from "../utils/useLobbyActions";
 import { useLobby } from "../utils/lobbyContext";
+import { useUser } from "../utils/userContext";
+import useUserActions from "../utils/useUserActions";
 function Home() {
   const { setHomeState } = useContext(AppContext);
   const [isLoading, setIsLoading] = useState(false);
@@ -20,6 +22,8 @@ function Home() {
   const { userLoggedIn } = useAuth();
   const { settings, setSettings } = useSettings();
   const { lobby } = useLobby();
+  const { setUserData } = useUser();
+  const { getCurrentUserData } = useUserActions();
   const { searchOpenLobby } = useLobbyActions();
 
   // values for generating buttons
@@ -36,6 +40,13 @@ function Home() {
     es: es,
   };
 
+  // get userData of the current USer stored in "users" and update the global context
+  const handleGetUserData = async () => {
+    const userData = await getCurrentUserData();
+    if (userData !== null) {
+      setUserData(userData);
+    }
+  };
   // load preferences from LocalStorage
   useEffect(() => {
     const savedGamemode = localStorage.getItem("gamemode");
@@ -51,6 +62,8 @@ function Home() {
         wordCount: parseInt(savedWordCount),
       });
     console.log(lobby);
+    // update user Data on every refresh of the home page
+    handleGetUserData();
   }, []);
   // save preferences to LocalStorage
   const savePreferences = () => {

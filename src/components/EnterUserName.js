@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import useUserActions from "../utils/useUserActions";
 
@@ -11,7 +11,6 @@ const EnterUserName = () => {
     await createNewUser(userName);
     navigate("/");
   };
-
   return (
     <div className="container">
       <div className="container page">

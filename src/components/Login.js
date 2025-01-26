@@ -10,6 +10,7 @@ import {
 import { useAuth } from "../utils/authContext";
 import EnterUserName from "./EnterUserName";
 import { useNavigate } from "react-router-dom";
+import useUserActions from "../utils/useUserActions";
 
 function Login() {
   const [email, setEmail] = useState("");
@@ -17,6 +18,7 @@ function Login() {
   const [isSigningIn, setIsSigningIn] = useState(false);
   const [isError, setIsError] = useState(false);
   const { userLoggedIn } = useAuth();
+  const { getCurrentUserData } = useUserActions();
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -66,14 +68,20 @@ function Login() {
       }
     }
   };
+  const handleCheckForUserName = async () => {
+    const userData = await getCurrentUserData();
+    if (userData.name) {
+      return true;
+    }
+    return false;
+  };
 
   const handleNavigateSignup = () => {
     navigate("/signup");
   };
-
-  return (
-    <>
-      {!userLoggedIn ? (
+  const LoginContent = () => {
+    if (!userLoggedIn) {
+      return (
         <div className="container col-md-6 col-xl-4">
           <div className="container page shadow">
             <div className="row">
@@ -129,10 +137,15 @@ function Login() {
             </button>
           </div>
         </div>
-      ) : (
-        <EnterUserName />
-      )}
-    </>
-  );
+      );
+    } else {
+      if (handleCheckForUserName()) {
+        navigate("/");
+      } else {
+        return <EnterUserName />;
+      }
+    }
+  };
+  return <LoginContent />;
 }
 export default Login;
