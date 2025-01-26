@@ -1,15 +1,39 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { doSignInAnonymously } from "../utils/authUtils";
-import { useAuth } from "../utils/authContext";
-import EnterUserName from "./EnterUserName";
+import useUserActions from "../utils/useUserActions";
+import useUserListener from "../utils/useUserListener";
 
 export default function Continue() {
   const navigate = useNavigate();
   const [isSigningIn, setIsSigningIn] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
-  const { userLoggedIn } = useAuth();
+  const [hasFinishedSigningIn, setHasFinishedSigningIn] = useState(false);
+  const userData = useUserListener();
 
+  const { createNewUser } = useUserActions();
+
+  useEffect(() => {
+    if (hasFinishedSigningIn) {
+      handleCreateNewUser();
+    }
+  }, [hasFinishedSigningIn]);
+  useEffect(() => {
+    if (userData) {
+      if (userData.name === "Anonymous") {
+        navigate("/username");
+      } else {
+        navigate("/");
+      }
+    }
+  }, [userData]);
+  const handleCreateNewUser = async () => {
+    try {
+      await createNewUser();
+    } catch (error) {
+      console.log(error);
+    }
+  };
   const handleNavigateToLogin = () => {
     navigate("/login");
   };
@@ -18,10 +42,12 @@ export default function Continue() {
     if (!isSigningIn) {
       try {
         await doSignInAnonymously();
+        setHasFinishedSigningIn(true);
         setIsSigningIn(true);
         setIsLoading(false);
       } catch (error) {
         console.log(error);
+        setHasFinishedSigningIn(false);
         setIsSigningIn(false);
       }
     }
@@ -38,25 +64,19 @@ export default function Continue() {
     }
   };
   return (
-    <>
-      {!userLoggedIn ? (
-        <div className="container col-md-6 col-xl-4">
-          <div className="container">
-            <div className="row buttonGaps">
-              <button className="col" onClick={handleNavigateToLogin} disabled={isLoading}>
-                Sign in
-              </button>
-            </div>
-            <div className="row buttonGaps">
-              <button className="col" onClick={handleContinueAsGuest} disabled={isLoading}>
-                <GuestButtonContent />
-              </button>
-            </div>
-          </div>
+    <div className="container col-md-6 col-xl-4">
+      <div className="container">
+        <div className="row buttonGaps">
+          <button className="col" onClick={handleNavigateToLogin} disabled={isLoading}>
+            Sign in
+          </button>
         </div>
-      ) : (
-        <EnterUserName />
-      )}
-    </>
+        <div className="row buttonGaps">
+          <button className="col" onClick={handleContinueAsGuest} disabled={isLoading}>
+            <GuestButtonContent />
+          </button>
+        </div>
+      </div>
+    </div>
   );
 }

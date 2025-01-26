@@ -16,6 +16,7 @@ import { AuthProvider } from "./utils/authContext";
 import Signup from "./components/Signup";
 import { SettingsProvider } from "./utils/settingsContext";
 import { LobbyIdProvider } from "./utils/lobbyIdContext";
+import EnterUserName from "./components/EnterUserName";
 
 export const AppContext = createContext();
 function App() {
@@ -34,6 +35,7 @@ function App() {
                 <Route path="/about" element={<About />} />
                 <Route path="/login" element={<Login />} />
                 <Route path="/signup" element={<Signup />} />
+                <Route path="/username" element={<EnterUserName />} />
                 <Route path="/profile" element={<Profile />} />
                 <Route path="/leaderboard" element={<LeaderBoard />} />
                 <Route path="/code" element={<EnterCode />} />
