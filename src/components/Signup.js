@@ -14,26 +14,16 @@ import { useNavigate } from "react-router-dom";
 function Signup() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [emailPlaceholder, setEmailPlaceholder] = useState("Email");
   const [isCreating, setIsCreating] = useState(false);
   const [isError, setIsError] = useState(false);
   const { userLoggedIn } = useAuth();
   const navigate = useNavigate();
 
   useEffect(() => {
-    if (email || (password !== "" && isError)) {
+    if ((email || password !== "") && isError) {
       setIsError(false);
     }
   }, [email, password]);
-  useEffect(() => {
-    if (isError) {
-      setEmail("");
-      setPassword("");
-      setEmailPlaceholder("An error occurred");
-    } else {
-      setEmailPlaceholder("Email");
-    }
-  }, [isError]);
 
   const handleEmailCreate = async (e) => {
     e.preventDefault();
@@ -46,6 +36,8 @@ function Signup() {
       } catch (error) {
         console.log(error);
         setIsError(true);
+        setEmail("");
+        setPassword("");
         setIsCreating(false);
       }
     }
@@ -114,7 +106,7 @@ function Signup() {
                   onChange={(e) => {
                     setEmail(e.target.value);
                   }}
-                  placeholder={emailPlaceholder}
+                  placeholder="Email"
                   autoFocus
                   maxLength={35}
                 />
