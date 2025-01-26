@@ -15,11 +15,13 @@ import {
 import { fetchRandomWords, fetchTranslation } from "./utils";
 import { useAuth } from "./authContext";
 import { useLobbyId } from "./lobbyIdContext";
+import useUserListener from "./useUserListener";
 
 const useLobbyActions = () => {
   const { settings } = useSettings();
   const { setLobbyId } = useLobbyId();
   const { currentUser } = useAuth();
+  const userData = useUserListener();
 
   const searchOpenLobby = async () => {
     let querySnapshot;
@@ -34,7 +36,8 @@ const useLobbyActions = () => {
           where("gamemode", "==", settings.gamemode),
           where("sourceLang", "==", settings.sourceLang),
           where("targetLang", "==", settings.targetLang),
-          where("wordCount", "==", settings.wordCount)
+          where("wordCount", "==", settings.wordCount),
+          where("maxPlayers", "==", 2)
         );
         querySnapshot = await getDocs(q);
         let currentDoc;
@@ -44,10 +47,26 @@ const useLobbyActions = () => {
           currentDocData = currentDoc.data();
           console.log(currentDoc.id);
           setLobbyId(currentDoc.id);
-          await updateDoc(doc(db, "lobbies", currentDoc.id), {
-            players: arrayUnion(currentUser.uid),
-            isOpen: false,
-          });
+          await setDoc(
+            doc(db, "lobbies", currentDoc.id),
+            {
+              players: {
+                ...{
+                  [currentUser.uid]: {
+                    name: userData.name,
+                    score: 0,
+                    guesses: [],
+                    scores: [],
+                    times: [],
+                    finished: false,
+                    retry: false,
+                  },
+                },
+              },
+              isOpen: false,
+            },
+            { merge: true }
+          );
         } else {
           await createNewLobby();
         }
@@ -57,10 +76,9 @@ const useLobbyActions = () => {
         break;
     }
   };
-  const playerTemplate = {
-    name: "Anonymous",
-  };
+
   const createNewLobby = async () => {
+    console.log(userData);
     let docRef;
     let wordsFetched = [];
     let translationFetched = [];
@@ -79,7 +97,15 @@ const useLobbyActions = () => {
       case 0:
         docRef = await addDoc(collection(db, "lobbies"), {
           players: {
-            [currentUser.uid]: playerTemplate,
+            [currentUser.uid]: {
+              name: userData.name,
+              score: 0,
+              guesses: [],
+              scores: [],
+              times: [],
+              finished: false,
+              retry: false,
+            },
           },
           settings: { settings },
           isOpen: false,
@@ -90,7 +116,17 @@ const useLobbyActions = () => {
         break;
       case 1:
         docRef = await addDoc(collection(db, "lobbies"), {
-          players: [currentUser.uid],
+          players: {
+            [currentUser.uid]: {
+              name: userData.name,
+              score: 0,
+              guesses: [],
+              scores: [],
+              times: [],
+              finished: false,
+              retry: false,
+            },
+          },
           isOpen: true,
           maxPlayers: 2,
           gamemode: settings.gamemode,
@@ -103,7 +139,17 @@ const useLobbyActions = () => {
         break;
       case 2:
         docRef = await addDoc(collection(db, "lobbies"), {
-          players: [currentUser.uid],
+          players: {
+            [currentUser.uid]: {
+              name: userData.name,
+              score: 0,
+              guesses: [],
+              scores: [],
+              times: [],
+              finished: false,
+              retry: false,
+            },
+          },
           isOpen: true,
           maxPlayers: 8,
           gamemode: settings.gamemode,

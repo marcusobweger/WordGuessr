@@ -11,6 +11,7 @@ import { AppContext } from "../App";
 import { useAuth } from "../utils/authContext";
 import { useSettings } from "../utils/settingsContext";
 import useLobbyActions from "../utils/useLobbyActions";
+import useLobbyListener from "../utils/useLobbyListener";
 function Home() {
   const { setHomeState } = useContext(AppContext);
   const [isLoading, setIsLoading] = useState(false);
@@ -19,6 +20,7 @@ function Home() {
   const { userLoggedIn } = useAuth();
   const { settings, setSettings } = useSettings();
   const { searchOpenLobby } = useLobbyActions();
+  const lobbyData = useLobbyListener();
 
   // values for generating buttons
   const targetLanguages = ["ja", "ko", "de", "it", "fr", "es"];
@@ -47,6 +49,7 @@ function Home() {
         targetLang: savedTargetLang,
         wordCount: parseInt(savedWordCount),
       });
+    console.log(lobbyData);
   }, []);
   // save preferences to LocalStorage
   const savePreferences = () => {
