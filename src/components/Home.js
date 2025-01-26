@@ -22,8 +22,6 @@ function Home() {
   const { userLoggedIn } = useAuth();
   const { settings, setSettings } = useSettings();
   const { lobby } = useLobby();
-  const { setUserData } = useUser();
-  const { getCurrentUserData } = useUserActions();
   const { searchOpenLobby } = useLobbyActions();
 
   // values for generating buttons
@@ -38,14 +36,6 @@ function Home() {
     it: it,
     fr: fr,
     es: es,
-  };
-
-  // get userData of the current USer stored in "users" and update the global context
-  const handleGetUserData = async () => {
-    const userData = await getCurrentUserData();
-    if (userData !== null) {
-      setUserData(userData);
-    }
   };
   // load preferences from LocalStorage
   useEffect(() => {
@@ -62,8 +52,6 @@ function Home() {
         wordCount: parseInt(savedWordCount),
       });
     console.log(lobby);
-    // update user Data on every refresh of the home page
-    handleGetUserData();
   }, []);
   // save preferences to LocalStorage
   const savePreferences = () => {
