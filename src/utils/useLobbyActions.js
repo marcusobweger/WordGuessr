@@ -14,20 +14,13 @@ import {
 } from "firebase/firestore";
 import { fetchRandomWords, fetchTranslation } from "./utils";
 import { useAuth } from "./authContext";
-import { useLobby } from "./lobbyContext";
+import { useLobbyId } from "./lobbyIdContext";
 
 const useLobbyActions = () => {
-  const { settings, setSettings } = useSettings();
-  const { lobby, setLobby } = useLobby();
+  const { settings } = useSettings();
+  const { setLobbyId } = useLobbyId();
   const { currentUser } = useAuth();
 
-  const listenToLobbyData = (lobbyId) => {
-    const unsub = onSnapshot(doc(db, "lobbies", lobbyId), (doc) => {
-      console.log(doc.data());
-      setLobby(doc.data());
-    });
-    unsub();
-  };
   const searchOpenLobby = async () => {
     let querySnapshot;
     switch (settings.gamemode) {
@@ -50,7 +43,7 @@ const useLobbyActions = () => {
           currentDoc = querySnapshot.docs[0];
           currentDocData = currentDoc.data();
           console.log(currentDoc.id);
-          listenToLobbyData(currentDoc.id);
+          setLobbyId(currentDoc.id);
           await updateDoc(doc(db, "lobbies", currentDoc.id), {
             players: arrayUnion(currentUser.uid),
             isOpen: false,
@@ -63,6 +56,9 @@ const useLobbyActions = () => {
         await createNewLobby();
         break;
     }
+  };
+  const playerTemplate = {
+    name: "Anonymous",
   };
   const createNewLobby = async () => {
     let docRef;
@@ -82,13 +78,12 @@ const useLobbyActions = () => {
     switch (settings.gamemode) {
       case 0:
         docRef = await addDoc(collection(db, "lobbies"), {
-          players: [currentUser.uid],
+          players: {
+            [currentUser.uid]: playerTemplate,
+          },
+          settings: { settings },
           isOpen: false,
           maxPlayers: 1,
-          gamemode: settings.gamemode,
-          sourceLang: settings.sourceLang,
-          targetLang: settings.targetLang,
-          wordCount: settings.wordCount,
           words: wordsFetched,
           translation: translationFetched,
         });
@@ -120,8 +115,7 @@ const useLobbyActions = () => {
         });
         break;
     }
-    console.log(docRef.id);
-    listenToLobbyData(docRef.id);
+    setLobbyId(docRef.id);
   };
   const updateLobby = async () => {}; //handleRetry
 

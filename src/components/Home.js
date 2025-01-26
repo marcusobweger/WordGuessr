@@ -11,9 +11,6 @@ import { AppContext } from "../App";
 import { useAuth } from "../utils/authContext";
 import { useSettings } from "../utils/settingsContext";
 import useLobbyActions from "../utils/useLobbyActions";
-import { useLobby } from "../utils/lobbyContext";
-import { useUser } from "../utils/userContext";
-import useUserActions from "../utils/useUserActions";
 function Home() {
   const { setHomeState } = useContext(AppContext);
   const [isLoading, setIsLoading] = useState(false);
@@ -21,7 +18,6 @@ function Home() {
   const navigate = useNavigate();
   const { userLoggedIn } = useAuth();
   const { settings, setSettings } = useSettings();
-  const { lobby } = useLobby();
   const { searchOpenLobby } = useLobbyActions();
 
   // values for generating buttons
@@ -51,7 +47,6 @@ function Home() {
         targetLang: savedTargetLang,
         wordCount: parseInt(savedWordCount),
       });
-    console.log(lobby);
   }, []);
   // save preferences to LocalStorage
   const savePreferences = () => {

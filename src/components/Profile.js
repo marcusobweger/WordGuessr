@@ -1,33 +1,19 @@
-import React, { useEffect, useState } from "react";
+import React from "react";
 import { doSignOut } from "../utils/authUtils";
 import { useNavigate } from "react-router-dom";
-import useUserActions from "../utils/useUserActions";
-import { useUser } from "../utils/userContext";
+import useUserListener from "../utils/useUserListener";
 function Profile() {
   const navigate = useNavigate();
-  const { userData, setUserData } = useUser();
-  const { getCurrentUserData } = useUserActions();
+  const userData = useUserListener();
 
   const handleSignOut = async () => {
     try {
       await doSignOut();
-      setUserData(null);
       navigate("/");
     } catch (error) {
       console.log(error);
     }
   };
-  // get userData of the current USer stored in "users" and update the global context
-  const handleGetUserData = async () => {
-    const fetchedUserData = await getCurrentUserData();
-    if (fetchedUserData !== null) {
-      setUserData(fetchedUserData);
-    }
-  };
-  useEffect(() => {
-    // update user Data on every refresh of the home page
-    handleGetUserData();
-  }, []);
 
   if (!userData) {
     return (
