@@ -19,7 +19,7 @@ const useUserListener = () => {
     // Add a real-time listener
     const unsubscribe = onSnapshot(userDocRef, (docSnapshot) => {
       if (docSnapshot.exists()) {
-        console.log("User data updated:", docSnapshot.data());
+        console.log("Listening to user data:", docSnapshot.data());
         setUserData(docSnapshot.data()); // Update state with user data
       } else {
         console.error("No user document found!");

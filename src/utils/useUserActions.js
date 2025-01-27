@@ -1,6 +1,7 @@
-import { setDoc, doc, updateDoc, getDoc } from "firebase/firestore";
+import { setDoc, doc, updateDoc, getDoc, deleteDoc } from "firebase/firestore";
 import { db } from "./firebase";
 import { useAuth } from "./authContext";
+import { deleteUser } from "firebase/auth";
 const useUserActions = () => {
   const { currentUser } = useAuth();
   const createNewUser = async () => {
@@ -18,7 +19,13 @@ const useUserActions = () => {
       name: name,
     });
   };
+  const deleteAnonymousUser = async () => {
+    if (currentUser?.isAnonymous) {
+      await deleteDoc(doc(db, "users", currentUser.uid));
+      await deleteUser(currentUser);
+    }
+  };
 
-  return { createNewUser, updateUserName };
+  return { createNewUser, updateUserName, deleteAnonymousUser };
 };
 export default useUserActions;
