@@ -9,13 +9,22 @@
   padding-top: 5px;
   margin: 0;
   top: 0;
-  background: var(--bg-fade);
-  /*
-  background: blueviolet;
-  margin-bottom: 14px;
-  */
   z-index: 1000;
   flex-wrap: nowrap;
+  background: transparent;
+  backdrop-filter: blur(10px);
+}
+
+.navbar::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: var(--bg-fade);
+  z-index: -1;
+  opacity: 0.8;
 }
 
 .logo {
@@ -62,7 +71,7 @@
   height: clamp(25px, 5vw, 35px);
   width: auto;
 }
-.crown {
+.leaderboard {
   height: clamp(25px, 5vw, 35px);
   width: auto;
 }

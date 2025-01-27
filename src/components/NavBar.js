@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import logo from "../icons/wordguessr_logo1.png";
 import userImage from "../icons/user.png";
-import crown from "../icons/crown.png";
+import podium from "../icons/podium.png";
 import "../styling/NavBar.css";
 import { useAuth } from "../utils/authContext";
 
@@ -22,7 +22,7 @@ const NavBar = () => {
           <button className="rightNavButtons">Enter Code</button>
         </Link>
         <Link to="/leaderboard" className="link">
-          <img src={crown} alt="Leaderboard" className="crown" />
+          <img src={podium} alt="Leaderboard" className="leaderboard" />
         </Link>
         <Link to="/about" className="link">
           <button className="rightNavButtons">About</button>
