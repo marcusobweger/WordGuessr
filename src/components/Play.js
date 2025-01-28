@@ -7,7 +7,6 @@ import retry from "../icons/reload.png";
 import { fetchRandomWords, fetchTranslation } from "../utils/utils";
 import ProgressBar from "./ProgressBar";
 import Summary from "./Summary";
-import { useSettings } from "../utils/settingsContext";
 import useLobbyListener from "../utils/useLobbyListener";
 import { useAuth } from "../utils/authContext";
 import useUserListener from "../utils/useUserListener";
@@ -22,28 +21,15 @@ function Play() {
   const [guess, setGuess] = useState("");
   const [feedback, setFeedback] = useState("");
   const [closeGuessCounter, setCloseGuessCounter] = useState(0);
-  const [isNewPb, setIsNewPb] = useState(false);
-
-  /*
-  //user
-  const [highScores, setHighScores] = useState([]);
-  */
 
   //lobby
   const [finished, setFinished] = useState(false);
   const [retryLoading, setRetryLoading] = useState(false);
-  /*
-  const [score, setScore] = useState(0);
-  const [guesses, setGuesses] = useState([]);
-  const [scores, setScores] = useState([]);
-  const [times, setTimes] = useState([]);
-  */
 
   const inputRef = useRef(null);
   const progressBarRef = useRef(null);
   const feedbackTimeoutRef = useRef(null);
 
-  const { settings, setSettings } = useSettings();
   const { lobbyData, lobbyDataLoading } = useLobbyListener();
   const { userData, userDataLoading } = useUserListener();
   const { currentUser } = useAuth();
@@ -71,7 +57,6 @@ function Play() {
     });
     if (finished) {
       let scoreSum = 0;
-      setIsNewPb(false);
 
       Object.values(lobbyData.players[currentUser.uid]?.scores).forEach((myScore) => {
         scoreSum += myScore;
@@ -80,6 +65,7 @@ function Play() {
 
       if (scoreSum > userData.highScores[lobbyData.settings.wordCount]) {
         handleUpdateUserData({ [`highScores.${lobbyData.settings.wordCount}`]: scoreSum });
+        handleUpdateLobbyData({ [`players.${currentUser.uid}.isNewPb`]: true });
       }
     }
   };
@@ -202,6 +188,7 @@ function Play() {
       [`players.${currentUser.uid}.scores`]: Array(lobbyData.settings.wordCount).fill(0),
       [`players.${currentUser.uid}.times`]: Array(lobbyData.settings.wordCount).fill(0),
       [`players.${currentUser.uid}.guesses`]: Array(lobbyData.settings.wordCount).fill(0),
+      [`players.${currentUser.uid}.isNewPb`]: false,
     });
     let wordsFetched = [];
     let translationFetched = [];
@@ -290,23 +277,7 @@ function Play() {
       ) : (
         <>
           <div className="container page shadow">
-            {/*
-            <Summary
-              highScores={userData.highScores}
-              score={lobbyData.players}
-              wordCount={wordCount}
-              isNewPb={isNewPb}
-              words={words}
-              retryWords={retryWords}
-              translation={translation}
-              retryTranslation={retryTranslation}
-              guesses={guesses}
-              scores={scores}
-              times={times}
-              sourceLang={sourceLang}
-              targetLang={targetLang}
-            />
-            */}
+            <Summary lobbyData={lobbyData} userData={userData} currentUser={currentUser} />
           </div>
 
           <div className="container">

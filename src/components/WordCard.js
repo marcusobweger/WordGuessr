@@ -20,45 +20,50 @@ const iconMap = {
   en: en,
 };
 
-const WordCard = ({
-  words,
-  retryWords,
-  translation,
-  retryTranslation,
-  guesses,
-  scores,
-  times,
-  sourceLang,
-  targetLang,
-  wordCount,
-}) => {
-  const targetLangIcon = iconMap[targetLang];
-  const sourceLangIcon = iconMap[sourceLang];
-  return Array.from({ length: wordCount }, (_, index) => (
+const WordCard = ({ lobbyData, userData, currentUser }) => {
+  console.log(lobbyData.settings.wordCount);
+  const targetLangIcon = iconMap[lobbyData.settings.targetLang];
+  const sourceLangIcon = iconMap[lobbyData.settings.sourceLang];
+  // error because invalid array index undefined reading '0'
+  return Array.from({ length: lobbyData.settings.wordCount }, (_, index) => (
     <div key={index} className="wordCard col-12 col-sm-12 col-md col-lg">
       <div className="row">
         <div className="col wordCardTime">
           <img src={time} className="time" alt="time icon"></img>
-          {times[index] !== 0 ? <>{times[index] / 10}s</> : <>-:-</>}
+          {lobbyData.players[currentUser.uid].times[index] !== 0 ? (
+            <>{lobbyData.players[currentUser.uid].times[index] / 10}s</>
+          ) : (
+            <>-:-</>
+          )}
         </div>
         <div className="col wordCardScore">
-          <CountUp end={scores[index]} duration={3} separator="" />
+          <CountUp
+            end={lobbyData.players[currentUser.uid].scores[index]}
+            duration={3}
+            separator=""
+          />
         </div>
         <div className="col wordCardNumber">
-          {index + 1}/{wordCount}
+          {index + 1}/{lobbyData.settings.wordCount}
         </div>
       </div>
       <div className="row wordCardWords">
-        <img className="wordCardIcons" src={targetLangIcon} alt={`${targetLang} icon`}></img>
-        {!retryTranslation ? translation[index] : retryTranslation[index]}
+        <img
+          className="wordCardIcons"
+          src={targetLangIcon}
+          alt={`${lobbyData.settings.targetLang} icon`}></img>
+        {lobbyData.settings.translation[index]}
       </div>
       <div className="row wordCardWords">
-        <img className="wordCardIcons" src={sourceLangIcon} alt={`${sourceLang} icon`}></img>
-        {!retryWords ? words[index] : retryWords[index]}
+        <img
+          className="wordCardIcons"
+          src={sourceLangIcon}
+          alt={`${lobbyData.settings.sourceLang} icon`}></img>
+        {lobbyData.settings.words[index]}
       </div>
       <div className="row wordCardWords">
         <img src={user} className="wordCardIcons" alt="user's guess"></img>
-        {guesses[index]}
+        {lobbyData.players[currentUser.uid].guesses[index]}
       </div>
     </div>
   ));
