@@ -5,10 +5,10 @@ import useUserActions from "../utils/useUserActions";
 const EnterUserName = () => {
   const [userName, setUserName] = useState("");
   const navigate = useNavigate();
-  const { updateUserName } = useUserActions();
+  const { updateUserData } = useUserActions();
   const handleSetUserName = async (e) => {
     e.preventDefault();
-    await updateUserName(userName);
+    await updateUserData({ name: userName });
     navigate("/");
   };
   return (

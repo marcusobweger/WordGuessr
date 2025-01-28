@@ -9,7 +9,7 @@ export default function Continue() {
   const [isSigningIn, setIsSigningIn] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [hasFinishedSigningIn, setHasFinishedSigningIn] = useState(false);
-  const userData = useUserListener();
+  const { userData, userDataLoading } = useUserListener();
 
   const { createNewUser } = useUserActions();
 
@@ -19,15 +19,15 @@ export default function Continue() {
     }
   }, [hasFinishedSigningIn]);
   useEffect(() => {
-    if (userData) {
+    if (!userDataLoading) {
       setIsLoading(false);
       if (userData.name === "Anonymous") {
         navigate("/username");
       } else {
-        navigate("/");
+        navigate("/play");
       }
     }
-  }, [userData]);
+  }, [userDataLoading]);
   const handleCreateNewUser = async () => {
     try {
       await createNewUser();
@@ -54,14 +54,14 @@ export default function Continue() {
     }
   };
   const GuestButtonContent = () => {
-    if (!isLoading) {
-      return "Continue as Guest";
-    } else {
+    if (isLoading) {
       return (
         <div className="spinner-border text-light" role="status">
           <span className="visually-hidden">Loading...</span>
         </div>
       );
+    } else {
+      return "Continue as Guest";
     }
   };
   return (

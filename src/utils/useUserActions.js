@@ -10,14 +10,17 @@ const useUserActions = () => {
     if (!userRef.exists()) {
       await setDoc(docRef, {
         name: "Anonymous",
-        highScores: [],
+        highScores: {
+          3: 0,
+          5: 0,
+          10: 0,
+          15: 0,
+        },
       });
     }
   };
-  const updateUserName = async (name) => {
-    await updateDoc(doc(db, "users", currentUser.uid), {
-      name: name,
-    });
+  const updateUserData = async (updatedFields) => {
+    await updateDoc(doc(db, "users", currentUser.uid), updatedFields);
   };
   const deleteAnonymousUser = async () => {
     if (currentUser?.isAnonymous) {
@@ -26,6 +29,6 @@ const useUserActions = () => {
     }
   };
 
-  return { createNewUser, updateUserName, deleteAnonymousUser };
+  return { createNewUser, updateUserData, deleteAnonymousUser };
 };
 export default useUserActions;

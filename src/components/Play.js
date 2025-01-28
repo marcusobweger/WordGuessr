@@ -7,12 +7,14 @@ import retry from "../icons/reload.png";
 import { fetchRandomWords, fetchTranslation } from "../utils/utils";
 import ProgressBar from "./ProgressBar";
 import Summary from "./Summary";
-import { db } from "../utils/firebase";
-import { onSnapshot, query, collection, getDocs, doc } from "firebase/firestore";
 import { useSettings } from "../utils/settingsContext";
+import useLobbyListener from "../utils/useLobbyListener";
+import { useAuth } from "../utils/authContext";
+import useUserListener from "../utils/useUserListener";
+import useLobbyActions from "../utils/useLobbyActions";
+import useUserActions from "../utils/useUserActions";
 
 function Play() {
-  /*
   const navigate = useNavigate();
 
   //local
@@ -22,103 +24,69 @@ function Play() {
   const [closeGuessCounter, setCloseGuessCounter] = useState(0);
   const [isNewPb, setIsNewPb] = useState(false);
 
+  /*
   //user
   const [highScores, setHighScores] = useState([]);
+  */
 
   //lobby
   const [finished, setFinished] = useState(false);
   const [retryLoading, setRetryLoading] = useState(false);
+  /*
   const [score, setScore] = useState(0);
   const [guesses, setGuesses] = useState([]);
   const [scores, setScores] = useState([]);
   const [times, setTimes] = useState([]);
+  */
 
   const inputRef = useRef(null);
   const progressBarRef = useRef(null);
   const feedbackTimeoutRef = useRef(null);
 
   const { settings, setSettings } = useSettings();
+  const { lobbyData, lobbyDataLoading } = useLobbyListener();
+  const { userData, userDataLoading } = useUserListener();
+  const { currentUser } = useAuth();
+  const { updateLobbyData } = useLobbyActions();
+  const { updateUserData } = useUserActions();
 
-  useEffect(() => {
-    setGuesses(Array(settings.wordCount).fill("no guess"));
-    setScores(Array(settings.wordCount).fill(0));
-    setTimes(Array(settings.wordCount).fill(0));
-  }, []);
-
-  useEffect(() => {
-    let scoreSum = 0;
-
+  const handleUpdateLobbyData = async (updatedFields) => {
+    try {
+      await updateLobbyData(updatedFields);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+  const handleUpdateUserData = async (updatedFields) => {
+    try {
+      await updateUserData(updatedFields);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+  console.log(lobbyData);
+  const handleFinished = () => {
+    handleUpdateLobbyData({
+      [`players.${currentUser.uid}.finished`]: finished,
+    });
     if (finished) {
+      let scoreSum = 0;
       setIsNewPb(false);
 
-      scores.forEach((myScore) => {
+      Object.values(lobbyData.players[currentUser.uid]?.scores).forEach((myScore) => {
         scoreSum += myScore;
       });
-      setScore(scoreSum);
+      handleUpdateLobbyData({ [`players.${currentUser.uid}.score`]: scoreSum });
 
-      switch (settings.wordCount) {
-        case 3:
-          if (scoreSum > highScore3) {
-            setHighScore3(scoreSum);
-            localStorage.setItem("highScore3", scoreSum);
-            setIsNewPb(true);
-          }
-          break;
-        case 5:
-          if (scoreSum > highScore5) {
-            setHighScore5(scoreSum);
-            localStorage.setItem("highScore5", scoreSum);
-            setIsNewPb(true);
-          }
-          break;
-
-        case 10:
-          if (scoreSum > highScore10) {
-            setHighScore10(scoreSum);
-            localStorage.setItem("highScore10", scoreSum);
-            setIsNewPb(true);
-          }
-          break;
-
-        case 15:
-          if (scoreSum > highScore15) {
-            setHighScore15(scoreSum);
-            localStorage.setItem("highScore15", scoreSum);
-            setIsNewPb(true);
-          }
-          break;
+      if (scoreSum > userData.highScores[lobbyData.settings.wordCount]) {
+        handleUpdateUserData({ [`highScores.${lobbyData.settings.wordCount}`]: scoreSum });
       }
     }
+  };
+  useEffect(() => {
+    handleFinished();
   }, [finished]);
 
-  const saveGuessAtIndex = (newGuess, index) => {
-    setGuesses((prevGuess) => {
-      const updatedGuesses = [...prevGuess];
-      updatedGuesses.splice(index, 1, newGuess);
-      return updatedGuesses;
-    });
-  };
-  const saveScoreAtIndex = (newScore, index) => {
-    setScores((prevScore) => {
-      const updatedScores = [...prevScore];
-      updatedScores.splice(index, 1, newScore);
-      return updatedScores;
-    });
-  };
-  const saveTimeAtIndex = (newTime, index) => {
-    setTimes((prevTime) => {
-      const updatedTimes = [...prevTime];
-      updatedTimes.splice(index, 1, newTime);
-      return updatedTimes;
-    });
-  };
-  const saveHighScoreAtIndex = (newHighScore, index) => {
-    setHighScores((prevHighScore) => {
-      const updatedHighScores = [...prevHighScore];
-      updatedHighScores.splice(index, 1, newHighScore);
-      return updatedHighScores;
-    });
-  };
   // handle the displayed feedback timeout
   useEffect(() => {
     if (feedback !== "") {
@@ -141,22 +109,27 @@ function Play() {
   const handleGuessSubmit = (e) => {
     e.preventDefault();
     if (guess !== "") {
-      if (
-        guess.trim().toLowerCase() === retryWords[currentIndex].toLowerCase() ||
-        guess.trim().toLowerCase() === words[currentIndex].toLowerCase()
-      ) {
+      if (guess.trim().toLowerCase() === lobbyData.words[currentIndex]?.toLowerCase()) {
         setFeedback("correct!");
 
         if (progressBarRef.current) {
           let timeLeft = progressBarRef.current.getTimeLeft();
-          saveScoreAtIndex((timeLeft / 100).toFixed(0) * 90 + 1000, currentIndex);
-          saveTimeAtIndex(((10000 - timeLeft) / 100).toFixed(0), currentIndex);
+          handleUpdateLobbyData({
+            [`players.${currentUser.uid}.scores.${currentIndex}`]:
+              (timeLeft / 100).toFixed(0) * 90 + 1000,
+            [`players.${currentUser.uid}.times.${currentIndex}`]: (
+              (10000 - timeLeft) /
+              100
+            ).toFixed(0),
+          });
         }
         setGuess("");
         setCloseGuessCounter(0);
-        saveGuessAtIndex(guess, currentIndex);
+        handleUpdateLobbyData({
+          [`players.${currentUser.uid}.guesses.${currentIndex}`]: guess,
+        });
 
-        if (currentIndex < retryTranslation.length - 1 || currentIndex < translation.length - 1) {
+        if (currentIndex < lobbyData.translation?.length - 1) {
           setCurrentIndex(currentIndex + 1);
         } else {
           setFinished(true);
@@ -167,32 +140,36 @@ function Play() {
           .trim()
           .toLowerCase()
           .includes(
-            retryWords[currentIndex].toLowerCase().substring(0, 3),
-            retryWords[currentIndex].toLowerCase().substring(3, 6)
-          ) ||
-        guess
-          .trim()
-          .toLowerCase()
-          .includes(
-            words[currentIndex].toLowerCase().substring(0, 3),
-            words[currentIndex].toLowerCase().substring(3, 6)
+            lobbyData.words[currentIndex]?.toLowerCase().substring(0, 3),
+            lobbyData.words[currentIndex]?.toLowerCase().substring(3, 6)
           )
       ) {
         setFeedback("close!");
 
         if (closeGuessCounter === 0 && progressBarRef.current) {
-          saveGuessAtIndex(guess, currentIndex);
-          let timeLeft = progressBarRef.current.getTimeLeft();
-          saveScoreAtIndex(((timeLeft / 100).toFixed(0) * 90 + 1000) / 2, currentIndex);
-          saveTimeAtIndex(((10000 - timeLeft) / 100).toFixed(0), currentIndex);
-          setCloseGuessCounter(closeGuessCounter + 1);
+          handleUpdateLobbyData({
+            [`players.${currentUser.uid}.guesses.${currentIndex}`]: guess,
+          });
+          if (progressBarRef.current) {
+            let timeLeft = progressBarRef.current.getTimeLeft();
+            handleUpdateLobbyData({
+              [`players.${currentUser.uid}.scores.${currentIndex}`]:
+                ((timeLeft / 100).toFixed(0) * 90 + 1000) / 2,
+              [`players.${currentUser.uid}.times.${currentIndex}`]: (
+                (10000 - timeLeft) /
+                100
+              ).toFixed(0),
+            });
+            setCloseGuessCounter(closeGuessCounter + 1);
+          }
         }
-
         setGuess("");
       } else {
         setFeedback("incorrect!");
         if (closeGuessCounter === 0) {
-          saveGuessAtIndex(guess, currentIndex);
+          handleUpdateLobbyData({
+            [`players.${currentUser.uid}.guesses.${currentIndex}`]: guess,
+          });
         }
         setGuess("");
       }
@@ -200,7 +177,7 @@ function Play() {
   };
 
   const handleSkip = () => {
-    if (currentIndex < retryTranslation.length - 1 || currentIndex < translation.length - 1) {
+    if (currentIndex < lobbyData.translation.length - 1) {
       setCurrentIndex(currentIndex + 1);
       setGuess("");
       setFeedback("skipped!");
@@ -217,19 +194,24 @@ function Play() {
   };
   const handleRetry = async () => {
     setRetryLoading(true);
-    setScore(0);
     setCloseGuessCounter(0);
     setFeedback("");
     setGuess("");
-    setGuesses(Array(settings.wordCount).fill("no guess"));
-    setScores(Array(settings.wordCount).fill(0));
-    setTimes(Array(settings.wordCount).fill(0));
-
+    handleUpdateLobbyData({
+      [`players.${currentUser.uid}.score`]: 0,
+      [`players.${currentUser.uid}.scores`]: Array(lobbyData.settings.wordCount).fill(0),
+      [`players.${currentUser.uid}.times`]: Array(lobbyData.settings.wordCount).fill(0),
+      [`players.${currentUser.uid}.guesses`]: Array(lobbyData.settings.wordCount).fill(0),
+    });
     let wordsFetched = [];
     let translationFetched = [];
     try {
-      wordsFetched = await fetchRandomWords(wordCount);
-      translationFetched = await fetchTranslation(wordsFetched, sourceLang, targetLang);
+      wordsFetched = await fetchRandomWords(lobbyData.settings.wordCount);
+      translationFetched = await fetchTranslation(
+        wordsFetched,
+        lobbyData.settings.sourceLang,
+        lobbyData.settings.targetLang
+      );
     } catch (error) {
       console.error("Error during the play process:", error);
     } finally {
@@ -237,16 +219,26 @@ function Play() {
         setCurrentIndex(0);
         setRetryLoading(false);
         setFinished(false);
-        setRetryTranslation(translationFetched);
-        setRetryWords(wordsFetched);
+        handleUpdateLobbyData({
+          [`players.${currentUser.uid}.finished`]: false,
+          words: wordsFetched,
+          translation: translationFetched,
+        });
       } else {
         console.error("Failed to fetch data for play.");
       }
     }
   };
+  if (lobbyDataLoading || userDataLoading || !lobbyData) {
+    return (
+      <div className="spinner-border text-light" role="status">
+        <span className="visually-hidden">Loading...</span>
+      </div>
+    );
+  }
   return (
     <div className="container">
-      {!finished ? (
+      {!lobbyData.players[currentUser.uid]?.finished ? (
         <>
           <div className="container page shadow">
             <div className="row align-items-center">
@@ -255,17 +247,17 @@ function Play() {
                   ref={progressBarRef}
                   handleSkip={handleSkip}
                   currentIndex={currentIndex}
-                  finished={finished}
+                  finished={lobbyData.players[currentUser.uid]?.finished}
                 />
               </div>
               <div className="col-3 col-sm-3 col-lg-2">
                 <div className="progressNumber">
-                  {currentIndex + 1}/{wordCount}
+                  {currentIndex + 1}/{lobbyData.settings.wordCount}
                 </div>
               </div>
             </div>
             <div className="row">
-              <div className="translation">{retryTranslation[currentIndex]}</div>
+              <div className="translation">{lobbyData.translation[currentIndex]}</div>
             </div>
             <div className="row">
               <form onSubmit={handleGuessSubmit}>
@@ -298,12 +290,10 @@ function Play() {
       ) : (
         <>
           <div className="container page shadow">
+            {/*
             <Summary
-              highScore3={highScore3}
-              highScore5={highScore5}
-              highScore10={highScore10}
-              highScore15={highScore15}
-              score={score}
+              highScores={userData.highScores}
+              score={lobbyData.players}
               wordCount={wordCount}
               isNewPb={isNewPb}
               words={words}
@@ -316,6 +306,7 @@ function Play() {
               sourceLang={sourceLang}
               targetLang={targetLang}
             />
+            */}
           </div>
 
           <div className="container">
@@ -338,7 +329,6 @@ function Play() {
       )}
     </div>
   );
-  */
 }
 
 export default Play;

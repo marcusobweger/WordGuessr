@@ -6,6 +6,7 @@ import { useLobbyId } from "./lobbyIdContext";
 const useLobbyListener = () => {
   const { lobbyId } = useLobbyId(); // Get the currently logged-in user
   const [lobbyData, setLobbyData] = useState(null);
+  const [lobbyDataLoading, setLobbyDataLoading] = useState(null);
 
   useEffect(() => {
     // Ensure the currentUser is available
@@ -18,7 +19,7 @@ const useLobbyListener = () => {
 
     const unsubscribe = onSnapshot(lobbyDocRef, (docSnapshot) => {
       if (docSnapshot.exists()) {
-        console.log("Lobby data updated:", docSnapshot.data());
+        console.log("Listening to lobby data:", docSnapshot.data());
         setLobbyData(docSnapshot.data()); // Update state with user data
       } else {
         console.error("No lobby document found!");
@@ -31,7 +32,7 @@ const useLobbyListener = () => {
     };
   }, [lobbyId]);
 
-  return lobbyData; // Return the user data for consumption in components
+  return { lobbyData, lobbyDataLoading }; // Return the user data for consumption in components
 };
 
 export default useLobbyListener;

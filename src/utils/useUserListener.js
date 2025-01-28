@@ -6,6 +6,7 @@ import { useAuth } from "./authContext"; // Assuming this provides currentUser
 const useUserListener = () => {
   const { currentUser } = useAuth(); // Get the currently logged-in user
   const [userData, setUserData] = useState(null);
+  const [userDataLoading, setUserDataLoading] = useState(true);
 
   useEffect(() => {
     // Ensure the currentUser is available
@@ -21,6 +22,7 @@ const useUserListener = () => {
       if (docSnapshot.exists()) {
         console.log("Listening to user data:", docSnapshot.data());
         setUserData(docSnapshot.data()); // Update state with user data
+        setUserDataLoading(false);
       } else {
         console.error("No user document found!");
       }
@@ -32,7 +34,7 @@ const useUserListener = () => {
     };
   }, [currentUser]);
 
-  return userData; // Return the user data for consumption in components
+  return { userData, userDataLoading }; // Return the user data for consumption in components
 };
 
 export default useUserListener;

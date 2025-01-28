@@ -20,15 +20,18 @@ import { useNavigate } from "react-router-dom";
 
 const useLobbyActions = () => {
   const { settings } = useSettings();
-  const { setLobbyId } = useLobbyId();
+  const { lobbyId, setLobbyId } = useLobbyId();
   const { currentUser } = useAuth();
-  const userData = useUserListener();
+  const { userData, userDataLoading } = useUserListener();
   const navigate = useNavigate();
 
   const searchOpenLobby = async () => {
+    console.log(lobbyId);
     let querySnapshot;
+    console.log();
     switch (settings.gamemode) {
       case 0:
+        console.log("play");
         await createNewLobby();
         navigate("/play");
         break;
@@ -58,9 +61,9 @@ const useLobbyActions = () => {
                   [currentUser.uid]: {
                     name: userData.name,
                     score: 0,
-                    guesses: [],
-                    scores: [],
-                    times: [],
+                    guesses: Array(settings.wordCount).fill(0),
+                    scores: Array(settings.wordCount).fill(0),
+                    times: Array(settings.wordCount).fill(0),
                     finished: false,
                     retry: false,
                   },
@@ -106,14 +109,14 @@ const useLobbyActions = () => {
             [currentUser.uid]: {
               name: userData.name,
               score: 0,
-              guesses: [],
-              scores: [],
-              times: [],
+              guesses: Array(settings.wordCount).fill(0),
+              scores: Array(settings.wordCount).fill(0),
+              times: Array(settings.wordCount).fill(0),
               finished: false,
               retry: false,
             },
           },
-          settings: { settings },
+          settings: settings,
           isOpen: false,
           maxPlayers: 1,
           words: wordsFetched,
@@ -126,19 +129,16 @@ const useLobbyActions = () => {
             [currentUser.uid]: {
               name: userData.name,
               score: 0,
-              guesses: [],
-              scores: [],
-              times: [],
+              guesses: Array(settings.wordCount).fill(0),
+              scores: Array(settings.wordCount).fill(0),
+              times: Array(settings.wordCount).fill(0),
               finished: false,
               retry: false,
             },
           },
           isOpen: true,
           maxPlayers: 2,
-          gamemode: settings.gamemode,
-          sourceLang: settings.sourceLang,
-          targetLang: settings.targetLang,
-          wordCount: settings.wordCount,
+          settings: settings,
           words: wordsFetched,
           translation: translationFetched,
         });
@@ -149,19 +149,16 @@ const useLobbyActions = () => {
             [currentUser.uid]: {
               name: userData.name,
               score: 0,
-              guesses: [],
-              scores: [],
-              times: [],
+              guesses: Array(settings.wordCount).fill(0),
+              scores: Array(settings.wordCount).fill(0),
+              times: Array(settings.wordCount).fill(0),
               finished: false,
               retry: false,
             },
           },
           isOpen: true,
           maxPlayers: 8,
-          gamemode: settings.gamemode,
-          sourceLang: settings.sourceLang,
-          targetLang: settings.targetLang,
-          wordCount: settings.wordCount,
+          settings: settings,
           words: wordsFetched,
           translation: translationFetched,
         });
@@ -169,8 +166,12 @@ const useLobbyActions = () => {
     }
     setLobbyId(docRef.id);
   };
-  const updateLobby = async () => {}; //handleRetry
+  const updateLobbyData = async (updatedFields) => {
+    await updateDoc(doc(db, "lobbies", lobbyId), updatedFields);
+  }; //handleRetry and player data updates
 
-  return { searchOpenLobby };
+  const joinLobbyWithCode = async () => {};
+
+  return { searchOpenLobby, updateLobbyData };
 };
 export default useLobbyActions;

@@ -12,6 +12,7 @@ import { useAuth } from "../utils/authContext";
 import { useSettings } from "../utils/settingsContext";
 import useLobbyActions from "../utils/useLobbyActions";
 import useLobbyListener from "../utils/useLobbyListener";
+import useUserListener from "../utils/useUserListener";
 function Home() {
   const { setHomeState } = useContext(AppContext);
   const [isLoading, setIsLoading] = useState(false);
@@ -21,6 +22,7 @@ function Home() {
   const { settings, setSettings } = useSettings();
   const { searchOpenLobby } = useLobbyActions();
   const lobbyData = useLobbyListener();
+  const userDataLoading = useUserListener();
 
   // values for generating buttons
   const targetLanguages = ["ja", "ko", "de", "it", "fr", "es"];
@@ -68,6 +70,7 @@ function Home() {
     setIsLoading(true);
     savePreferences();
     if (userLoggedIn) {
+      console.log("test");
       await searchOpenLobby();
     } else {
       navigate("/continue");

@@ -5,7 +5,7 @@ import useUserListener from "../utils/useUserListener";
 import useUserActions from "../utils/useUserActions";
 function Profile() {
   const navigate = useNavigate();
-  const userData = useUserListener();
+  const { userData, userDataLoading } = useUserListener();
   const { deleteAnonymousUser } = useUserActions();
 
   const handleSignOut = async () => {
@@ -18,7 +18,7 @@ function Profile() {
     }
   };
 
-  if (!userData) {
+  if (userDataLoading) {
     return (
       <div className="spinner-border text-light" role="status">
         <span className="visually-hidden">Loading...</span>
@@ -27,8 +27,7 @@ function Profile() {
   }
   return (
     <div>
-      {userData && <h1 className="title">{userData.name}</h1>}
-      Profile
+      <h1 className="title">{userData.name}</h1> Profile
       <button onClick={handleSignOut}>Sign Out</button>
     </div>
   );

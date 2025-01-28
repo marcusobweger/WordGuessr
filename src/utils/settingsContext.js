@@ -12,8 +12,6 @@ export const SettingsProvider = ({ children }) => {
     sourceLang: "en",
     targetLang: "ja",
     wordCount: 3,
-    words: [],
-    translation: [],
   });
 
   const value = {
