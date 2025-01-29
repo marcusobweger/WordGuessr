@@ -61,9 +61,9 @@ const useLobbyActions = () => {
                   [currentUser.uid]: {
                     name: userData.name,
                     score: 0,
-                    guesses: Array(settings.wordCount).fill(0),
-                    scores: Array(settings.wordCount).fill(0),
-                    times: Array(settings.wordCount).fill(0),
+                    guesses: {},
+                    scores: {},
+                    times: {},
                     isNewPb: false,
                     finished: false,
                     retry: false,
@@ -101,6 +101,7 @@ const useLobbyActions = () => {
       );
     } catch (error) {
       console.error("Error during the play process:", error);
+      return;
     }
 
     switch (settings.gamemode) {
@@ -110,9 +111,9 @@ const useLobbyActions = () => {
             [currentUser.uid]: {
               name: userData.name,
               score: 0,
-              guesses: Array(settings.wordCount).fill(0),
-              scores: Array(settings.wordCount).fill(0),
-              times: Array(settings.wordCount).fill(0),
+              guesses: {},
+              scores: {},
+              times: {},
               isNewPb: false,
               finished: false,
               retry: false,
@@ -131,9 +132,9 @@ const useLobbyActions = () => {
             [currentUser.uid]: {
               name: userData.name,
               score: 0,
-              guesses: Array(settings.wordCount).fill(0),
-              scores: Array(settings.wordCount).fill(0),
-              times: Array(settings.wordCount).fill(0),
+              guesses: {},
+              scores: {},
+              times: {},
               isNewPb: false,
               finished: false,
               retry: false,
@@ -152,9 +153,9 @@ const useLobbyActions = () => {
             [currentUser.uid]: {
               name: userData.name,
               score: 0,
-              guesses: Array(settings.wordCount).fill(0),
-              scores: Array(settings.wordCount).fill(0),
-              times: Array(settings.wordCount).fill(0),
+              guesses: {},
+              scores: {},
+              times: {},
               isNewPb: false,
               finished: false,
               retry: false,
@@ -173,9 +174,12 @@ const useLobbyActions = () => {
   const updateLobbyData = async (updatedFields) => {
     await updateDoc(doc(db, "lobbies", lobbyId), updatedFields);
   }; //handleRetry and player data updates
+  const updateLobbyDataMerge = async (updatedFields) => {
+    await setDoc(doc(db, "lobbies", lobbyId), updatedFields, { merge: true });
+  }; //handleRetry and player data updates
 
   const joinLobbyWithCode = async () => {};
 
-  return { searchOpenLobby, updateLobbyData };
+  return { searchOpenLobby, updateLobbyData, updateLobbyDataMerge };
 };
 export default useLobbyActions;

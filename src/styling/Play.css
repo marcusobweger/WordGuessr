@@ -91,8 +91,9 @@
   border-radius: 15px;
 }
 .fire {
-  margin-left: 10px;
-  height: clamp(40px, 5vw, 60px);
+  align-self: auto;
+  margin-left: 8px;
+  height: clamp(30px, 5vw, 50px);
 }
 .score {
   font-size: clamp(40px, 5vw, 60px);

@@ -12,7 +12,7 @@ export default function Lobby() {
       <div className="container page">
         <div className="row">{lobbyId}</div>
         <div className="row">
-          <PlayerCard />
+          <PlayerCard lobbyData={lobbyData} />
         </div>
       </div>
     </div>

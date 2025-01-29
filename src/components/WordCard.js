@@ -21,20 +21,19 @@ const iconMap = {
 };
 
 const WordCard = ({ lobbyData, userData, currentUser }) => {
-  console.log(lobbyData.settings.wordCount);
   const targetLangIcon = iconMap[lobbyData.settings.targetLang];
   const sourceLangIcon = iconMap[lobbyData.settings.sourceLang];
-  // error because invalid array index undefined reading '0'
   return Array.from({ length: lobbyData.settings.wordCount }, (_, index) => (
     <div key={index} className="wordCard col-12 col-sm-12 col-md col-lg">
       <div className="row">
         <div className="col wordCardTime">
           <img src={time} className="time" alt="time icon"></img>
-          {lobbyData.players[currentUser.uid].times[index] !== 0 ? (
-            <>{lobbyData.players[currentUser.uid].times[index] / 10}s</>
+          {lobbyData.players[currentUser.uid].times[index] ? (
+            <>{lobbyData.players[currentUser.uid].times[index] / 10}</>
           ) : (
-            <>-:-</>
+            0
           )}
+          s
         </div>
         <div className="col wordCardScore">
           <CountUp
@@ -52,18 +51,22 @@ const WordCard = ({ lobbyData, userData, currentUser }) => {
           className="wordCardIcons"
           src={targetLangIcon}
           alt={`${lobbyData.settings.targetLang} icon`}></img>
-        {lobbyData.settings.translation[index]}
+        {lobbyData.translation[index]}
       </div>
       <div className="row wordCardWords">
         <img
           className="wordCardIcons"
           src={sourceLangIcon}
           alt={`${lobbyData.settings.sourceLang} icon`}></img>
-        {lobbyData.settings.words[index]}
+        {lobbyData.words[index]}
       </div>
       <div className="row wordCardWords">
         <img src={user} className="wordCardIcons" alt="user's guess"></img>
-        {lobbyData.players[currentUser.uid].guesses[index]}
+        {lobbyData.players[currentUser.uid].guesses[index] ? (
+          <>{lobbyData.players[currentUser.uid].guesses[index]}</>
+        ) : (
+          "no guess"
+        )}
       </div>
     </div>
   ));

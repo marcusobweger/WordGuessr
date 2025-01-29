@@ -9,18 +9,12 @@ const Summary = ({ lobbyData, userData, currentUser }) => {
       <div className="row">
         <div className="score col-12 col-sm-12 col-lg-6">
           Score:
-          {lobbyData.players[currentUser.uid]?.score !== 0 ? (
-            <>
-              <CountUp
-                end={lobbyData.players[currentUser.uid]?.score}
-                duration={3}
-                separator=""
-                prefix=" "
-              />
-            </>
-          ) : (
-            <>&nbsp;-:-</>
-          )}
+          <CountUp
+            end={lobbyData.players[currentUser.uid]?.score}
+            duration={3}
+            separator=""
+            prefix=" "
+          />
           {lobbyData.players[currentUser.uid]?.isNewPb && (
             <img src={fire} className="fire" alt="new highScore"></img>
           )}

@@ -10,12 +10,7 @@ const useUserActions = () => {
     if (!userRef.exists()) {
       await setDoc(docRef, {
         name: "Anonymous",
-        highScores: {
-          3: 0,
-          5: 0,
-          10: 0,
-          15: 0,
-        },
+        highScores: {},
       });
     }
   };

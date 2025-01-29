@@ -33,7 +33,7 @@ function Play() {
   const { lobbyData, lobbyDataLoading } = useLobbyListener();
   const { userData, userDataLoading } = useUserListener();
   const { currentUser } = useAuth();
-  const { updateLobbyData } = useLobbyActions();
+  const { updateLobbyData, updateLobbyDataMerge } = useLobbyActions();
   const { updateUserData } = useUserActions();
 
   const handleUpdateLobbyData = async (updatedFields) => {
@@ -57,10 +57,14 @@ function Play() {
     });
     if (finished) {
       let scoreSum = 0;
-
-      Object.values(lobbyData.players[currentUser.uid]?.scores).forEach((myScore) => {
-        scoreSum += myScore;
-      });
+      for (
+        let index = 0;
+        index < Object.keys(lobbyData.players[currentUser.uid]?.scores).length;
+        index++
+      ) {
+        scoreSum += lobbyData.players[currentUser.uid]?.scores[index];
+      }
+      console.log(scoreSum);
       handleUpdateLobbyData({ [`players.${currentUser.uid}.score`]: scoreSum });
 
       if (scoreSum > userData.highScores[lobbyData.settings.wordCount]) {
@@ -171,6 +175,7 @@ function Play() {
     } else {
       setFinished(true);
     }
+
     if (inputRef.current) {
       inputRef.current.focus();
     }
@@ -183,13 +188,7 @@ function Play() {
     setCloseGuessCounter(0);
     setFeedback("");
     setGuess("");
-    handleUpdateLobbyData({
-      [`players.${currentUser.uid}.score`]: 0,
-      [`players.${currentUser.uid}.scores`]: Array(lobbyData.settings.wordCount).fill(0),
-      [`players.${currentUser.uid}.times`]: Array(lobbyData.settings.wordCount).fill(0),
-      [`players.${currentUser.uid}.guesses`]: Array(lobbyData.settings.wordCount).fill(0),
-      [`players.${currentUser.uid}.isNewPb`]: false,
-    });
+
     let wordsFetched = [];
     let translationFetched = [];
     try {
@@ -210,6 +209,11 @@ function Play() {
           [`players.${currentUser.uid}.finished`]: false,
           words: wordsFetched,
           translation: translationFetched,
+          [`players.${currentUser.uid}.score`]: 0,
+          [`players.${currentUser.uid}.scores`]: {},
+          [`players.${currentUser.uid}.times`]: {},
+          [`players.${currentUser.uid}.guesses`]: {},
+          [`players.${currentUser.uid}.isNewPb`]: false,
         });
       } else {
         console.error("Failed to fetch data for play.");
