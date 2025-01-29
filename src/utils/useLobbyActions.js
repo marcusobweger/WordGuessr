@@ -174,12 +174,9 @@ const useLobbyActions = () => {
   const updateLobbyData = async (updatedFields) => {
     await updateDoc(doc(db, "lobbies", lobbyId), updatedFields);
   }; //handleRetry and player data updates
-  const updateLobbyDataMerge = async (updatedFields) => {
-    await setDoc(doc(db, "lobbies", lobbyId), updatedFields, { merge: true });
-  }; //handleRetry and player data updates
 
   const joinLobbyWithCode = async () => {};
 
-  return { searchOpenLobby, updateLobbyData, updateLobbyDataMerge };
+  return { searchOpenLobby, updateLobbyData };
 };
 export default useLobbyActions;
