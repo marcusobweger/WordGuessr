@@ -3,6 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { doSignInAnonymously } from "../utils/authUtils";
 import useUserActions from "../utils/useUserActions";
 import useUserListener from "../utils/useUserListener";
+import Loading from "./Loading";
 
 export default function Continue() {
   const navigate = useNavigate();
@@ -55,11 +56,7 @@ export default function Continue() {
   };
   const GuestButtonContent = () => {
     if (isLoading) {
-      return (
-        <div className="spinner-border text-light" role="status">
-          <span className="visually-hidden">Loading...</span>
-        </div>
-      );
+      return <Loading />;
     } else {
       return "Continue as Guest";
     }

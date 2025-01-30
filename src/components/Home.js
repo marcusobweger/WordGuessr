@@ -13,6 +13,7 @@ import { useSettings } from "../utils/settingsContext";
 import useLobbyActions from "../utils/useLobbyActions";
 import useLobbyListener from "../utils/useLobbyListener";
 import useUserListener from "../utils/useUserListener";
+import Loading from "./Loading";
 function Home() {
   const { setHomeState } = useContext(AppContext);
   const [isLoading, setIsLoading] = useState(false);
@@ -150,11 +151,7 @@ function Home() {
         return "Play";
       }
     } else {
-      return (
-        <div className="spinner-border text-light" role="status">
-          <span className="visually-hidden">Loading...</span>
-        </div>
-      );
+      return <Loading />;
     }
   };
 

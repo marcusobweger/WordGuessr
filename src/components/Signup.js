@@ -10,6 +10,7 @@ import {
 import { useNavigate } from "react-router-dom";
 import useUserActions from "../utils/useUserActions";
 import useUserListener from "../utils/useUserListener";
+import Loading from "./Loading";
 
 function Signup() {
   const [email, setEmail] = useState("");
@@ -106,11 +107,7 @@ function Signup() {
     navigate("/login");
   };
   if (isLoading) {
-    return (
-      <div className="spinner-border text-light" role="status">
-        <span className="visually-hidden">Loading...</span>
-      </div>
-    );
+    return <Loading />;
   }
   return (
     <div className="container col-md-6 col-xl-4">

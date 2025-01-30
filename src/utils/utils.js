@@ -17,11 +17,11 @@ export const fetchRandomWords = async (wordCount) => {
       return API1;
     }
   }
-  const currentApi = API2;
+  const currentApi = getRandomApi();
   const otherApi = getOtherApi();
 
   try {
-    const response1 = await fetch(currentApi);
+    const response1 = await fetch(currentApi, { signal: AbortSignal.timeout(4000) });
     if (response1.ok) {
       return await response1.json();
     } else {
@@ -31,7 +31,7 @@ export const fetchRandomWords = async (wordCount) => {
     console.error("First API failed", error);
 
     try {
-      const response2 = await fetch(otherApi);
+      const response2 = await fetch(otherApi, { signal: AbortSignal.timeout(4000) });
       if (response2.ok) {
         return await response2.json();
       } else {

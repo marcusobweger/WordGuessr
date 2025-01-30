@@ -18,6 +18,9 @@ button.clicked {
 button:disabled {
   cursor: not-allowed;
 }
-button:hover:not(.clicked, :disabled) {
+button:hover:not(.clicked) {
+  background-color: var(--middle-purple);
+}
+button:hover:disabled {
   background-color: var(--middle-purple);
 }

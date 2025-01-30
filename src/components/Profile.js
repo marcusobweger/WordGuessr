@@ -3,6 +3,7 @@ import { doSignOut } from "../utils/authUtils";
 import { useNavigate } from "react-router-dom";
 import useUserListener from "../utils/useUserListener";
 import useUserActions from "../utils/useUserActions";
+import Loading from "./Loading";
 function Profile() {
   const navigate = useNavigate();
   const { userData, userDataLoading } = useUserListener();
@@ -19,11 +20,7 @@ function Profile() {
   };
 
   if (userDataLoading) {
-    return (
-      <div className="spinner-border text-light" role="status">
-        <span className="visually-hidden">Loading...</span>
-      </div>
-    );
+    return <Loading />;
   }
   return (
     <div>

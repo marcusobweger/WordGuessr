@@ -13,6 +13,7 @@ import useUserListener from "../utils/useUserListener";
 import useLobbyActions from "../utils/useLobbyActions";
 import useUserActions from "../utils/useUserActions";
 import { increment } from "firebase/firestore";
+import Loading from "./Loading";
 
 function Play() {
   const navigate = useNavigate();
@@ -51,19 +52,17 @@ function Play() {
   };
   console.log(lobbyData);
 
-  const handleFinished = async (finished) => {
-    handleUpdateLobbyData({ [`players.${currentUser.uid}.finished`]: finished });
-
+  useEffect(() => {
     if (
-      finished &&
-      lobbyData.players[currentUser.uid]?.score > userData.highScores[lobbyData.settings.wordCount]
+      (lobbyData?.players[currentUser.uid]?.score ?? 0) >
+      (userData?.highScores[lobbyData.settings.wordCount] ?? 0)
     ) {
       handleUpdateUserData({
-        [`highScores.${lobbyData.settings.wordCount}`]: lobbyData.players[currentUser.uid]?.score,
+        [`highScores.${lobbyData?.settings.wordCount}`]: lobbyData?.players[currentUser.uid]?.score,
       });
       handleUpdateLobbyData({ [`players.${currentUser.uid}.isNewPb`]: true });
     }
-  };
+  }, [lobbyData?.players[currentUser.uid]?.score]);
 
   // handle the displayed feedback timeout
   useEffect(() => {
@@ -89,6 +88,7 @@ function Play() {
     if (guess !== "") {
       if (guess.trim().toLowerCase() === lobbyData.words[currentIndex]?.toLowerCase()) {
         setFeedback("correct!");
+        const savedScoreAtIndex = lobbyData?.players[currentUser.uid]?.scores[currentIndex];
 
         if (progressBarRef.current) {
           let timeLeft = progressBarRef.current.getTimeLeft();
@@ -99,6 +99,13 @@ function Play() {
               (10000 - timeLeft) /
               100
             ).toFixed(0),
+          });
+          if (closeGuessCounter === 1) {
+            handleUpdateLobbyData({
+              [`players.${currentUser.uid}.score`]: increment(-savedScoreAtIndex),
+            });
+          }
+          handleUpdateLobbyData({
             [`players.${currentUser.uid}.score`]: increment(
               (timeLeft / 100).toFixed(0) * 90 + 1000
             ),
@@ -113,7 +120,8 @@ function Play() {
         if (currentIndex < lobbyData.translation?.length - 1) {
           setCurrentIndex(currentIndex + 1);
         } else {
-          handleFinished(true);
+          handleUpdateLobbyData({ [`players.${currentUser.uid}.finished`]: true });
+
           setFeedback("");
         }
       } else if (
@@ -144,7 +152,7 @@ function Play() {
                 ((timeLeft / 100).toFixed(0) * 90 + 1000) / 2
               ),
             });
-            setCloseGuessCounter(closeGuessCounter + 1);
+            setCloseGuessCounter(1);
           }
         }
         setGuess("");
@@ -167,7 +175,7 @@ function Play() {
       setFeedback("skipped!");
       setCloseGuessCounter(0);
     } else {
-      handleFinished(true);
+      handleUpdateLobbyData({ [`players.${currentUser.uid}.finished`]: true });
     }
 
     if (inputRef.current) {
@@ -206,19 +214,15 @@ function Play() {
           [`players.${currentUser.uid}.times`]: {},
           [`players.${currentUser.uid}.guesses`]: {},
           [`players.${currentUser.uid}.isNewPb`]: false,
+          [`players.${currentUser.uid}.finished`]: false,
         });
-        handleFinished(false);
       } else {
         console.error("Failed to fetch data for play.");
       }
     }
   };
   if (lobbyDataLoading || userDataLoading || !lobbyData) {
-    return (
-      <div className="spinner-border text-light" role="status">
-        <span className="visually-hidden">Loading...</span>
-      </div>
-    );
+    return <Loading />;
   }
   return (
     <div className="container">
