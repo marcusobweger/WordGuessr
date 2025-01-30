@@ -12,20 +12,19 @@ import { useAuth } from "../utils/authContext";
 import useUserListener from "../utils/useUserListener";
 import useLobbyActions from "../utils/useLobbyActions";
 import useUserActions from "../utils/useUserActions";
+import { increment } from "firebase/firestore";
 
 function Play() {
   const navigate = useNavigate();
 
-  //local
+  // local
   const [currentIndex, setCurrentIndex] = useState(0);
   const [guess, setGuess] = useState("");
   const [feedback, setFeedback] = useState("");
   const [closeGuessCounter, setCloseGuessCounter] = useState(0);
-
-  //lobby
-  const [finished, setFinished] = useState(false);
   const [retryLoading, setRetryLoading] = useState(false);
 
+  // refs
   const inputRef = useRef(null);
   const progressBarRef = useRef(null);
   const feedbackTimeoutRef = useRef(null);
@@ -33,7 +32,7 @@ function Play() {
   const { lobbyData, lobbyDataLoading } = useLobbyListener();
   const { userData, userDataLoading } = useUserListener();
   const { currentUser } = useAuth();
-  const { updateLobbyData, updateLobbyDataMerge } = useLobbyActions();
+  const { updateLobbyData } = useLobbyActions();
   const { updateUserData } = useUserActions();
 
   const handleUpdateLobbyData = async (updatedFields) => {
@@ -51,31 +50,20 @@ function Play() {
     }
   };
   console.log(lobbyData);
-  const handleFinished = () => {
-    handleUpdateLobbyData({
-      [`players.${currentUser.uid}.finished`]: finished,
-    });
-    if (finished) {
-      let scoreSum = 0;
-      for (
-        let index = 0;
-        index < Object.keys(lobbyData.players[currentUser.uid]?.scores).length;
-        index++
-      ) {
-        scoreSum += lobbyData.players[currentUser.uid]?.scores[index];
-      }
-      console.log(scoreSum);
-      handleUpdateLobbyData({ [`players.${currentUser.uid}.score`]: scoreSum });
 
-      if (scoreSum > userData.highScores[lobbyData.settings.wordCount]) {
-        handleUpdateUserData({ [`highScores.${lobbyData.settings.wordCount}`]: scoreSum });
-        handleUpdateLobbyData({ [`players.${currentUser.uid}.isNewPb`]: true });
-      }
+  const handleFinished = async (finished) => {
+    handleUpdateLobbyData({ [`players.${currentUser.uid}.finished`]: finished });
+
+    if (
+      finished &&
+      lobbyData.players[currentUser.uid]?.score > userData.highScores[lobbyData.settings.wordCount]
+    ) {
+      handleUpdateUserData({
+        [`highScores.${lobbyData.settings.wordCount}`]: lobbyData.players[currentUser.uid]?.score,
+      });
+      handleUpdateLobbyData({ [`players.${currentUser.uid}.isNewPb`]: true });
     }
   };
-  useEffect(() => {
-    handleFinished();
-  }, [finished]);
 
   // handle the displayed feedback timeout
   useEffect(() => {
@@ -96,7 +84,7 @@ function Play() {
     };
   }, [feedback]);
 
-  const handleGuessSubmit = (e) => {
+  const handleGuessSubmit = async (e) => {
     e.preventDefault();
     if (guess !== "") {
       if (guess.trim().toLowerCase() === lobbyData.words[currentIndex]?.toLowerCase()) {
@@ -111,6 +99,9 @@ function Play() {
               (10000 - timeLeft) /
               100
             ).toFixed(0),
+            [`players.${currentUser.uid}.score`]: increment(
+              (timeLeft / 100).toFixed(0) * 90 + 1000
+            ),
           });
         }
         setGuess("");
@@ -122,7 +113,7 @@ function Play() {
         if (currentIndex < lobbyData.translation?.length - 1) {
           setCurrentIndex(currentIndex + 1);
         } else {
-          setFinished(true);
+          handleFinished(true);
           setFeedback("");
         }
       } else if (
@@ -149,6 +140,9 @@ function Play() {
                 (10000 - timeLeft) /
                 100
               ).toFixed(0),
+              [`players.${currentUser.uid}.score`]: increment(
+                ((timeLeft / 100).toFixed(0) * 90 + 1000) / 2
+              ),
             });
             setCloseGuessCounter(closeGuessCounter + 1);
           }
@@ -166,14 +160,14 @@ function Play() {
     }
   };
 
-  const handleSkip = () => {
+  const handleSkip = async () => {
     if (currentIndex < lobbyData.translation.length - 1) {
       setCurrentIndex(currentIndex + 1);
       setGuess("");
       setFeedback("skipped!");
       setCloseGuessCounter(0);
     } else {
-      setFinished(true);
+      handleFinished(true);
     }
 
     if (inputRef.current) {
@@ -204,9 +198,7 @@ function Play() {
       if (wordsFetched.length > 0 && translationFetched.length > 0) {
         setCurrentIndex(0);
         setRetryLoading(false);
-        setFinished(false);
         handleUpdateLobbyData({
-          [`players.${currentUser.uid}.finished`]: false,
           words: wordsFetched,
           translation: translationFetched,
           [`players.${currentUser.uid}.score`]: 0,
@@ -215,6 +207,7 @@ function Play() {
           [`players.${currentUser.uid}.guesses`]: {},
           [`players.${currentUser.uid}.isNewPb`]: false,
         });
+        handleFinished(false);
       } else {
         console.error("Failed to fetch data for play.");
       }

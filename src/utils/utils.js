@@ -17,7 +17,7 @@ export const fetchRandomWords = async (wordCount) => {
       return API1;
     }
   }
-  const currentApi = getRandomApi();
+  const currentApi = API2;
   const otherApi = getOtherApi();
 
   try {

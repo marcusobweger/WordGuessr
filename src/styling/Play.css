@@ -91,11 +91,14 @@
   border-radius: 15px;
 }
 .fire {
-  align-self: auto;
   margin-left: 8px;
   height: clamp(30px, 5vw, 50px);
+  width: auto;
 }
 .score {
+  display: flex;
+  align-items: center;
+  justify-content: center;
   font-size: clamp(40px, 5vw, 60px);
 }
 
