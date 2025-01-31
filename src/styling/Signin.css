@@ -18,7 +18,7 @@
 }
 .error {
   border-color: rgb(237, 49, 49);
-  animation: shake 0.2s, 2;
+  animation: shake 0.15s;
 }
 @keyframes shake {
   0% {

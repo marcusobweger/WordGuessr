@@ -1,21 +1,22 @@
 import React, { useContext, useEffect, useState } from "react";
-import "../styling/Login.css";
+import "../styling/Signin.css";
 import google from "../icons/search.png";
 import github from "../icons/github.png";
 import {
   doCreateUserWithEmailAndPassword,
-  doSignInWithGoogle,
+  doSignInWithEmailAndPassword,
   doSignInWithGithub,
+  doSignInWithGoogle,
 } from "../utils/authUtils";
 import { useNavigate } from "react-router-dom";
 import useUserActions from "../utils/useUserActions";
 import useUserListener from "../utils/useUserListener";
 import Loading from "./Loading";
 
-function Signup() {
+function Signin({ type }) {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [isCreating, setIsCreating] = useState(false);
+  const [isSigningIn, setIsSigningIn] = useState(false);
   const [hasFinishedSigningIn, setHasFinishedSigningIn] = useState(false);
   const [isError, setIsError] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
@@ -52,60 +53,86 @@ function Signup() {
       console.log(error);
     }
   };
-
   const handleEmailCreate = async (e) => {
     e.preventDefault();
-    if (!isCreating) {
-      setIsCreating(true);
+    if (!isSigningIn) {
+      setIsSigningIn(true);
       try {
-        await doCreateUserWithEmailAndPassword(email, password);
         setHasFinishedSigningIn(true);
         setIsError(false);
-        setIsCreating(false);
+        setIsSigningIn(false);
       } catch (error) {
         console.log(error);
         setHasFinishedSigningIn(false);
         setIsError(true);
         setEmail("");
         setPassword("");
-        setIsCreating(false);
+        setIsSigningIn(false);
       }
     }
   };
-  const handleGoogleSignIn = async (e) => {
+  const handleEmailSignIn = async (e) => {};
+  const handleEmail = async (e) => {
     e.preventDefault();
-    if (!isCreating) {
-      setIsCreating(true);
+    if (!isSigningIn) {
+      setIsSigningIn(true);
+      try {
+        if (type === "login") {
+          await doSignInWithEmailAndPassword(email, password);
+        } else {
+          await doCreateUserWithEmailAndPassword(email, password);
+        }
+        setHasFinishedSigningIn(true);
+        setIsError(false);
+        setIsSigningIn(false);
+      } catch (error) {
+        console.log(error);
+        setHasFinishedSigningIn(false);
+        setIsError(true);
+        setEmail("");
+        setPassword("");
+        setIsSigningIn(false);
+      }
+    }
+  };
+  const handleGoogleSignIn = async () => {
+    if (!isSigningIn) {
+      setIsSigningIn(true);
       try {
         await doSignInWithGoogle();
         setHasFinishedSigningIn(true);
-        setIsCreating(false);
+        setIsSigningIn(false);
       } catch (error) {
         console.log(error);
         setHasFinishedSigningIn(false);
-        setIsCreating(false);
+        setIsSigningIn(false);
       }
     }
   };
-  const handleGithubSignIn = async (e) => {
-    e.preventDefault();
-    if (!isCreating) {
-      setIsCreating(true);
+  const handleGithubSignIn = async () => {
+    if (!isSigningIn) {
+      setIsSigningIn(true);
       try {
         await doSignInWithGithub();
         setHasFinishedSigningIn(true);
-        setIsCreating(false);
+        setIsSigningIn(false);
       } catch (error) {
         console.log(error);
         setHasFinishedSigningIn(false);
-        setIsCreating(false);
+        setIsSigningIn(false);
       }
     }
   };
 
-  const handleNavigateLogin = () => {
-    navigate("/login");
+  const handleNavigate = () => {
+    setIsError(false);
+    if (type === "login") {
+      navigate("/signup");
+    } else {
+      navigate("/login");
+    }
   };
+
   if (isLoading) {
     return <Loading />;
   }
@@ -113,7 +140,7 @@ function Signup() {
     <div className="container col-md-6 col-xl-4">
       <div className="container page shadow">
         <div className="row">
-          <div className="col login-text">Welcome!</div>
+          <div className="col login-text">{type === "login" ? "Welcome back!" : "Welcome!"}</div>
         </div>
         <div className="row buttonGaps sign-in-button-row">
           <button className="shadow col sign-in-buttons">
@@ -132,10 +159,10 @@ function Signup() {
           </button>
         </div>
         <div className="row or-text">or</div>
-        <div className="row">
-          <form onSubmit={handleEmailCreate} className="col">
+        <div className="row ">
+          <form onSubmit={handleEmail} className="col">
             <input
-              className={`${isError ? "error" : ""} inputfield login-inputfield row`}
+              className={`${isError ? "error" : ""} inputfield login-inputfield row `}
               type="text"
               value={email}
               onChange={(e) => {
@@ -160,11 +187,11 @@ function Signup() {
             </button>
           </form>
         </div>
-        <button className="row create-button" onClick={handleNavigateLogin}>
-          Already have an account?
+        <button className="row create-button" onClick={handleNavigate}>
+          {type === "login" ? "Don't have an account?" : "Already have an account?"}
         </button>
       </div>
     </div>
   );
 }
-export default Signup;
+export default Signin;

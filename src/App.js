@@ -4,16 +4,15 @@ import Home from "./components/Home";
 import Play from "./components/Play";
 import About from "./components/About";
 import Summary from "./components/Summary";
-import Login from "./components/Login";
-import Profile from "./components/Profile";
 import LeaderBoard from "./components/LeaderBoard";
 import NavBar from "./components/NavBar";
 import EnterCode from "./components/EnterCode";
 import Continue from "./components/Continue";
 import Lobby from "./components/Lobby";
+import Signin from "./components/Signin";
+import Profile from "./components/Profile";
 import "../src/styling/App.css";
 import { AuthProvider } from "./utils/authContext";
-import Signup from "./components/Signup";
 import { SettingsProvider } from "./utils/settingsContext";
 import { LobbyIdProvider } from "./utils/lobbyIdContext";
 import EnterUserName from "./components/EnterUserName";
@@ -33,8 +32,8 @@ function App() {
                 <Route path="/play" element={homeState ? <Play /> : <Navigate to="/" replace />} />
                 <Route path="/summary" element={<Summary />} />
                 <Route path="/about" element={<About />} />
-                <Route path="/login" element={<Login />} />
-                <Route path="/signup" element={<Signup />} />
+                <Route path="/login" element={<Signin type="login" />} />
+                <Route path="/signup" element={<Signin type="signup" />} />
                 <Route path="/username" element={<EnterUserName />} />
                 <Route path="/profile" element={<Profile />} />
                 <Route path="/leaderboard" element={<LeaderBoard />} />
