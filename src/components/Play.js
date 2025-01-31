@@ -25,6 +25,8 @@ function Play() {
   const [feedback, setFeedback] = useState("");
   const [closeGuessCounter, setCloseGuessCounter] = useState(0);
   const [retryLoading, setRetryLoading] = useState(false);
+  // for summary page
+  const [currentPlayer, setCurrentPlayer] = useState("");
 
   // refs
   const inputRef = useRef(null);
@@ -54,8 +56,13 @@ function Play() {
   console.log(lobbyData);
 
   useEffect(() => {
+    console.log(currentUser.uid);
+    setCurrentPlayer(currentUser.uid);
+    console.log(currentPlayer);
+  }, []);
+  useEffect(() => {
     if (
-      (lobbyData?.players[currentUser.uid]?.score ?? 0) >=
+      (lobbyData?.players[currentUser.uid]?.score ?? 0) >
       (userData?.highScores[lobbyData.settings.wordCount] ?? 0)
     ) {
       handleUpdateUserData({
@@ -121,7 +128,10 @@ function Play() {
         if (currentIndex < lobbyData.translation?.length - 1) {
           setCurrentIndex(currentIndex + 1);
         } else {
-          handleUpdateLobbyData({ [`players.${currentUser.uid}.finished`]: true });
+          handleUpdateLobbyData({
+            [`players.${currentUser.uid}.finished`]: true,
+            finishCount: increment(1),
+          });
 
           setFeedback("");
         }
@@ -176,7 +186,10 @@ function Play() {
       setFeedback("skipped!");
       setCloseGuessCounter(0);
     } else {
-      handleUpdateLobbyData({ [`players.${currentUser.uid}.finished`]: true });
+      handleUpdateLobbyData({
+        [`players.${currentUser.uid}.finished`]: true,
+        finishCount: increment(1),
+      });
     }
 
     if (inputRef.current) {
@@ -210,6 +223,7 @@ function Play() {
         handleUpdateLobbyData({
           words: wordsFetched,
           translation: translationFetched,
+          finishCount: 0,
           [`players.${currentUser.uid}.score`]: 0,
           [`players.${currentUser.uid}.scores`]: {},
           [`players.${currentUser.uid}.times`]: {},
@@ -222,13 +236,22 @@ function Play() {
       }
     }
   };
-  if (lobbyDataLoading || userDataLoading || !lobbyData) {
-    return <Loading />;
-  }
-  return (
-    <div className="container">
-      {!lobbyData.players[currentUser.uid]?.finished ? (
-        <>
+  if (currentPlayer) {
+    if (lobbyDataLoading || userDataLoading || !lobbyData) {
+      return <Loading />;
+    }
+    if (
+      lobbyData.finishCount !== Object.keys(lobbyData.players).length &&
+      lobbyData.players[currentUser.uid].finished
+    ) {
+      return (
+        <div className="container">
+          <div className="title">Waiting for players</div>
+        </div>
+      );
+    } else if (!lobbyData.players[currentUser.uid].finished) {
+      return (
+        <div className="container">
           <div className="container page shadow">
             <div className="row align-items-center">
               <div className="col-9 col-sm-9 col-lg-10">
@@ -275,37 +298,31 @@ function Play() {
               </button>
             </div>
           </div>
-        </>
-      ) : (
-        <>
-          {/* switch between users */}
+        </div>
+      );
+    } else {
+      return (
+        <div className="container">
           <div className="container page playerNavBar shadow">
-            <PlayerNavBar lobbyData={lobbyData} />
+            <PlayerNavBar lobbyData={lobbyData} setCurrentPlayer={setCurrentPlayer} />
           </div>
           <div className="container page shadow">
-            <Summary lobbyData={lobbyData} userData={userData} currentUser={currentUser} />
+            <Summary lobbyData={lobbyData} userData={userData} currentPlayer={currentPlayer} />
           </div>
-
           <div className="container">
             <div className="row d-flex flex-nowrap justify-content-between gap-3">
               <button className="homeButton col-lg-3 col" onClick={handleHome}>
                 <img className="home" src={home} alt="home"></img>
               </button>
               <button className="retryButton col-lg-3 col" onClick={handleRetry}>
-                {retryLoading ? (
-                  <div className="spinner-border text-light" role="status">
-                    <span className="visually-hidden">Loading...</span>
-                  </div>
-                ) : (
-                  <img className="retry" src={retry} alt="retry"></img>
-                )}
+                {retryLoading ? <Loading /> : <img className="retry" src={retry} alt="retry"></img>}
               </button>
             </div>
           </div>
-        </>
-      )}
-    </div>
-  );
+        </div>
+      );
+    }
+  }
 }
 
 export default Play;

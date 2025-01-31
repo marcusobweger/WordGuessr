@@ -1,9 +1,11 @@
 import React from "react";
 
-function PlayerNavBar({ lobbyData }) {
+function PlayerNavBar({ lobbyData, setCurrentPlayer }) {
   return Array.from({ length: Object.keys(lobbyData.players).length }, (_, index) => (
-    <div key={index} className="playerNameCard">
-      <div>{Object.values(lobbyData.players)[index].name}</div>
+    <div key={index} className="playerNameCard row">
+      <button type="button" onClick={setCurrentPlayer("")}>
+        {Object.values(lobbyData.players)[index].name}
+      </button>
     </div>
   ));
 }

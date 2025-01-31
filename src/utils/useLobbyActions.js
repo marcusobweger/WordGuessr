@@ -11,6 +11,7 @@ import {
   getDocs,
   arrayUnion,
   setDoc,
+  orderBy,
 } from "firebase/firestore";
 import { fetchRandomWords, fetchTranslation } from "./utils";
 import { useAuth } from "./authContext";
@@ -171,12 +172,30 @@ const useLobbyActions = () => {
     }
     setLobbyId(docRef.id);
   };
+  const getPlayersOrderByScore = async ({ newLobbyId }) => {
+    try {
+      const playersRef = collection(db, "lobbies", newLobbyId, "players");
+      const q = query(playersRef, orderBy("score", "desc"));
+
+      const querySnapshot = await getDocs(q);
+      const players = querySnapshot.docs.map((doc) => ({
+        id: doc.id,
+        ...doc.data(),
+      }));
+
+      console.log(players);
+      return players;
+    } catch (error) {
+      console.error("Error fetching players:", error);
+      return [];
+    }
+  };
   const updateLobbyData = async (updatedFields) => {
     await updateDoc(doc(db, "lobbies", lobbyId), updatedFields);
   }; //handleRetry and player data updates
 
   const joinLobbyWithCode = async () => {};
 
-  return { searchOpenLobby, updateLobbyData };
+  return { searchOpenLobby, updateLobbyData, getPlayersOrderByScore };
 };
 export default useLobbyActions;
