@@ -14,6 +14,7 @@ import useLobbyActions from "../utils/useLobbyActions";
 import useUserActions from "../utils/useUserActions";
 import { increment } from "firebase/firestore";
 import Loading from "./Loading";
+import PlayerNavBar from "./PlayerNavBar";
 
 function Play() {
   const navigate = useNavigate();
@@ -54,7 +55,7 @@ function Play() {
 
   useEffect(() => {
     if (
-      (lobbyData?.players[currentUser.uid]?.score ?? 0) >
+      (lobbyData?.players[currentUser.uid]?.score ?? 0) >=
       (userData?.highScores[lobbyData.settings.wordCount] ?? 0)
     ) {
       handleUpdateUserData({
@@ -277,6 +278,10 @@ function Play() {
         </>
       ) : (
         <>
+          {/* switch between users */}
+          <div className="container page playerNavBar shadow">
+            <PlayerNavBar lobbyData={lobbyData} />
+          </div>
           <div className="container page shadow">
             <Summary lobbyData={lobbyData} userData={userData} currentUser={currentUser} />
           </div>

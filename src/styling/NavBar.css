@@ -2,17 +2,18 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
+  text-align: center;
   position: sticky;
   padding-left: 3vw;
   padding-right: 3vw;
   padding-bottom: 5px;
   padding-top: 5px;
-  margin: 0;
   top: 0;
   z-index: 1000;
   flex-wrap: nowrap;
   background: transparent;
   backdrop-filter: blur(10px);
+  height: 110px;
 }
 
 .navbar::before {
@@ -32,6 +33,7 @@
   height: auto;
   padding: 0;
   margin: 0;
+  margin-right: 14px;
 }
 
 .title {
@@ -39,7 +41,6 @@
   color: var(--text-color);
   margin: 0;
   padding: 0;
-  margin-left: 14px;
 }
 @media (max-width: 1200px) {
   .title {
@@ -61,10 +62,27 @@
 .link {
   text-decoration: none;
 }
+.rightNavs {
+  color: var(--text-color);
+  border-radius: 15px;
+  border-style: hidden;
+  height: 75px;
+  padding-left: 2vw;
+  padding-right: 2vw;
+  font-size: clamp(20px, 5vw, 30px);
+  display: flex;
+  align-items: center;
+  text-align: center;
+}
+
+.active {
+  background-color: var(--middle-purple);
+}
 .rightSection {
   display: flex;
   align-items: center;
-  gap: 1vw;
+  text-align: center;
+  gap: 2vw;
 }
 
 .user {
@@ -74,19 +92,4 @@
 .leaderboard {
   height: clamp(25px, 5vw, 35px);
   width: auto;
-}
-.rightNavButtons {
-  height: clamp(50px, 5vw, 60px);
-  font-size: clamp(20px, 5vw, 30px);
-  padding-left: 2vw;
-  padding-right: 2vw;
-  background-color: transparent;
-}
-.codeButton {
-  border-style: solid;
-  border-color: var(--light-purple);
-  border-width: 2px;
-}
-.codeButton:hover {
-  background-color: var(--light-purple) !important;
 }

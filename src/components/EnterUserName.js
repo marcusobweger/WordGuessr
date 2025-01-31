@@ -1,16 +1,23 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import useUserActions from "../utils/useUserActions";
+import Loading from "../components/Loading";
 
 const EnterUserName = () => {
   const [userName, setUserName] = useState("");
+  const [isLoading, setIsLoading] = useState(false);
   const navigate = useNavigate();
   const { updateUserData } = useUserActions();
   const handleSetUserName = async (e) => {
     e.preventDefault();
+    setIsLoading(true);
     await updateUserData({ name: userName });
+    setIsLoading(false);
     navigate("/");
   };
+  if (isLoading) {
+    return <Loading />;
+  }
   return (
     <div className="container">
       <div className="container page">
