@@ -4,23 +4,22 @@ import { db } from "./firebase";
 import { useLobbyId } from "./lobbyIdContext";
 
 const useLobbyListener = () => {
-  const { lobbyId } = useLobbyId(); // Get the currently logged-in user
+  const { lobbyId } = useLobbyId();
   const [lobbyData, setLobbyData] = useState(null);
   const [lobbyDataLoading, setLobbyDataLoading] = useState(null);
 
   useEffect(() => {
-    // Ensure the currentUser is available
     if (!lobbyId) {
       console.error("No lobby available.");
       return;
     }
 
-    const lobbyDocRef = doc(db, "lobbies", lobbyId); // Reference to the user's document
+    const lobbyDocRef = doc(db, "lobbies", lobbyId);
 
     const unsubscribe = onSnapshot(lobbyDocRef, (docSnapshot) => {
       if (docSnapshot.exists()) {
         console.log("Listening to lobby data:", docSnapshot.data());
-        setLobbyData(docSnapshot.data()); // Update state with user data
+        setLobbyData(docSnapshot.data());
       } else {
         console.error("No lobby document found!");
       }
@@ -32,7 +31,7 @@ const useLobbyListener = () => {
     };
   }, [lobbyId]);
 
-  return { lobbyData, lobbyDataLoading }; // Return the user data for consumption in components
+  return { lobbyData, lobbyDataLoading };
 };
 
 export default useLobbyListener;

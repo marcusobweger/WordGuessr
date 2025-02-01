@@ -1,12 +1,9 @@
 import React, { useState, useRef, useEffect } from "react";
-import { useLocation, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import "../styling/Play.css";
 import home from "../icons/home.png";
 import share from "../icons/share.png";
-import retry from "../icons/reload.png";
-import { fetchRandomWords, fetchTranslation } from "../utils/utils";
 import ProgressBar from "./ProgressBar";
-import Summary from "./Summary";
 import useLobbyListener from "../utils/useLobbyListener";
 import { useAuth } from "../utils/authContext";
 import useUserListener from "../utils/useUserListener";
@@ -14,19 +11,13 @@ import useLobbyActions from "../utils/useLobbyActions";
 import useUserActions from "../utils/useUserActions";
 import { increment } from "firebase/firestore";
 import Loading from "./Loading";
-import PlayerNavBar from "./PlayerNavBar";
 
 function Play() {
-  const navigate = useNavigate();
-
   // local
   const [currentIndex, setCurrentIndex] = useState(0);
   const [guess, setGuess] = useState("");
   const [feedback, setFeedback] = useState("");
   const [closeGuessCounter, setCloseGuessCounter] = useState(0);
-  const [retryLoading, setRetryLoading] = useState(false);
-  // for summary page
-  const [currentPlayer, setCurrentPlayer] = useState("");
 
   // refs
   const inputRef = useRef(null);
@@ -38,6 +29,7 @@ function Play() {
   const { currentUser } = useAuth();
   const { updateLobbyData } = useLobbyActions();
   const { updateUserData } = useUserActions();
+  const navigate = useNavigate();
 
   const handleUpdateLobbyData = async (updatedFields) => {
     try {
@@ -56,10 +48,10 @@ function Play() {
   console.log(lobbyData);
 
   useEffect(() => {
-    console.log(currentUser.uid);
-    setCurrentPlayer(currentUser.uid);
-    console.log(currentPlayer);
-  }, []);
+    if (lobbyData?.players[currentUser.uid]?.finished) {
+      navigate("/summary");
+    }
+  }, [lobbyData?.players[currentUser.uid]?.finished]);
   useEffect(() => {
     if (
       (lobbyData?.players[currentUser.uid]?.score ?? 0) >
@@ -199,130 +191,60 @@ function Play() {
   const handleHome = () => {
     navigate("/");
   };
-  const handleRetry = async () => {
-    setRetryLoading(true);
-    setCloseGuessCounter(0);
-    setFeedback("");
-    setGuess("");
 
-    let wordsFetched = [];
-    let translationFetched = [];
-    try {
-      wordsFetched = await fetchRandomWords(lobbyData.settings.wordCount);
-      translationFetched = await fetchTranslation(
-        wordsFetched,
-        lobbyData.settings.sourceLang,
-        lobbyData.settings.targetLang
-      );
-    } catch (error) {
-      console.error("Error during the play process:", error);
-    } finally {
-      if (wordsFetched.length > 0 && translationFetched.length > 0) {
-        setCurrentIndex(0);
-        setRetryLoading(false);
-        handleUpdateLobbyData({
-          words: wordsFetched,
-          translation: translationFetched,
-          finishCount: 0,
-          [`players.${currentUser.uid}.score`]: 0,
-          [`players.${currentUser.uid}.scores`]: {},
-          [`players.${currentUser.uid}.times`]: {},
-          [`players.${currentUser.uid}.guesses`]: {},
-          [`players.${currentUser.uid}.isNewPb`]: false,
-          [`players.${currentUser.uid}.finished`]: false,
-        });
-      } else {
-        console.error("Failed to fetch data for play.");
-      }
-    }
-  };
-  if (currentPlayer) {
-    if (lobbyDataLoading || userDataLoading || !lobbyData) {
-      return <Loading />;
-    }
-    if (
-      lobbyData.finishCount !== Object.keys(lobbyData.players).length &&
-      lobbyData.players[currentUser.uid].finished
-    ) {
-      return (
-        <div className="container">
-          <div className="title">Waiting for players</div>
-        </div>
-      );
-    } else if (!lobbyData.players[currentUser.uid].finished) {
-      return (
-        <div className="container">
-          <div className="container page shadow">
-            <div className="row align-items-center">
-              <div className="col-9 col-sm-9 col-lg-10">
-                <ProgressBar
-                  ref={progressBarRef}
-                  handleSkip={handleSkip}
-                  currentIndex={currentIndex}
-                  finished={lobbyData.players[currentUser.uid]?.finished}
-                />
-              </div>
-              <div className="col-3 col-sm-3 col-lg-2">
-                <div className="progressNumber">
-                  {currentIndex + 1}/{lobbyData.settings.wordCount}
-                </div>
-              </div>
-            </div>
-            <div className="row">
-              <div className="translation">{lobbyData.translation[currentIndex]}</div>
-            </div>
-            <div className="row">
-              <form onSubmit={handleGuessSubmit}>
-                <input
-                  ref={inputRef}
-                  className="inputfield"
-                  type="text"
-                  value={guess}
-                  onChange={(e) => {
-                    setGuess(e.target.value);
-                  }}
-                  placeholder={feedback !== "" ? feedback : "enter here"}
-                  autoFocus
-                  maxLength={15}
-                />
-              </form>
-            </div>
-          </div>
-          <div className="container">
-            <div className="row d-flex flex-nowrap justify-content-between gap-3">
-              <button className="homeButton col-lg-3 col" onClick={handleHome}>
-                <img className="home" src={home} alt="home"></img>
-              </button>
-              <button className="skipButton col-lg-3 col" onClick={handleSkip}>
-                <img className="skip" src={share} alt="skip"></img>
-              </button>
-            </div>
-          </div>
-        </div>
-      );
-    } else {
-      return (
-        <div className="container">
-          <div className="container page playerNavBar shadow">
-            <PlayerNavBar lobbyData={lobbyData} setCurrentPlayer={setCurrentPlayer} />
-          </div>
-          <div className="container page shadow">
-            <Summary lobbyData={lobbyData} userData={userData} currentPlayer={currentPlayer} />
-          </div>
-          <div className="container">
-            <div className="row d-flex flex-nowrap justify-content-between gap-3">
-              <button className="homeButton col-lg-3 col" onClick={handleHome}>
-                <img className="home" src={home} alt="home"></img>
-              </button>
-              <button className="retryButton col-lg-3 col" onClick={handleRetry}>
-                {retryLoading ? <Loading /> : <img className="retry" src={retry} alt="retry"></img>}
-              </button>
-            </div>
-          </div>
-        </div>
-      );
-    }
+  if (lobbyDataLoading || userDataLoading || !lobbyData) {
+    return <Loading />;
   }
+  return (
+    <div className="container">
+      <div className="container page shadow">
+        <div className="row align-items-center">
+          <div className="col-9 col-sm-9 col-lg-10">
+            <ProgressBar
+              ref={progressBarRef}
+              handleSkip={handleSkip}
+              currentIndex={currentIndex}
+              finished={lobbyData.players[currentUser.uid]?.finished}
+            />
+          </div>
+          <div className="col-3 col-sm-3 col-lg-2">
+            <div className="progressNumber">
+              {currentIndex + 1}/{lobbyData.settings.wordCount}
+            </div>
+          </div>
+        </div>
+        <div className="row">
+          <div className="translation">{lobbyData.translation[currentIndex]}</div>
+        </div>
+        <div className="row">
+          <form onSubmit={handleGuessSubmit}>
+            <input
+              ref={inputRef}
+              className="inputfield"
+              type="text"
+              value={guess}
+              onChange={(e) => {
+                setGuess(e.target.value);
+              }}
+              placeholder={feedback !== "" ? feedback : "enter here"}
+              autoFocus
+              maxLength={15}
+            />
+          </form>
+        </div>
+      </div>
+      <div className="container">
+        <div className="row d-flex flex-nowrap justify-content-between gap-3">
+          <button className="homeButton col-lg-3 col" onClick={handleHome}>
+            <img className="home" src={home} alt="home"></img>
+          </button>
+          <button className="skipButton col-lg-3 col" onClick={handleSkip}>
+            <img className="skip" src={share} alt="skip"></img>
+          </button>
+        </div>
+      </div>
+    </div>
+  );
 }
 
 export default Play;
