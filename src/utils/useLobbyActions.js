@@ -12,6 +12,7 @@ import {
   arrayUnion,
   setDoc,
   orderBy,
+  deleteDoc,
 } from "firebase/firestore";
 import { fetchRandomWords, fetchTranslation } from "./utils";
 import { useAuth } from "./authContext";
@@ -30,61 +31,49 @@ const useLobbyActions = () => {
     console.log(lobbyId);
     let querySnapshot;
     console.log();
-    switch (settings.gamemode) {
-      case 0:
-        console.log("play");
-        await createNewLobby();
-        navigate("/play");
-        break;
-      case 1:
-        const q = query(
-          collection(db, "lobbies"),
-          where("isOpen", "==", true),
-          where("gamemode", "==", settings.gamemode),
-          where("sourceLang", "==", settings.sourceLang),
-          where("targetLang", "==", settings.targetLang),
-          where("wordCount", "==", settings.wordCount),
-          where("maxPlayers", "==", 2)
-        );
-        querySnapshot = await getDocs(q);
-        let currentDoc;
-        let currentDocData;
-        if (!querySnapshot.empty) {
-          currentDoc = querySnapshot.docs[0];
-          currentDocData = currentDoc.data();
-          console.log(currentDoc.id);
-          setLobbyId(currentDoc.id);
-          await setDoc(
-            doc(db, "lobbies", currentDoc.id),
-            {
-              players: {
-                ...{
-                  [currentUser.uid]: {
-                    name: userData.name,
-                    score: 0,
-                    guesses: {},
-                    scores: {},
-                    times: {},
-                    isNewPb: false,
-                    finished: false,
-                    retry: false,
-                  },
-                },
+
+    const q = query(
+      collection(db, "lobbies"),
+      where("isOpen", "==", true),
+      where("settings.gamemode", "==", settings.gamemode),
+      where("settings.sourceLang", "==", settings.sourceLang),
+      where("settings.targetLang", "==", settings.targetLang),
+      where("settings.wordCount", "==", settings.wordCount),
+      where("maxPlayers", "==", 2)
+    );
+    querySnapshot = await getDocs(q);
+    console.log(querySnapshot);
+    let currentDoc;
+    let currentDocData;
+    if (!querySnapshot.empty) {
+      currentDoc = querySnapshot.docs[0];
+      currentDocData = currentDoc.data();
+      console.log(currentDoc.id);
+      setLobbyId(currentDoc.id);
+      await setDoc(
+        doc(db, "lobbies", currentDoc.id),
+        {
+          players: {
+            ...{
+              [currentUser.uid]: {
+                name: userData.name,
+                score: 0,
+                guesses: {},
+                scores: {},
+                times: {},
+                isNewPb: false,
+                finished: false,
+                retry: false,
               },
-              isOpen: false,
             },
-            { merge: true }
-          );
-          navigate("/play");
-        } else {
-          await createNewLobby();
-          navigate("/play");
-        }
-        break;
-      case 2:
-        await createNewLobby();
-        navigate("/lobby");
-        break;
+          },
+          isOpen: false,
+        },
+        { merge: true }
+      );
+      return true;
+    } else {
+      return false;
     }
   };
 
@@ -195,7 +184,10 @@ const useLobbyActions = () => {
   }; //handleRetry and player data updates
 
   const joinLobbyWithCode = async () => {};
+  const deleteLobby = async () => {
+    await deleteDoc(doc(db, "lobbies", lobbyId));
+  };
 
-  return { searchOpenLobby, updateLobbyData, getPlayersOrderByScore };
+  return { searchOpenLobby, createNewLobby, updateLobbyData, getPlayersOrderByScore, deleteLobby };
 };
 export default useLobbyActions;

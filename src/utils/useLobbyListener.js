@@ -4,7 +4,7 @@ import { db } from "./firebase";
 import { useLobbyId } from "./lobbyIdContext";
 
 const useLobbyListener = () => {
-  const { lobbyId } = useLobbyId();
+  const { lobbyId, setLobbyId } = useLobbyId();
   const [lobbyData, setLobbyData] = useState(null);
   const [lobbyDataLoading, setLobbyDataLoading] = useState(null);
 

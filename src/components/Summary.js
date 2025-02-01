@@ -30,6 +30,7 @@ function Summary() {
 
   useEffect(() => {
     setCurrentPlayer(currentUser.uid);
+    return () => {};
   }, []);
   const handleHome = () => {
     navigate("/");
@@ -85,6 +86,7 @@ function Summary() {
     return (
       <div className="container">
         <div className="title">Waiting for players</div>
+        <Loading />
       </div>
     );
   }

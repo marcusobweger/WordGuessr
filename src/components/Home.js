@@ -14,6 +14,7 @@ import useLobbyActions from "../utils/useLobbyActions";
 import useLobbyListener from "../utils/useLobbyListener";
 import useUserListener from "../utils/useUserListener";
 import Loading from "./Loading";
+import { useLobbyId } from "../utils/lobbyIdContext";
 function Home() {
   const { setHomeState } = useContext(AppContext);
   const [isLoading, setIsLoading] = useState(false);
@@ -21,9 +22,11 @@ function Home() {
   const navigate = useNavigate();
   const { userLoggedIn } = useAuth();
   const { settings, setSettings } = useSettings();
-  const { searchOpenLobby } = useLobbyActions();
-  const lobbyData = useLobbyListener();
+  const { searchOpenLobby, createNewLobby, deleteLobby } = useLobbyActions();
+  const { lobbyData } = useLobbyListener();
+  const { lobbyId } = useLobbyId();
   const userDataLoading = useUserListener();
+  const [isSearching, setIsSearching] = useState(false);
 
   // values for generating buttons
   const targetLanguages = ["ja", "ko", "de", "it", "fr", "es"];
@@ -40,6 +43,9 @@ function Home() {
   };
   // load preferences from LocalStorage
   useEffect(() => {
+    if (lobbyId) {
+      deleteLobby();
+    }
     const savedGamemode = localStorage.getItem("gamemode");
     const savedSourceLang = localStorage.getItem("sourceLang");
     const savedTargetLang = localStorage.getItem("targetLang");
@@ -72,11 +78,43 @@ function Home() {
     savePreferences();
     if (userLoggedIn) {
       console.log("test");
-      await searchOpenLobby();
+      switch (settings.gamemode) {
+        case 0:
+          await createNewLobby();
+          setIsLoading(false);
+          navigate("/play");
+          break;
+        case 1:
+          setIsSearching(true);
+          const lobbyFound = await searchOpenLobby();
+          if (lobbyFound) {
+            console.log("lobby found");
+            setIsSearching(false);
+            setIsLoading(false);
+            navigate("/play");
+          } else {
+            await createNewLobby();
+            console.log("lobby created regardless");
+            setIsLoading(false);
+          }
+          break;
+        case 2:
+          await createNewLobby();
+          setIsLoading(false);
+          navigate("/lobby");
+          break;
+      }
     } else {
       navigate("/continue");
     }
   };
+
+  useEffect(() => {
+    if (lobbyData && !lobbyData?.isOpen) {
+      setIsSearching(false);
+      navigate("/play");
+    }
+  }, [lobbyData]);
 
   const LanguageButtons = () => {
     return Array.from({ length: targetLanguages.length }, (_, index) => (
@@ -143,12 +181,21 @@ function Home() {
   };
   const PlayButtonContent = () => {
     if (!isLoading) {
-      if (settings.gamemode === 1) {
-        return "Join Queue";
+      if (settings.gamemode === 0) {
+        return "Play";
+      } else if (settings.gamemode === 1) {
+        if (isSearching) {
+          return (
+            <>
+              In Queue
+              <Loading />
+            </>
+          );
+        } else {
+          return "Join Queue";
+        }
       } else if (settings.gamemode === 2) {
         return "Create Lobby";
-      } else if (settings.gamemode === 0) {
-        return "Play";
       }
     } else {
       return <Loading />;

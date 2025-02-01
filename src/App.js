@@ -29,7 +29,7 @@ function App() {
               <NavBar />
               <Routes>
                 <Route path="/" element={<Home />} />
-                <Route path="/play" element={homeState ? <Play /> : <Navigate to="/" replace />} />
+                <Route path="/play" element={<Play />} />
                 <Route path="/summary" element={<Summary />} />
                 <Route path="/about" element={<About />} />
                 <Route path="/login" element={<Signin type="login" />} />
