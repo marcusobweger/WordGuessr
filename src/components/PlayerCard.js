@@ -1,5 +1,3 @@
-import useLobbyListener from "../utils/useLobbyListener";
-
 const PlayerCard = ({ lobbyData }) => {
   return Array.from({ length: Object.keys(lobbyData.players).length }, (_, index) => (
     <div key={index} className="col wordCard">

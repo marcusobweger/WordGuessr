@@ -4,13 +4,12 @@ import "../styling/Play.css";
 import home from "../icons/home.png";
 import share from "../icons/share.png";
 import ProgressBar from "./ProgressBar";
-import useLobbyListener from "../utils/useLobbyListener";
 import { useAuth } from "../utils/authContext";
-import useUserListener from "../utils/useUserListener";
-import useLobbyActions from "../utils/useLobbyActions";
-import useUserActions from "../utils/useUserActions";
 import { increment } from "firebase/firestore";
 import Loading from "./Loading";
+import { useFirebaseContext } from "../utils/firebaseContext";
+import { updateLobbyData } from "../utils/lobbyUtils";
+import { updateUserData } from "../utils/userUtils";
 
 function Play() {
   // local
@@ -24,28 +23,29 @@ function Play() {
   const progressBarRef = useRef(null);
   const feedbackTimeoutRef = useRef(null);
 
-  const { lobbyData, lobbyDataLoading } = useLobbyListener();
-  const { userData, userDataLoading } = useUserListener();
+  const { lobbyData, userData, lobbyId } = useFirebaseContext();
   const { currentUser } = useAuth();
-  const { updateLobbyData } = useLobbyActions();
-  const { updateUserData } = useUserActions();
   const navigate = useNavigate();
 
   const handleUpdateLobbyData = async (updatedFields) => {
     try {
-      await updateLobbyData(updatedFields);
+      await updateLobbyData(lobbyId, updatedFields);
     } catch (error) {
       console.log(error);
     }
   };
   const handleUpdateUserData = async (updatedFields) => {
     try {
-      await updateUserData(updatedFields);
+      await updateUserData(currentUser, updatedFields);
     } catch (error) {
       console.log(error);
     }
   };
   console.log(lobbyData);
+
+  useEffect(() => {
+    handleUpdateUserData({ state: "playing" });
+  }, []);
 
   useEffect(() => {
     if (lobbyData?.players[currentUser.uid]?.finished) {
@@ -192,7 +192,7 @@ function Play() {
     navigate("/");
   };
 
-  if (lobbyDataLoading || userDataLoading || !lobbyData) {
+  if (!userData || !lobbyData) {
     return <Loading />;
   }
   return (

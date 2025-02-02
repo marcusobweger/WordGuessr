@@ -14,7 +14,7 @@ import Profile from "./components/Profile";
 import "../src/styling/App.css";
 import { AuthProvider } from "./utils/authContext";
 import { SettingsProvider } from "./utils/settingsContext";
-import { LobbyIdProvider } from "./utils/lobbyIdContext";
+import { FirebaseProvider } from "./utils/firebaseContext";
 import EnterUserName from "./components/EnterUserName";
 
 export const AppContext = createContext();
@@ -24,7 +24,7 @@ function App() {
     <AppContext.Provider value={{ setHomeState }}>
       <AuthProvider>
         <SettingsProvider>
-          <LobbyIdProvider>
+          <FirebaseProvider>
             <Router>
               <NavBar />
               <Routes>
@@ -44,7 +44,7 @@ function App() {
                 <Route path="*" element={<Navigate to="/" replace />} />
               </Routes>
             </Router>
-          </LobbyIdProvider>
+          </FirebaseProvider>
         </SettingsProvider>
       </AuthProvider>
     </AppContext.Provider>

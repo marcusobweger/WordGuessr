@@ -1,17 +1,18 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import useUserActions from "../utils/useUserActions";
 import Loading from "../components/Loading";
+import { updateUserData } from "../utils/userUtils";
+import { useAuth } from "../utils/authContext";
 
 const EnterUserName = () => {
   const [userName, setUserName] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const navigate = useNavigate();
-  const { updateUserData } = useUserActions();
+  const { currentUser } = useAuth();
   const handleSetUserName = async (e) => {
     e.preventDefault();
     setIsLoading(true);
-    await updateUserData({ name: userName });
+    await updateUserData(currentUser, { name: userName });
     setIsLoading(false);
     navigate("/");
   };

@@ -9,35 +9,31 @@ import retry from "../icons/reload.png";
 import home from "../icons/home.png";
 
 import { fetchRandomWords, fetchTranslation } from "../utils/utils";
-import useLobbyListener from "../utils/useLobbyListener";
-import useUserListener from "../utils/useUserListener";
-import useLobbyActions from "../utils/useLobbyActions";
-import useUserActions from "../utils/useUserActions";
 import { useAuth } from "../utils/authContext";
 import Loading from "./Loading";
 import PlayerNavBar from "./PlayerNavBar";
+import { useFirebaseContext } from "../utils/firebaseContext";
+import { updateLobbyData } from "../utils/lobbyUtils";
 
 function Summary() {
   const navigate = useNavigate();
   const [retryLoading, setRetryLoading] = useState(false);
-  const [currentPlayer, setCurrentPlayer] = useState("");
+  const [currentPlayer, setCurrentPlayer] = useState(null);
 
-  const { lobbyData, lobbyDataLoading } = useLobbyListener();
-  const { userData, userDataLoading } = useUserListener();
+  const { lobbyData, userData, lobbyId } = useFirebaseContext();
+
   const { currentUser } = useAuth();
-  const { updateLobbyData } = useLobbyActions();
-  const { updateUserData } = useUserActions();
 
   useEffect(() => {
+    console.log(currentUser);
     setCurrentPlayer(currentUser.uid);
-    return () => {};
   }, []);
   const handleHome = () => {
     navigate("/");
   };
   const handleUpdateLobbyData = async (updatedFields) => {
     try {
-      await updateLobbyData(updatedFields);
+      await updateLobbyData(lobbyId, updatedFields);
     } catch (error) {
       console.log(error);
     }
@@ -58,9 +54,7 @@ function Summary() {
       console.error("Error during the play process:", error);
     } finally {
       if (wordsFetched.length > 0 && translationFetched.length > 0) {
-        setRetryLoading(false);
-        navigate("/play");
-        handleUpdateLobbyData({
+        await handleUpdateLobbyData({
           words: wordsFetched,
           translation: translationFetched,
           finishCount: 0,
@@ -71,13 +65,15 @@ function Summary() {
           [`players.${currentUser.uid}.isNewPb`]: false,
           [`players.${currentUser.uid}.finished`]: false,
         });
+        setRetryLoading(false);
+        navigate("/play");
       } else {
         console.error("Failed to fetch data for play.");
       }
     }
   };
 
-  if (lobbyDataLoading || userDataLoading || !lobbyData) {
+  if (!currentPlayer || !userData || !lobbyData) {
     return <Loading />;
   } else if (
     lobbyData.finishCount !== Object.keys(lobbyData.players).length &&

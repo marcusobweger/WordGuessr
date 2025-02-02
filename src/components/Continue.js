@@ -1,26 +1,27 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { doSignInAnonymously } from "../utils/authUtils";
-import useUserActions from "../utils/useUserActions";
-import useUserListener from "../utils/useUserListener";
+import { createNewUser } from "../utils/userUtils";
 import Loading from "./Loading";
+import { useFirebaseContext } from "../utils/firebaseContext";
+import { useAuth } from "../utils/authContext";
 
 export default function Continue() {
   const navigate = useNavigate();
   const [isSigningIn, setIsSigningIn] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [hasFinishedSigningIn, setHasFinishedSigningIn] = useState(false);
-  const { userData, userDataLoading } = useUserListener();
-
-  const { createNewUser } = useUserActions();
+  const { userData } = useFirebaseContext();
+  const { currentUser } = useAuth();
 
   useEffect(() => {
     if (hasFinishedSigningIn) {
+      console.log(currentUser);
       handleCreateNewUser();
     }
   }, [hasFinishedSigningIn]);
   useEffect(() => {
-    if (!userDataLoading) {
+    if (userData) {
       setIsLoading(false);
       if (userData.name === "Anonymous") {
         navigate("/username");
@@ -28,10 +29,11 @@ export default function Continue() {
         navigate("/play");
       }
     }
-  }, [userDataLoading]);
+  }, [userData]);
   const handleCreateNewUser = async () => {
     try {
-      await createNewUser();
+      console.log(currentUser);
+      await createNewUser(currentUser);
     } catch (error) {
       console.log(error);
     }

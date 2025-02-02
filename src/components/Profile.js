@@ -1,19 +1,21 @@
 import React, { useState } from "react";
 import { doSignOut } from "../utils/authUtils";
 import { useNavigate } from "react-router-dom";
-import useUserListener from "../utils/useUserListener";
-import useUserActions from "../utils/useUserActions";
 import Loading from "./Loading";
+import { deleteAnonymousUser } from "../utils/userUtils";
+import { useFirebaseContext } from "../utils/firebaseContext";
+import { useAuth } from "../utils/authContext";
 function Profile() {
   const navigate = useNavigate();
-  const { userData, userDataLoading } = useUserListener();
-  const { deleteAnonymousUser } = useUserActions();
+  const { userData } = useFirebaseContext();
+  const { currentUser } = useAuth();
+
   const [isLoading, setIsLoading] = useState(false);
 
   const handleSignOut = async () => {
     try {
       setIsLoading(true);
-      await deleteAnonymousUser();
+      await deleteAnonymousUser(currentUser);
       await doSignOut();
       setIsLoading(false);
       navigate("/");
@@ -29,7 +31,7 @@ function Profile() {
     }
   };
 
-  if (userDataLoading) {
+  if (!userData) {
     return <Loading />;
   }
   return (

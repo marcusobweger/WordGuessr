@@ -1,11 +1,24 @@
-import React from "react";
-import useLobbyListener from "../utils/useLobbyListener";
-import { useLobbyId } from "../utils/lobbyIdContext";
+import React, { useEffect } from "react";
 import PlayerCard from "./PlayerCard";
+import { useFirebaseContext } from "../utils/firebaseContext";
+import { updateUserData } from "../utils/userUtils";
+import { useAuth } from "../utils/authContext";
 
 export default function Lobby() {
-  const lobbyData = useLobbyListener();
-  const { lobbyId } = useLobbyId();
+  const { lobbyData, lobbyId } = useFirebaseContext();
+  const { currentUser } = useAuth();
+  const handleUpdateUserData = async (updatedFields) => {
+    try {
+      await updateUserData(currentUser, updatedFields);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+  console.log(lobbyData);
+
+  useEffect(() => {
+    handleUpdateUserData({ state: "playing" });
+  }, []);
 
   return (
     <div className="container">

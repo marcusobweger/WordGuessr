@@ -23,6 +23,8 @@ const iconMap = {
 const WordCard = ({ lobbyData, userData, currentPlayer }) => {
   const targetLangIcon = iconMap[lobbyData.settings.targetLang];
   const sourceLangIcon = iconMap[lobbyData.settings.sourceLang];
+  console.log(lobbyData);
+  console.log(currentPlayer);
   return Array.from({ length: lobbyData.settings.wordCount }, (_, index) => (
     <div key={index} className="wordCard col-12 col-sm-12 col-md col-lg">
       <div className="row">

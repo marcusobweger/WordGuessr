@@ -1,0 +1,24 @@
+import { setDoc, doc, updateDoc, getDoc, deleteDoc } from "firebase/firestore";
+import { db } from "./firebase";
+import { deleteUser } from "firebase/auth";
+
+export const createNewUser = async (currentUser) => {
+  const docRef = doc(db, "users", currentUser.uid);
+  const userRef = await getDoc(docRef);
+  if (!userRef.exists()) {
+    await setDoc(docRef, {
+      name: "Anonymous",
+      highScores: {},
+      state: "idle",
+    });
+  }
+};
+export const updateUserData = async (currentUser, updatedFields) => {
+  await updateDoc(doc(db, "users", currentUser.uid), updatedFields);
+};
+export const deleteAnonymousUser = async (currentUser) => {
+  if (currentUser?.isAnonymous) {
+    await deleteDoc(doc(db, "users", currentUser.uid));
+    await deleteUser(currentUser);
+  }
+};

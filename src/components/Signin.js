@@ -9,9 +9,10 @@ import {
   doSignInWithGoogle,
 } from "../utils/authUtils";
 import { useNavigate } from "react-router-dom";
-import useUserActions from "../utils/useUserActions";
-import useUserListener from "../utils/useUserListener";
 import Loading from "./Loading";
+import { useFirebaseContext } from "../utils/firebaseContext";
+import { createNewUser } from "../utils/userUtils";
+import { useAuth } from "../utils/authContext";
 
 function Signin({ type }) {
   const [email, setEmail] = useState("");
@@ -20,8 +21,8 @@ function Signin({ type }) {
   const [hasFinishedSigningIn, setHasFinishedSigningIn] = useState(false);
   const [isError, setIsError] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
-  const { userData, userDataLoading } = useUserListener();
-  const { createNewUser } = useUserActions();
+  const { userData } = useFirebaseContext();
+  const { currentUser } = useAuth();
 
   const navigate = useNavigate();
 
@@ -37,7 +38,7 @@ function Signin({ type }) {
     }
   }, [hasFinishedSigningIn]);
   useEffect(() => {
-    if (!userDataLoading) {
+    if (userData) {
       setIsLoading(false);
       if (userData.name === "Anonymous") {
         navigate("/username");
@@ -45,10 +46,10 @@ function Signin({ type }) {
         navigate("/");
       }
     }
-  }, [userDataLoading]);
+  }, [userData]);
   const handleCreateNewUser = async () => {
     try {
-      await createNewUser();
+      await createNewUser(currentUser);
     } catch (error) {
       console.log(error);
     }

@@ -10,22 +10,25 @@ import "../styling/Home.css";
 import { AppContext } from "../App";
 import { useAuth } from "../utils/authContext";
 import { useSettings } from "../utils/settingsContext";
-import useLobbyActions from "../utils/useLobbyActions";
-import useLobbyListener from "../utils/useLobbyListener";
-import useUserListener from "../utils/useUserListener";
 import Loading from "./Loading";
-import { useLobbyId } from "../utils/lobbyIdContext";
+import {
+  searchOpenLobby,
+  createNewLobby,
+  deleteLobby,
+  deletePlayerFromLobby,
+} from "../utils/lobbyUtils";
+import { updateUserData } from "../utils/userUtils";
+import { useFirebaseContext } from "../utils/firebaseContext";
 function Home() {
   const { setHomeState } = useContext(AppContext);
   const [isLoading, setIsLoading] = useState(false);
 
   const navigate = useNavigate();
-  const { userLoggedIn } = useAuth();
+  const { userLoggedIn, currentUser } = useAuth();
   const { settings, setSettings } = useSettings();
-  const { searchOpenLobby, createNewLobby, deleteLobby } = useLobbyActions();
-  const { lobbyData } = useLobbyListener();
-  const { lobbyId } = useLobbyId();
-  const userDataLoading = useUserListener();
+
+  const { lobbyData, lobbyId, setLobbyId, userData } = useFirebaseContext();
+
   const [isSearching, setIsSearching] = useState(false);
 
   // values for generating buttons
@@ -43,8 +46,27 @@ function Home() {
   };
   // load preferences from LocalStorage
   useEffect(() => {
-    if (lobbyId) {
-      deleteLobby();
+    if (lobbyData && userData?.state !== "queueing") {
+      handleUpdateUserData({ state: "idle" });
+      // delete lobby if only one player left and this player is the current player, also in solo mode
+      if (
+        Object.keys(lobbyData?.players).includes(currentUser.uid) &&
+        Object.keys(lobbyData?.players).length === 1 &&
+        Object.keys(lobbyData?.players)[0] === currentUser.uid
+      ) {
+        try {
+          deleteLobby(lobbyId);
+        } catch (error) {
+          console.log(error);
+        }
+      } else {
+        console.log("attempting delete player");
+        try {
+          deletePlayerFromLobby(currentUser, lobbyId);
+        } catch (error) {
+          console.log(error);
+        }
+      }
     }
     const savedGamemode = localStorage.getItem("gamemode");
     const savedSourceLang = localStorage.getItem("sourceLang");
@@ -72,6 +94,13 @@ function Home() {
     setHomeState(isLoading);
   }, [isLoading]);
 
+  const handleUpdateUserData = async (updatedFields) => {
+    try {
+      await updateUserData(currentUser, updatedFields);
+    } catch (error) {
+      console.log(error);
+    }
+  };
   // executes when the play button is pressed, if userLoggedIn play directly else go to continue page
   const handlePlay = async () => {
     setIsLoading(true);
@@ -80,26 +109,27 @@ function Home() {
       console.log("test");
       switch (settings.gamemode) {
         case 0:
-          await createNewLobby();
+          await createNewLobby(settings, setLobbyId, currentUser, userData);
           setIsLoading(false);
           navigate("/play");
           break;
         case 1:
-          setIsSearching(true);
-          const lobbyFound = await searchOpenLobby();
+          handleUpdateUserData({ state: "queueing" });
+
+          const lobbyFound = await searchOpenLobby(settings, setLobbyId, currentUser, userData);
           if (lobbyFound) {
             console.log("lobby found");
-            setIsSearching(false);
             setIsLoading(false);
             navigate("/play");
           } else {
-            await createNewLobby();
+            await createNewLobby(settings, setLobbyId, currentUser, userData);
+
             console.log("lobby created regardless");
             setIsLoading(false);
           }
           break;
         case 2:
-          await createNewLobby();
+          await createNewLobby(settings, setLobbyId, currentUser, userData);
           setIsLoading(false);
           navigate("/lobby");
           break;
@@ -108,20 +138,32 @@ function Home() {
       navigate("/continue");
     }
   };
+  const handleCancel = async () => {
+    handleUpdateUserData({ state: "idle" });
+    try {
+      deleteLobby(lobbyId);
+    } catch (error) {
+      console.log(error);
+    }
+  };
 
   useEffect(() => {
-    if (lobbyData && !lobbyData?.isOpen) {
-      setIsSearching(false);
+    if (
+      lobbyData &&
+      userData?.state === "queueing" &&
+      settings.gamemode === 1 &&
+      !lobbyData?.isOpen
+    ) {
       navigate("/play");
     }
-  }, [lobbyData]);
+  }, [lobbyData?.isOpen]);
 
   const LanguageButtons = () => {
     return Array.from({ length: targetLanguages.length }, (_, index) => (
       <button
         key={index}
         className={`col ${settings.targetLang === targetLanguages[index] ? "clicked" : ""}`}
-        disabled={isLoading}
+        disabled={isLoading || userData?.state === "queueing"}
         onClick={() => setSettings({ ...settings, targetLang: targetLanguages[index] })}>
         <img
           className="icons"
@@ -135,7 +177,7 @@ function Home() {
       <button
         key={index}
         className={`col ${settings.wordCount === wordCounts[index] ? "clicked" : ""}`}
-        disabled={isLoading}
+        disabled={isLoading || userData?.state === "queueing"}
         onClick={() => setSettings({ ...settings, wordCount: wordCounts[index] })}>
         {wordCounts[index]}
       </button>
@@ -160,19 +202,19 @@ function Home() {
           <button
             className={`col ${settings.gamemode === 0 ? "clicked" : ""}`}
             onClick={() => setSettings({ ...settings, gamemode: 0 })}
-            disabled={isLoading}>
+            disabled={isLoading || userData?.state === "queueing"}>
             Solo
           </button>
           <button
             className={`col ${settings.gamemode === 1 ? "clicked" : ""}`}
             onClick={() => setSettings({ ...settings, gamemode: 1 })}
-            disabled={isLoading}>
+            disabled={isLoading || userData?.state === "queueing"}>
             Online
           </button>
           <button
             className={`col-12 col-sm ${settings.gamemode === 2 ? "clicked" : ""}`}
             onClick={() => setSettings({ ...settings, gamemode: 2 })}
-            disabled={isLoading}>
+            disabled={isLoading || userData?.state === "queueing"}>
             Private
           </button>
         </div>
@@ -184,10 +226,10 @@ function Home() {
       if (settings.gamemode === 0) {
         return "Play";
       } else if (settings.gamemode === 1) {
-        if (isSearching) {
+        if (userData?.state === "queueing") {
           return (
             <>
-              In Queue
+              Cancel Queue
               <Loading />
             </>
           );
@@ -208,7 +250,10 @@ function Home() {
         <Gamemode />
         <Settings />
         <div className="play row buttonGaps">
-          <button className="col" onClick={handlePlay} disabled={isLoading}>
+          <button
+            className="col"
+            onClick={userData?.state !== "queueing" ? handlePlay : handleCancel}
+            disabled={isLoading}>
             <PlayButtonContent />
           </button>
         </div>
