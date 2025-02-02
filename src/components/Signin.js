@@ -53,25 +53,7 @@ function Signin({ type }) {
       console.log(error);
     }
   };
-  const handleEmailCreate = async (e) => {
-    e.preventDefault();
-    if (!isSigningIn) {
-      setIsSigningIn(true);
-      try {
-        setHasFinishedSigningIn(true);
-        setIsError(false);
-        setIsSigningIn(false);
-      } catch (error) {
-        console.log(error);
-        setHasFinishedSigningIn(false);
-        setIsError(true);
-        setEmail("");
-        setPassword("");
-        setIsSigningIn(false);
-      }
-    }
-  };
-  const handleEmailSignIn = async (e) => {};
+
   const handleEmail = async (e) => {
     e.preventDefault();
     if (!isSigningIn) {
@@ -138,7 +120,7 @@ function Signin({ type }) {
   }
   return (
     <div className="container col-md-6 col-xl-4">
-      <div className="container page shadow">
+      <div className="container page shadow login-page">
         <div className="row">
           <div className="col login-text">{type === "login" ? "Welcome back!" : "Welcome!"}</div>
         </div>
@@ -160,7 +142,7 @@ function Signin({ type }) {
         </div>
         <div className="row or-text">or</div>
         <div className="row ">
-          <form onSubmit={handleEmail} className="col">
+          <form id="signin" onSubmit={handleEmail} className="col">
             <input
               className={`${isError ? "error" : ""} inputfield login-inputfield row `}
               type="text"

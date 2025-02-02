@@ -7,7 +7,7 @@ const EnterCode = () => {
     <div className="container">
       <div className="container page">
         <div className="row">
-          <form className="col">
+          <form id="code" className="col">
             <input
               className="inputfield code-inputfield"
               type="text"

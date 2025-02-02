@@ -217,7 +217,7 @@ function Play() {
           <div className="translation">{lobbyData.translation[currentIndex]}</div>
         </div>
         <div className="row">
-          <form onSubmit={handleGuessSubmit}>
+          <form id="guess" onSubmit={handleGuessSubmit}>
             <input
               ref={inputRef}
               className="inputfield"

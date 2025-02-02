@@ -22,7 +22,7 @@ const EnterUserName = () => {
     <div className="container">
       <div className="container page">
         <div className="row">
-          <form onSubmit={handleSetUserName} className="col">
+          <form id="username" onSubmit={handleSetUserName} className="col">
             <input
               className="inputfield code-inputfield row"
               type="text"
