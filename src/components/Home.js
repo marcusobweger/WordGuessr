@@ -46,7 +46,7 @@ function Home() {
   };
   // load preferences from LocalStorage
   useEffect(() => {
-    if (lobbyData && userData?.state !== "queueing") {
+    if (lobbyData && currentUser && userData?.state !== "queueing") {
       handleUpdateUserData({ state: "idle" });
       // delete lobby if only one player left and this player is the current player, also in solo mode
       if (
@@ -150,6 +150,7 @@ function Home() {
   useEffect(() => {
     if (
       lobbyData &&
+      currentUser &&
       userData?.state === "queueing" &&
       settings.gamemode === 1 &&
       !lobbyData?.isOpen

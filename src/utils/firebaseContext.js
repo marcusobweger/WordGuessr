@@ -36,6 +36,7 @@ export const FirebaseProvider = ({ children }) => {
     // Cleanup the listener when the component unmounts
     return () => {
       unsubscribe();
+      setLobbyData(null);
     };
   }, [lobbyId]);
 
@@ -61,6 +62,7 @@ export const FirebaseProvider = ({ children }) => {
     // Cleanup the listener when the component unmounts
     return () => {
       unsubscribe();
+      setUserData(null);
     };
   }, [currentUser]);
 

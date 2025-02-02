@@ -21,6 +21,7 @@ export default function Continue() {
     }
   }, [hasFinishedSigningIn]);
   useEffect(() => {
+    if (!currentUser) return;
     if (userData) {
       setIsLoading(false);
       if (userData.name === "Anonymous") {
@@ -29,7 +30,7 @@ export default function Continue() {
         navigate("/play");
       }
     }
-  }, [userData]);
+  }, [userData, currentUser]);
   const handleCreateNewUser = async () => {
     try {
       console.log(currentUser);

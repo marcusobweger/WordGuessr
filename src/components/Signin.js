@@ -38,6 +38,7 @@ function Signin({ type }) {
     }
   }, [hasFinishedSigningIn]);
   useEffect(() => {
+    if (!currentUser) return;
     if (userData) {
       setIsLoading(false);
       if (userData.name === "Anonymous") {
@@ -46,7 +47,7 @@ function Signin({ type }) {
         navigate("/");
       }
     }
-  }, [userData]);
+  }, [userData, currentUser]);
   const handleCreateNewUser = async () => {
     try {
       await createNewUser(currentUser);

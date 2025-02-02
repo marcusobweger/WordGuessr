@@ -55,10 +55,11 @@ function Play() {
   useEffect(() => {
     if (
       (lobbyData?.players[currentUser.uid]?.score ?? 0) >
-      (userData?.highScores[lobbyData.settings.wordCount] ?? 0)
+      (userData?.highScores[lobbyData?.settings?.wordCount] ?? 0)
     ) {
       handleUpdateUserData({
-        [`highScores.${lobbyData?.settings.wordCount}`]: lobbyData?.players[currentUser.uid]?.score,
+        [`highScores.${lobbyData?.settings?.wordCount}`]:
+          lobbyData?.players[currentUser.uid]?.score,
       });
       handleUpdateLobbyData({ [`players.${currentUser.uid}.isNewPb`]: true });
     }
@@ -86,7 +87,7 @@ function Play() {
   const handleGuessSubmit = async (e) => {
     e.preventDefault();
     if (guess !== "") {
-      if (guess.trim().toLowerCase() === lobbyData.words[currentIndex]?.toLowerCase()) {
+      if (guess.trim().toLowerCase() === lobbyData?.words[currentIndex]?.toLowerCase()) {
         setFeedback("correct!");
         const savedScoreAtIndex = lobbyData?.players[currentUser.uid]?.scores[currentIndex];
 
@@ -117,7 +118,7 @@ function Play() {
           [`players.${currentUser.uid}.guesses.${currentIndex}`]: guess,
         });
 
-        if (currentIndex < lobbyData.translation?.length - 1) {
+        if (currentIndex < lobbyData?.translation?.length - 1) {
           setCurrentIndex(currentIndex + 1);
         } else {
           handleUpdateLobbyData({
@@ -132,8 +133,8 @@ function Play() {
           .trim()
           .toLowerCase()
           .includes(
-            lobbyData.words[currentIndex]?.toLowerCase().substring(0, 3),
-            lobbyData.words[currentIndex]?.toLowerCase().substring(3, 6)
+            lobbyData?.words[currentIndex]?.toLowerCase().substring(0, 3),
+            lobbyData?.words[currentIndex]?.toLowerCase().substring(3, 6)
           )
       ) {
         setFeedback("close!");
@@ -172,7 +173,7 @@ function Play() {
   };
 
   const handleSkip = async () => {
-    if (currentIndex < lobbyData.translation.length - 1) {
+    if (currentIndex < lobbyData?.translation?.length - 1) {
       setCurrentIndex(currentIndex + 1);
       setGuess("");
       setFeedback("skipped!");
@@ -204,17 +205,17 @@ function Play() {
               ref={progressBarRef}
               handleSkip={handleSkip}
               currentIndex={currentIndex}
-              finished={lobbyData.players[currentUser.uid]?.finished}
+              finished={lobbyData?.players[currentUser.uid]?.finished}
             />
           </div>
           <div className="col-3 col-sm-3 col-lg-2">
             <div className="progressNumber">
-              {currentIndex + 1}/{lobbyData.settings.wordCount}
+              {currentIndex + 1}/{lobbyData?.settings?.wordCount}
             </div>
           </div>
         </div>
         <div className="row">
-          <div className="translation">{lobbyData.translation[currentIndex]}</div>
+          <div className="translation">{lobbyData?.translation[currentIndex]}</div>
         </div>
         <div className="row">
           <form id="guess" onSubmit={handleGuessSubmit}>
