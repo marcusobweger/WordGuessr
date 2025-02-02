@@ -44,6 +44,7 @@ function Play() {
   console.log(lobbyData);
 
   useEffect(() => {
+    if (!currentUser || !lobbyData) return;
     handleUpdateUserData({ state: "playing" });
   }, []);
 

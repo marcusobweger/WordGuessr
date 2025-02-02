@@ -3,9 +3,10 @@ import PlayerCard from "./PlayerCard";
 import { useFirebaseContext } from "../utils/firebaseContext";
 import { updateUserData } from "../utils/userUtils";
 import { useAuth } from "../utils/authContext";
+import Loading from "./Loading";
 
 export default function Lobby() {
-  const { lobbyData, lobbyId } = useFirebaseContext();
+  const { lobbyData, userData, lobbyId } = useFirebaseContext();
   const { currentUser } = useAuth();
   const handleUpdateUserData = async (updatedFields) => {
     try {
@@ -17,8 +18,12 @@ export default function Lobby() {
   console.log(lobbyData);
 
   useEffect(() => {
+    if (!currentUser) return;
     handleUpdateUserData({ state: "playing" });
   }, []);
+  if (!currentUser || !lobbyData || !userData) {
+    return <Loading />;
+  }
 
   return (
     <div className="container">

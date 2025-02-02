@@ -55,7 +55,7 @@ function Profile() {
     }
   };
 
-  if (!userData) {
+  if (!userData || !currentUser) {
     return <Loading />;
   }
   return (

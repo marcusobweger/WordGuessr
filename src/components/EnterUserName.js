@@ -9,6 +9,9 @@ const EnterUserName = () => {
   const [isLoading, setIsLoading] = useState(false);
   const navigate = useNavigate();
   const { currentUser } = useAuth();
+  useEffect(() => {
+    if (!currentUser) return;
+  }, []);
   const handleSetUserName = async (e) => {
     e.preventDefault();
     setIsLoading(true);
@@ -16,7 +19,7 @@ const EnterUserName = () => {
     setIsLoading(false);
     navigate("/");
   };
-  if (isLoading) {
+  if (!currentUser || isLoading) {
     return <Loading />;
   }
   return (

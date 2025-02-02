@@ -26,6 +26,7 @@ function Summary() {
 
   useEffect(() => {
     console.log(currentUser);
+    if (!currentUser || !lobbyData) return;
     setCurrentPlayer(currentUser.uid);
   }, []);
   const handleHome = () => {
