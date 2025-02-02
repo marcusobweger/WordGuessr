@@ -15,6 +15,7 @@ import PlayerNavBar from "./PlayerNavBar";
 import { useFirebaseContext } from "../utils/firebaseContext";
 import { updateLobbyData } from "../utils/lobbyUtils";
 import { increment } from "firebase/firestore";
+import "../styling/Play.css";
 
 function Summary() {
   const navigate = useNavigate();
@@ -124,8 +125,10 @@ function Summary() {
     <div className="container">
       {!retryLoading ? (
         <>
-          <div className="container page playerNavBar shadow">
-            <PlayerNavBar lobbyData={lobbyData} setCurrentPlayer={setCurrentPlayer} />
+          <div className="container">
+            <div className="row gap-0 playerNavBarRow">
+              <PlayerNavBar lobbyData={lobbyData} setCurrentPlayer={setCurrentPlayer} />
+            </div>
           </div>
           <div className="container page shadow">
             <div className="container">

@@ -145,7 +145,16 @@
   align-items: center;
   margin-bottom: 6px;
 }
-.playerNavBar {
+.playerNavBarRow {
   display: flex;
-  justify-content: start !important;
+  justify-content: start;
+  align-items: center;
+  gap: 14px;
+  margin-bottom: 14px;
+}
+.playerNavBarButtons {
+  height: 80px;
+  min-width: 300px;
+}
+.playerNameCard {
 }
