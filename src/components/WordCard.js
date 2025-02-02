@@ -38,7 +38,13 @@ const WordCard = ({ lobbyData, userData, currentPlayer }) => {
           s
         </div>
         <div className="col wordCardScore">
-          <CountUp end={lobbyData.players[currentPlayer].scores[index]} duration={3} separator="" />
+          <CountUp
+            key={currentPlayer}
+            end={lobbyData.players[currentPlayer].scores[index]}
+            duration={2}
+            separator=""
+            redraw={true}
+          />
         </div>
         <div className="col wordCardNumber">
           {index + 1}/{lobbyData.settings.wordCount}

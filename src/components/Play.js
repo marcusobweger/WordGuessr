@@ -46,6 +46,7 @@ function Play() {
   useEffect(() => {
     if (!currentUser || !lobbyData) return;
     handleUpdateUserData({ state: "playing" });
+    handleUpdateLobbyData({ finishedRetryLoading: false });
   }, []);
 
   useEffect(() => {
@@ -62,7 +63,11 @@ function Play() {
         [`highScores.${lobbyData?.settings?.wordCount}`]:
           lobbyData?.players[currentUser.uid]?.score,
       });
-      handleUpdateLobbyData({ [`players.${currentUser.uid}.isNewPb`]: true });
+      handleUpdateLobbyData({
+        [`players.${currentUser.uid}.isNewPb`]: true,
+        [`players.${currentUser.uid}.highScores.${lobbyData?.settings?.wordCount}`]:
+          lobbyData?.players[currentUser.uid]?.score,
+      });
     }
   }, [lobbyData?.players[currentUser.uid]?.score]);
 

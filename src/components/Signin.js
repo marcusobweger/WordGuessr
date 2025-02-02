@@ -38,7 +38,7 @@ function Signin({ type }) {
     }
   }, [hasFinishedSigningIn]);
   useEffect(() => {
-    if (!currentUser) return;
+    if (!currentUser || currentUser.isAnonymous) return;
     if (userData) {
       setIsLoading(false);
       if (userData.name === "Anonymous") {
@@ -116,7 +116,7 @@ function Signin({ type }) {
       navigate("/login");
     }
   };
-
+  //add currentUser if users should not be able to sign in via /login url if they are already signed in
   if (isLoading) {
     return <Loading />;
   }

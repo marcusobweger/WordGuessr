@@ -14,6 +14,7 @@ import Loading from "./Loading";
 import PlayerNavBar from "./PlayerNavBar";
 import { useFirebaseContext } from "../utils/firebaseContext";
 import { updateLobbyData } from "../utils/lobbyUtils";
+import { increment } from "firebase/firestore";
 
 function Summary() {
   const navigate = useNavigate();
@@ -39,41 +40,72 @@ function Summary() {
       console.log(error);
     }
   };
-  const handleRetry = async () => {
-    setRetryLoading(true);
+  const handleRetryButton = async () => {
+    if (!lobbyData?.players[currentUser.uid]?.retry) {
+      await handleUpdateLobbyData({
+        retryCount: increment(1),
+        [`players.${currentUser.uid}.retry`]: true,
+      });
+    }
+  };
+  useEffect(() => {
+    handleRetry();
+  }, [lobbyData?.retryCount]);
+  useEffect(() => {
+    if (lobbyData?.finishedRetryLoading) {
+      setRetryLoading(false);
+      navigate("/play");
+    }
+  }, [lobbyData?.finishedRetryLoading]);
 
-    let wordsFetched = [];
-    let translationFetched = [];
-    try {
-      wordsFetched = await fetchRandomWords(lobbyData.settings.wordCount);
-      translationFetched = await fetchTranslation(
-        wordsFetched,
-        lobbyData.settings.sourceLang,
-        lobbyData.settings.targetLang
-      );
-    } catch (error) {
-      console.error("Error during the play process:", error);
-    } finally {
-      if (wordsFetched.length > 0 && translationFetched.length > 0) {
+  const handleRetry = async () => {
+    if (lobbyData?.retryCount === Object.keys(lobbyData?.players).length) {
+      setRetryLoading(true);
+      if (Object.keys(lobbyData?.players)[0] === currentUser.uid) {
+        let wordsFetched = [];
+        let translationFetched = [];
+        try {
+          wordsFetched = await fetchRandomWords(lobbyData.settings.wordCount);
+          translationFetched = await fetchTranslation(
+            wordsFetched,
+            lobbyData.settings.sourceLang,
+            lobbyData.settings.targetLang
+          );
+        } catch (error) {
+          console.error("Error during the play process:", error);
+        } finally {
+          if (wordsFetched.length > 0 && translationFetched.length > 0) {
+            await handleUpdateLobbyData({
+              words: wordsFetched,
+              translation: translationFetched,
+              finishCount: 0,
+              retryCount: 0,
+              finishedRetryLoading: true,
+              [`players.${currentUser.uid}.score`]: 0,
+              [`players.${currentUser.uid}.scores`]: {},
+              [`players.${currentUser.uid}.times`]: {},
+              [`players.${currentUser.uid}.guesses`]: {},
+              [`players.${currentUser.uid}.isNewPb`]: false,
+              [`players.${currentUser.uid}.finished`]: false,
+              [`players.${currentUser.uid}.retry`]: false,
+            });
+          } else {
+            console.error("Failed to fetch data for play.");
+          }
+        }
+      } else {
         await handleUpdateLobbyData({
-          words: wordsFetched,
-          translation: translationFetched,
-          finishCount: 0,
           [`players.${currentUser.uid}.score`]: 0,
           [`players.${currentUser.uid}.scores`]: {},
           [`players.${currentUser.uid}.times`]: {},
           [`players.${currentUser.uid}.guesses`]: {},
           [`players.${currentUser.uid}.isNewPb`]: false,
           [`players.${currentUser.uid}.finished`]: false,
+          [`players.${currentUser.uid}.retry`]: false,
         });
-        setRetryLoading(false);
-        navigate("/play");
-      } else {
-        console.error("Failed to fetch data for play.");
       }
     }
   };
-
   if (!currentPlayer || !userData || !lobbyData) {
     return <Loading />;
   } else if (
@@ -90,50 +122,75 @@ function Summary() {
 
   return (
     <div className="container">
-      <div className="container page playerNavBar shadow">
-        <PlayerNavBar lobbyData={lobbyData} setCurrentPlayer={setCurrentPlayer} />
-      </div>
-      <div className="container page shadow">
-        <div className="container">
-          <div className="row">
-            <div className="score col-12 col-sm-12 col-lg-6">
-              Score:&nbsp;
-              <CountUp end={lobbyData.players[currentPlayer]?.score} duration={3} separator="" />
-              {lobbyData.players[currentPlayer]?.isNewPb && (
-                <img src={fire} className="fire" alt="new highScore"></img>
-              )}
-            </div>
-            <div className="score col-12 col-sm-12 col-lg-6">
-              Best:&nbsp;
-              {lobbyData.players[currentPlayer]?.isNewPb ? (
-                <>
+      {!retryLoading ? (
+        <>
+          <div className="container page playerNavBar shadow">
+            <PlayerNavBar lobbyData={lobbyData} setCurrentPlayer={setCurrentPlayer} />
+          </div>
+          <div className="container page shadow">
+            <div className="container">
+              <div className="row">
+                <div className="score col-12 col-sm-12 col-lg-6">
+                  Score:&nbsp;
                   <CountUp
-                    end={userData.highScores[lobbyData.settings.wordCount]}
-                    duration={3}
+                    key={currentPlayer}
+                    end={lobbyData?.players[currentPlayer]?.score}
+                    duration={2}
                     separator=""
+                    redraw={true}
                   />
-                  <img src={fire} className="fire" alt="new highScore"></img>
-                </>
-              ) : (
-                userData.highScores[lobbyData.settings.wordCount]
-              )}
+                  {lobbyData?.players[currentPlayer]?.isNewPb && (
+                    <img src={fire} className="fire" alt="new highScore"></img>
+                  )}
+                </div>
+                <div className="score col-12 col-sm-12 col-lg-6">
+                  Best:&nbsp;
+                  {lobbyData?.players[currentPlayer]?.isNewPb ? (
+                    <>
+                      <CountUp
+                        key={currentPlayer}
+                        end={
+                          lobbyData?.players[currentPlayer]?.highScores[
+                            lobbyData.settings.wordCount
+                          ]
+                        }
+                        duration={2}
+                        separator=""
+                        redraw={true}
+                      />
+                      <img src={fire} className="fire" alt="new highScore"></img>
+                    </>
+                  ) : (
+                    lobbyData?.players[currentPlayer]?.highScores[lobbyData.settings.wordCount]
+                  )}
+                </div>
+              </div>
+              <div className="row wordCardRow">
+                <WordCard lobbyData={lobbyData} userData={userData} currentPlayer={currentPlayer} />
+              </div>
             </div>
           </div>
-          <div className="row wordCardRow">
-            <WordCard lobbyData={lobbyData} userData={userData} currentPlayer={currentPlayer} />
+          <div className="container">
+            <div className="row d-flex flex-nowrap justify-content-between gap-3">
+              <button className="homeButton col-lg-3 col" onClick={handleHome}>
+                <img className="home" src={home} alt="home"></img>
+              </button>
+              <button className="retryButton col-lg-3 col" onClick={handleRetryButton}>
+                {lobbyData?.retryCount !== 0 ? (
+                  lobbyData?.retryCount + "/" + Object.keys(lobbyData?.players).length
+                ) : (
+                  <img className="retry" src={retry} alt="retry"></img>
+                )}
+              </button>
+            </div>
           </div>
-        </div>
-      </div>
-      <div className="container">
-        <div className="row d-flex flex-nowrap justify-content-between gap-3">
-          <button className="homeButton col-lg-3 col" onClick={handleHome}>
-            <img className="home" src={home} alt="home"></img>
-          </button>
-          <button className="retryButton col-lg-3 col" onClick={handleRetry}>
-            {retryLoading ? <Loading /> : <img className="retry" src={retry} alt="retry"></img>}
-          </button>
-        </div>
-      </div>
+        </>
+      ) : (
+        <>
+          <div className="title">Retrying</div>
+          <Loading />
+        </>
+      )}
     </div>
   );
 }

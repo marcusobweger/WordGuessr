@@ -46,6 +46,7 @@ export const searchOpenLobby = async (settings, setLobbyId, currentUser, userDat
               isNewPb: false,
               finished: false,
               retry: false,
+              highScores: userData.highScores,
             },
           },
         },
@@ -85,6 +86,7 @@ export const createNewLobby = async (settings, setLobbyId, currentUser, userData
         isNewPb: false,
         finished: false,
         retry: false,
+        highScores: userData.highScores,
       },
     },
     settings: settings,
@@ -92,6 +94,8 @@ export const createNewLobby = async (settings, setLobbyId, currentUser, userData
     maxPlayers: settings.gamemode === 0 ? 1 : settings.gamemode === 1 ? 2 : 8,
     words: wordsFetched,
     translation: translationFetched,
+    retryCount: 0,
+    finishedRetryLoading: false,
   });
   setLobbyId(docRef.id);
 };
