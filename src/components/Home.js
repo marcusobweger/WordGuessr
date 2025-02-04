@@ -62,7 +62,7 @@ function Home() {
       } else {
         console.log("attempting delete player");
         try {
-          deletePlayerFromLobby(currentUser, lobbyId);
+          deletePlayerFromLobby(currentUser, lobbyData, lobbyId);
         } catch (error) {
           console.log(error);
         }
@@ -110,7 +110,6 @@ function Home() {
       switch (settings.gamemode) {
         case 0:
           await createNewLobby(settings, setLobbyId, currentUser, userData);
-          setIsLoading(false);
           navigate("/play");
           break;
         case 1:
@@ -119,24 +118,22 @@ function Home() {
           const lobbyFound = await searchOpenLobby(settings, setLobbyId, currentUser, userData);
           if (lobbyFound) {
             console.log("lobby found");
-            setIsLoading(false);
             navigate("/play");
           } else {
             await createNewLobby(settings, setLobbyId, currentUser, userData);
 
             console.log("lobby created regardless");
-            setIsLoading(false);
           }
           break;
         case 2:
           await createNewLobby(settings, setLobbyId, currentUser, userData);
-          setIsLoading(false);
           navigate("/lobby");
           break;
       }
     } else {
       navigate("/continue");
     }
+    setIsLoading(false);
   };
   const handleCancel = async () => {
     handleUpdateUserData({ state: "idle" });

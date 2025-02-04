@@ -17,6 +17,7 @@ function Play() {
   const [guess, setGuess] = useState("");
   const [feedback, setFeedback] = useState("");
   const [closeGuessCounter, setCloseGuessCounter] = useState(0);
+  const [leave, setLeave] = useState(false);
 
   // refs
   const inputRef = useRef(null);
@@ -241,11 +242,22 @@ function Play() {
         </div>
       </div>
       <div className="container">
-        <div className="row d-flex flex-nowrap justify-content-between gap-3">
-          <button className="homeButton col-lg-3 col" onClick={handleHome}>
-            <img className="home" src={home} alt="home"></img>
-          </button>
-          <button className="skipButton col-lg-3 col" onClick={handleSkip}>
+        <div className="row buttonRow">
+          {!leave ? (
+            <button className="homeButton col-lg-3 col-12" onClick={() => setLeave(true)}>
+              <img className="home" src={home} alt="home"></img>
+            </button>
+          ) : (
+            <>
+              <button className="cancelButton col col-lg-2" onClick={() => setLeave(false)}>
+                Cancel
+              </button>
+              <button className="leaveButton col col-lg-2" onClick={handleHome}>
+                Leave
+              </button>
+            </>
+          )}
+          <button className="skipButton col-lg-3 col-12" onClick={handleSkip}>
             <img className="skip" src={share} alt="skip"></img>
           </button>
         </div>

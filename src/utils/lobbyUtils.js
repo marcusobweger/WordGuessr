@@ -12,6 +12,7 @@ import {
   deleteDoc,
   deleteField,
   getDoc,
+  increment,
 } from "firebase/firestore";
 import { fetchRandomWords, fetchTranslation } from "./utils";
 
@@ -137,10 +138,20 @@ export const deleteLobby = async (lobbyId) => {
     console.log(error);
   }
 };
-export const deletePlayerFromLobby = async (currentUser, lobbyId) => {
+export const deletePlayerFromLobby = async (currentUser, lobbyData, lobbyId) => {
   try {
     const docRef = await getDoc(doc(db, "lobbies", lobbyId));
     if (docRef.exists()) {
+      if (lobbyData.players[currentUser.uid].finished && lobbyData.finishCount > 0) {
+        await updateDoc(doc(db, "lobbies", lobbyId), {
+          finishCount: increment(-1),
+        });
+      }
+      if (lobbyData.players[currentUser.uid].retry && lobbyData.retryCount > 0) {
+        await updateDoc(doc(db, "lobbies", lobbyId), {
+          retryCount: increment(-1),
+        });
+      }
       await updateDoc(doc(db, "lobbies", lobbyId), {
         [`players.${currentUser.uid}`]: deleteField(),
       });

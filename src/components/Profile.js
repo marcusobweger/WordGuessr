@@ -22,11 +22,13 @@ function Profile() {
 
       if (lobbyData) {
         // delete lobby if only one player left and this player is the current player, also in solo mode
+        console.log("lobbyData");
         if (
-          Object.keys(lobbyData?.players).includes(currentUser.uid) &&
+          Object.keys(lobbyData?.players).includes(prevUser.uid) &&
           Object.keys(lobbyData?.players).length === 1 &&
-          Object.keys(lobbyData?.players)[0] === currentUser.uid
+          Object.keys(lobbyData?.players)[0] === prevUser.uid
         ) {
+          console.log("if");
           try {
             deleteLobby(lobbyId);
           } catch (error) {
@@ -35,7 +37,7 @@ function Profile() {
         } else {
           console.log("attempting delete player");
           try {
-            deletePlayerFromLobby(currentUser, lobbyId);
+            deletePlayerFromLobby(prevUser, lobbyData, lobbyId);
           } catch (error) {
             console.log(error);
           }

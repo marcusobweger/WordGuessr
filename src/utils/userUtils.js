@@ -8,7 +8,7 @@ export const createNewUser = async (currentUser) => {
   if (!userRef.exists()) {
     await setDoc(docRef, {
       name: "Anonymous",
-      highScores: {},
+      highScores: { 3: 0, 5: 0, 10: 0, 15: 0 },
       state: "idle",
     });
   }

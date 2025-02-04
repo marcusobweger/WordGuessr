@@ -1,20 +1,30 @@
 import React, { useState } from "react";
-import { Link, NavLink, useNavigate } from "react-router-dom";
+import { Link, NavLink, useNavigate, useLocation } from "react-router-dom";
 import logo from "../icons/wordguessr_logo1.png";
 import userImage from "../icons/user.png";
 import podium from "../icons/podium.png";
 import "../styling/NavBar.css";
 import { useAuth } from "../utils/authContext";
+import { useFirebaseContext } from "../utils/firebaseContext";
 
 const NavBar = () => {
   const { userLoggedIn } = useAuth();
+  const { userData } = useFirebaseContext();
 
   return (
     <nav className="navbar">
-      <div className="leftSelection">
-        <Link to="/" className="logoLink link">
+      <div className="leftSelection ">
+        <Link
+          to={
+            userData?.state === "playing"
+              ? "/play"
+              : userData?.state === "summary"
+              ? "/summary"
+              : "/"
+          }
+          className="logoLink link">
           <img src={logo} alt="Logo" className="logo" />
-          <span className="title">WordGuessr</span>
+          <span className="title main-title">WordGuessr</span>
         </Link>
       </div>
       <div className="rightSection">

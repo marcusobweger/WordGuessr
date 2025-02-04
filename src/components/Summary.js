@@ -14,13 +14,16 @@ import Loading from "./Loading";
 import PlayerNavBar from "./PlayerNavBar";
 import { useFirebaseContext } from "../utils/firebaseContext";
 import { updateLobbyData } from "../utils/lobbyUtils";
+import { updateUserData } from "../utils/userUtils";
 import { increment } from "firebase/firestore";
 import "../styling/Play.css";
 
 function Summary() {
   const navigate = useNavigate();
   const [retryLoading, setRetryLoading] = useState(false);
+  const [disableRetry, setDisableRetry] = useState(false);
   const [currentPlayer, setCurrentPlayer] = useState(null);
+  const [leave, setLeave] = useState(false);
 
   const { lobbyData, userData, lobbyId } = useFirebaseContext();
 
@@ -29,8 +32,16 @@ function Summary() {
   useEffect(() => {
     console.log(currentUser);
     if (!currentUser || !lobbyData) return;
+    handleUpdateUserData({ state: "summary" });
     setCurrentPlayer(currentUser.uid);
   }, []);
+  useEffect(() => {
+    if (!currentUser || !lobbyData) return;
+
+    if (lobbyData.settings.gamemode !== 0 && Object.keys(lobbyData?.players).length === 1) {
+      setDisableRetry(true);
+    }
+  }, [Object.keys(lobbyData?.players).length]);
   const handleHome = () => {
     navigate("/");
   };
@@ -41,12 +52,30 @@ function Summary() {
       console.log(error);
     }
   };
+  const handleUpdateUserData = async (updatedFields) => {
+    try {
+      await updateUserData(currentUser, updatedFields);
+    } catch (error) {
+      console.log(error);
+    }
+  };
   const handleRetryButton = async () => {
-    if (!lobbyData?.players[currentUser.uid]?.retry) {
+    if (
+      !lobbyData?.players[currentUser.uid]?.retry &&
+      lobbyData.settings.gamemode !== 0 &&
+      Object.keys(lobbyData?.players).length !== 1
+    ) {
       await handleUpdateLobbyData({
         retryCount: increment(1),
         [`players.${currentUser.uid}.retry`]: true,
       });
+    } else if (!lobbyData?.players[currentUser.uid]?.retry && lobbyData.settings.gamemode === 0) {
+      await handleUpdateLobbyData({
+        retryCount: increment(1),
+        [`players.${currentUser.uid}.retry`]: true,
+      });
+    } else {
+      console.log("cant retry, only one player left");
     }
   };
   useEffect(() => {
@@ -126,8 +155,15 @@ function Summary() {
       {!retryLoading ? (
         <>
           <div className="container">
-            <div className="row gap-0 playerNavBarRow">
-              <PlayerNavBar lobbyData={lobbyData} setCurrentPlayer={setCurrentPlayer} />
+            <div
+              className={`row playerNavBarRow ${
+                Object.keys(lobbyData.players).length === 1 ? "solo" : ""
+              }`}>
+              <PlayerNavBar
+                lobbyData={lobbyData}
+                setCurrentPlayer={setCurrentPlayer}
+                currentPlayer={currentPlayer}
+              />
             </div>
           </div>
           <div className="container page shadow">
@@ -174,13 +210,27 @@ function Summary() {
             </div>
           </div>
           <div className="container">
-            <div className="row d-flex flex-nowrap justify-content-between gap-3">
-              <button className="homeButton col-lg-3 col" onClick={handleHome}>
-                <img className="home" src={home} alt="home"></img>
-              </button>
-              <button className="retryButton col-lg-3 col" onClick={handleRetryButton}>
+            <div className="row buttonRow">
+              {!leave ? (
+                <button className="homeButton col-lg-3 col-12" onClick={() => setLeave(true)}>
+                  <img className="home" src={home} alt="home"></img>
+                </button>
+              ) : (
+                <>
+                  <button className="cancelButton col col-lg-2" onClick={() => setLeave(false)}>
+                    Cancel
+                  </button>
+                  <button className="leaveButton col col-lg-2" onClick={handleHome}>
+                    Leave
+                  </button>
+                </>
+              )}
+              <button
+                className="retryButton col-lg-3 col-12"
+                onClick={handleRetryButton}
+                disabled={disableRetry}>
                 {lobbyData?.retryCount !== 0 ? (
-                  lobbyData?.retryCount + "/" + Object.keys(lobbyData?.players).length
+                  lobbyData?.retryCount + " of " + Object.keys(lobbyData?.players).length
                 ) : (
                   <img className="retry" src={retry} alt="retry"></img>
                 )}
