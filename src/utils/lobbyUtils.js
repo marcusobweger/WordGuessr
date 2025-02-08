@@ -89,6 +89,7 @@ export const createNewLobby = async (settings, setLobbyId, currentUser, userData
         finished: false,
         retry: false,
         ready: false,
+        //host: true
         highScores: userData.highScores,
       },
     },

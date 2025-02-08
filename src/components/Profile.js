@@ -62,7 +62,7 @@ function Profile() {
   }
   return (
     <div>
-      <h1 className="title">{userData.name}</h1> Profile
+      <h1 className="title">{userData.name}</h1>
       <button onClick={handleSignOut}>
         <SignOutButtonContent />
       </button>

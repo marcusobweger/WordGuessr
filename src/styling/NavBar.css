@@ -13,7 +13,7 @@
   flex-wrap: nowrap;
   background: transparent;
   backdrop-filter: blur(10px);
-  height: 100px;
+  height: 110px;
 }
 
 .navbar::before {
@@ -33,7 +33,7 @@
   height: auto;
   padding: 0;
   margin: 0;
-  margin-right: 14px;
+  margin-right: 2vw;
 }
 
 .title {
@@ -45,10 +45,6 @@
 @media (max-width: 1200px) {
   .main-title {
     display: none;
-  }
-
-  .logo {
-    margin-right: 0;
   }
 }
 

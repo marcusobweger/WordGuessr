@@ -8,26 +8,36 @@ import Loading from "./Loading";
 const EnterCode = () => {
   const [code, setCode] = useState("");
   const [isError, setIsError] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
+  const [feedback, setFeedback] = useState("Enter lobby code");
   const { userData, setLobbyId } = useFirebaseContext();
   const { currentUser } = useAuth();
   const navigate = useNavigate();
 
   useEffect(() => {
     setIsError(false);
+    setFeedback("Enter lobby code");
     if (code !== "") {
-      const typing = setTimeout(() => {
-        handleJoinWithCode();
-      }, 1500);
-      return () => clearTimeout(typing);
+      if (code.length === 20) {
+        const typing = setTimeout(() => {
+          handleJoinWithCode();
+        }, 1500);
+        setIsLoading(true);
+        return () => clearTimeout(typing);
+      }
+    } else {
+      setIsLoading(false);
     }
   }, [code]);
   const handleJoinWithCode = async () => {
     try {
       const lobbyFound = await joinLobbyWithCode(code, setLobbyId, currentUser, userData);
+      setIsLoading(false);
       if (lobbyFound) {
         navigate("/lobby");
       } else {
         setIsError(true);
+        setFeedback("Lobby not found!");
         console.log("lobby not found try again");
       }
     } catch (error) {
@@ -37,7 +47,10 @@ const EnterCode = () => {
 
   return (
     <div className="container">
-      <div className="container page">
+      <div className="container page code-page">
+        <div className="row justify-content-center">
+          <div className="loader">{isLoading ? <Loading /> : feedback}</div>
+        </div>
         <div className="row">
           <form onSubmit={(e) => e.preventDefault()} id="code" className="col">
             <input
@@ -47,7 +60,6 @@ const EnterCode = () => {
               onChange={(e) => {
                 setCode(e.target.value);
               }}
-              placeholder="enter code"
               autoFocus
               maxLength={20}
               spellCheck={false}

@@ -46,9 +46,11 @@ function Home() {
   };
   // load preferences from LocalStorage
   useEffect(() => {
-    if (lobbyData && currentUser && userData?.state !== "queueing") {
+    if (currentUser && userData?.state !== "queueing") {
       handleUpdateUserData({ state: "idle" });
       // delete lobby if only one player left and this player is the current player, also in solo mode
+    }
+    if (lobbyData) {
       if (
         Object.keys(lobbyData?.players).includes(currentUser.uid) &&
         Object.keys(lobbyData?.players).length === 1 &&

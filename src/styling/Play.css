@@ -54,6 +54,15 @@
   justify-content: center;
   margin-bottom: 14px;
 }
+.code-page {
+  background-color: transparent;
+}
+.loader {
+  height: 110px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
 .translation {
   display: flex;
   justify-content: center;
@@ -91,6 +100,7 @@
   color: var(--grey);
   font-size: clamp(40px, 5vw, 100px);
 }
+
 .progressNumber {
   display: flex;
   font-size: 30px;
