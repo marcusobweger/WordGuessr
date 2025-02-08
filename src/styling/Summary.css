@@ -75,6 +75,9 @@
   height: 80px;
   background-color: transparent !important;
 }
+.playerNavBarButtons:active:not(:disabled) {
+  transform: scale(1);
+}
 
 .playerNavBarButtons.selected {
   background-color: var(--light-purple) !important;

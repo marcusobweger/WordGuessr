@@ -91,7 +91,7 @@ function Summary() {
   const handleRetry = async () => {
     if (lobbyData?.retryCount === Object.keys(lobbyData?.players).length) {
       setRetryLoading(true);
-      if (Object.keys(lobbyData?.players)[0] === currentUser.uid) {
+      if (lobbyData?.players[currentUser?.uid]?.host) {
         let wordsFetched = [];
         let translationFetched = [];
         try {

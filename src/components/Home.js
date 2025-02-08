@@ -46,27 +46,29 @@ function Home() {
   };
   // load preferences from LocalStorage
   useEffect(() => {
-    if (currentUser && userData?.state !== "queueing") {
-      handleUpdateUserData({ state: "idle" });
-      // delete lobby if only one player left and this player is the current player, also in solo mode
-    }
-    if (lobbyData) {
-      if (
-        Object.keys(lobbyData?.players).includes(currentUser.uid) &&
-        Object.keys(lobbyData?.players).length === 1 &&
-        Object.keys(lobbyData?.players)[0] === currentUser.uid
-      ) {
-        try {
-          deleteLobby(lobbyId);
-        } catch (error) {
-          console.log(error);
-        }
-      } else {
-        console.log("attempting delete player");
-        try {
-          deletePlayerFromLobby(currentUser, lobbyData, lobbyId);
-        } catch (error) {
-          console.log(error);
+    if (userData?.state !== "queueing") {
+      if (currentUser) {
+        handleUpdateUserData({ state: "idle" });
+      }
+      if (currentUser && lobbyData) {
+        // delete lobby if only one player left and this player is the current player, also in solo mode
+        if (
+          Object.keys(lobbyData?.players).includes(currentUser.uid) &&
+          Object.keys(lobbyData?.players).length === 1 &&
+          Object.keys(lobbyData?.players)[0] === currentUser.uid
+        ) {
+          try {
+            deleteLobby(lobbyId);
+          } catch (error) {
+            console.log(error);
+          }
+        } else {
+          console.log("attempting delete player");
+          try {
+            deletePlayerFromLobby(currentUser, lobbyData, lobbyId);
+          } catch (error) {
+            console.log(error);
+          }
         }
       }
     }

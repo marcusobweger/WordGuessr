@@ -9,10 +9,11 @@ import "../styling/Lobby.css";
 import { replace, useNavigate } from "react-router-dom";
 import { increment } from "firebase/firestore";
 import { updateLobbyData } from "../utils/lobbyUtils";
-
+import copy from "../icons/copy.png";
 function Lobby() {
   const [leave, setLeave] = useState(false);
   const [disableReady, setDisableReady] = useState(false);
+  const [copied, setCopied] = useState(false);
 
   const { lobbyData, userData, lobbyId } = useFirebaseContext();
   const { currentUser } = useAuth();
@@ -29,9 +30,10 @@ function Lobby() {
     } else {
       setDisableReady(false);
     }
-  }, [Object.keys(lobbyData?.players).length]);
+  }, [lobbyData?.players]);
   useEffect(() => {
-    if (lobbyData?.readyCount === Object.keys(lobbyData?.players).length) {
+    if (!currentUser || !lobbyData) return;
+    if (lobbyData?.readyCount === Object.keys(lobbyData?.players)?.length) {
       navigate("/play");
     }
   }, [lobbyData?.readyCount]);
@@ -55,18 +57,25 @@ function Lobby() {
     navigate("/");
   };
   const handleReady = async () => {
-    if (
-      !lobbyData?.players[currentUser.uid]?.ready &&
-      Object.keys(lobbyData?.players).length !== 1
-    ) {
-      await handleUpdateLobbyData({
-        readyCount: increment(1),
-        [`players.${currentUser.uid}.ready`]: true,
-      });
-    } else {
-      console.log("cant retry, only one player left");
+    if (Object.keys(lobbyData?.players).length !== 1) {
+      if (!lobbyData?.players[currentUser.uid]?.ready) {
+        await handleUpdateLobbyData({
+          readyCount: increment(1),
+          [`players.${currentUser.uid}.ready`]: true,
+        });
+      } else {
+        await handleUpdateLobbyData({
+          readyCount: increment(-1),
+          [`players.${currentUser.uid}.ready`]: false,
+        });
+      }
     }
   };
+  const handleCopyToClipboard = async () => {
+    await navigator.clipboard.writeText(lobbyId);
+    setCopied(true);
+  };
+
   if (!currentUser || !lobbyData || !userData) {
     return <Loading />;
   }
@@ -74,9 +83,16 @@ function Lobby() {
   return (
     <div className="container">
       <div className="container page shadow">
-        <div className="row">{lobbyId}</div>
-        <div className="row">
-          <PlayerCard lobbyData={lobbyData} />
+        <div className="container">
+          <div className="row lobby-code">
+            {lobbyId}
+            <button onClick={handleCopyToClipboard} className="copy-button">
+              <img src={copy} className="copy" alt="copy"></img>
+            </button>
+          </div>
+          <div className="row player-card-row">
+            <PlayerCard lobbyData={lobbyData} />
+          </div>
         </div>
       </div>
       <div className="container">
@@ -96,12 +112,12 @@ function Lobby() {
             </>
           )}
           <button
-            className="skipButton col-lg-3 col-12"
+            className={`skipButton ${
+              lobbyData?.players[currentUser.uid]?.ready ? "unready" : "ready"
+            } col-lg-3 col-12`}
             onClick={handleReady}
             disabled={disableReady}>
-            {lobbyData?.readyCount !== 0
-              ? lobbyData?.readyCount + " of " + Object.keys(lobbyData?.players).length
-              : "Ready"}
+            {lobbyData?.players[currentUser.uid]?.ready ? "Unready" : "Ready"}
           </button>
         </div>
       </div>

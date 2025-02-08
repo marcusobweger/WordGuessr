@@ -1,6 +1,70 @@
-.skipButton:hover {
+.skipButton.unready {
+  background-color: var(--error) !important;
+}
+.skipButton.ready {
   background-color: var(--green) !important;
 }
 .errorValue {
   color: var(--error) !important;
+}
+.ready-indicator {
+  padding-left: 8px;
+  padding-right: 8px;
+  padding-top: 4px;
+  font-size: clamp(20px, 5vw, 25px);
+  padding-bottom: 4px;
+  border-radius: 15px;
+  border-style: solid;
+  border-color: transparent;
+  align-items: center;
+  justify-content: center;
+}
+.ready-indicator.ready {
+  background-color: var(--green);
+}
+.ready-indicator.unready {
+  background-color: var(--error);
+}
+.player-card-row {
+  display: flex;
+  align-items: center;
+  margin-bottom: 12px;
+  gap: 14px;
+}
+
+.player-card {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  min-width: auto !important;
+  padding: 14px;
+  padding-right: 14px;
+}
+.player-name {
+  text-align: start;
+  font-size: clamp(25px, 5vw, 45px);
+}
+.lobby-code {
+  font-size: clamp(25px, 5vw, 45px);
+  display: flex;
+  justify-content: start;
+  align-items: center;
+  text-align: start;
+}
+.copy {
+  height: clamp(20px, 5vw, 35px);
+  width: auto;
+}
+.copy-button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: fit-content;
+  width: auto;
+  background-color: transparent !important;
+  padding: 0;
+  margin-left: clamp(4px, 3vw, 8px);
+}
+.copy-button:hover {
+  transform: scale(0.95);
 }
