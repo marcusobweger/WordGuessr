@@ -41,7 +41,7 @@ function Summary() {
     if (lobbyData.settings.gamemode !== 0 && Object.keys(lobbyData?.players).length === 1) {
       setDisableRetry(true);
     }
-  }, [Object.keys(lobbyData?.players).length]);
+  }, [lobbyData?.players]);
   const handleHome = () => {
     navigate("/");
   };
@@ -60,22 +60,18 @@ function Summary() {
     }
   };
   const handleRetryButton = async () => {
-    if (
-      !lobbyData?.players[currentUser.uid]?.retry &&
-      lobbyData.settings.gamemode !== 0 &&
-      Object.keys(lobbyData?.players).length !== 1
-    ) {
-      await handleUpdateLobbyData({
-        retryCount: increment(1),
-        [`players.${currentUser.uid}.retry`]: true,
-      });
-    } else if (!lobbyData?.players[currentUser.uid]?.retry && lobbyData.settings.gamemode === 0) {
-      await handleUpdateLobbyData({
-        retryCount: increment(1),
-        [`players.${currentUser.uid}.retry`]: true,
-      });
-    } else {
-      console.log("cant retry, only one player left");
+    if (lobbyData.settings.gamemode !== 0 && Object.keys(lobbyData?.players).length !== 1) {
+      if (!lobbyData?.players[currentUser.uid]?.retry) {
+        await handleUpdateLobbyData({
+          retryCount: increment(1),
+          [`players.${currentUser.uid}.retry`]: true,
+        });
+      } else {
+        await handleUpdateLobbyData({
+          retryCount: increment(-1),
+          [`players.${currentUser.uid}.retry`]: false,
+        });
+      }
     }
   };
   useEffect(() => {
