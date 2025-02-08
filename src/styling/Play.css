@@ -35,21 +35,11 @@
   align-items: center;
   gap: 14px;
 }
-.retryButton {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  margin-left: auto;
-  height: 80px;
-}
 
 .home {
   width: 40px;
 }
 .skip {
-  width: 40px;
-}
-.retry {
   width: 40px;
 }
 
@@ -110,75 +100,4 @@
   height: 30px;
   font-size: 30px;
   border-radius: 15px;
-}
-.fire {
-  margin-left: 8px;
-  height: clamp(30px, 5vw, 50px);
-  width: auto;
-}
-.score {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: clamp(40px, 5vw, 60px);
-}
-
-.wordCard {
-  background-color: var(--middle-purple);
-  border-radius: 15px;
-  min-width: 32%;
-}
-.wordCardRow {
-  margin-bottom: 12px;
-  gap: 14px;
-}
-.wordCardNumber {
-  display: flex;
-  font-size: clamp(20px, 5vw, 25px);
-  justify-content: end;
-  align-items: center;
-}
-.wordCardTime {
-  display: flex;
-  font-size: clamp(20px, 5vw, 25px);
-  justify-content: start;
-  align-items: center;
-}
-.time {
-  height: clamp(16px, 5vw, 22px);
-  width: auto;
-  margin-right: 6px;
-}
-.wordCardScore {
-  display: flex;
-  font-size: clamp(20px, 5vw, 25px);
-  justify-content: center;
-  align-items: center;
-}
-.wordCardIcons {
-  height: clamp(30px, 5vw, 35px);
-  width: auto;
-}
-.wordCardWords {
-  display: flex;
-  font-size: clamp(25px, 5vw, 30px);
-  justify-content: center;
-  align-items: center;
-  margin-bottom: 6px;
-}
-.playerNavBarRow {
-  margin-bottom: 14px;
-  background-color: var(--middle-purple);
-  border-radius: 15px;
-}
-.playerNavBarRow.solo {
-  background-color: transparent;
-}
-.playerNavBarButtons {
-  height: 80px;
-  background-color: transparent !important;
-}
-
-.playerNavBarButtons.selected {
-  background-color: var(--light-purple) !important;
 }

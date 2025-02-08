@@ -47,6 +47,7 @@ export const searchOpenLobby = async (settings, setLobbyId, currentUser, userDat
               isNewPb: false,
               finished: false,
               retry: false,
+              ready: false,
               highScores: userData.highScores,
             },
           },
@@ -87,6 +88,7 @@ export const createNewLobby = async (settings, setLobbyId, currentUser, userData
         isNewPb: false,
         finished: false,
         retry: false,
+        ready: false,
         highScores: userData.highScores,
       },
     },
@@ -96,6 +98,8 @@ export const createNewLobby = async (settings, setLobbyId, currentUser, userData
     words: wordsFetched,
     translation: translationFetched,
     retryCount: 0,
+    finishCount: 0,
+    readyCount: 0,
     finishedRetryLoading: false,
   });
   setLobbyId(docRef.id);
@@ -127,7 +131,52 @@ export const updateLobbyData = async (lobbyId, updatedFields) => {
   }
 }; //handleRetry and player data updates
 
-export const joinLobbyWithCode = async () => {};
+export const joinLobbyWithCode = async (code, setLobbyId, currentUser, userData) => {
+  try {
+    const currentDoc = await getDoc(doc(db, "lobbies", code));
+    console.log(currentDoc);
+    if (currentDoc.exists()) {
+      console.log(currentDoc.id);
+      setLobbyId(currentDoc.id);
+      if (currentDoc?.data()?.isOpen) {
+        await setDoc(
+          doc(db, "lobbies", currentDoc.id),
+          {
+            players: {
+              ...{
+                [currentUser.uid]: {
+                  name: userData.name,
+                  score: 0,
+                  guesses: {},
+                  scores: {},
+                  times: {},
+                  isNewPb: false,
+                  finished: false,
+                  retry: false,
+                  ready: false,
+                  highScores: userData.highScores,
+                },
+              },
+            },
+          },
+          { merge: true }
+        );
+        if (Object.keys(currentDoc?.data()?.players) === currentDoc?.data()?.maxPlayers) {
+          await setDoc(doc(db, "lobbies", currentDoc.id), {
+            isOpen: false,
+          });
+        }
+        return true;
+      } else {
+        return false;
+      }
+    } else {
+      return false;
+    }
+  } catch (error) {
+    console.log(error);
+  }
+};
 export const deleteLobby = async (lobbyId) => {
   try {
     const docRef = await getDoc(doc(db, "lobbies", lobbyId));
@@ -150,6 +199,11 @@ export const deletePlayerFromLobby = async (currentUser, lobbyData, lobbyId) => 
       if (lobbyData.players[currentUser.uid].retry && lobbyData.retryCount > 0) {
         await updateDoc(doc(db, "lobbies", lobbyId), {
           retryCount: increment(-1),
+        });
+      }
+      if (lobbyData.players[currentUser.uid].ready && lobbyData.readyCount > 0) {
+        await updateDoc(doc(db, "lobbies", lobbyId), {
+          readyCount: increment(-1),
         });
       }
       await updateDoc(doc(db, "lobbies", lobbyId), {

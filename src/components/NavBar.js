@@ -20,6 +20,8 @@ const NavBar = () => {
               ? "/play"
               : userData?.state === "summary"
               ? "/summary"
+              : userData?.state === "lobby"
+              ? "/lobby"
               : "/"
           }
           className="logoLink link">
@@ -29,8 +31,10 @@ const NavBar = () => {
       </div>
       <div className="rightSection">
         <NavLink
-          to="/code"
-          className={({ isActive }) => "link rightNavs" + (isActive ? " active" : "")}>
+          to={`${userLoggedIn ? "/code" : "/continue"}`}
+          className={({ isActive }) =>
+            "link rightNavs" + (isActive && userLoggedIn ? " active" : "")
+          }>
           Enter Code
         </NavLink>
         <NavLink

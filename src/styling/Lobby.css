@@ -1,0 +1,6 @@
+.skipButton:hover {
+  background-color: var(--green) !important;
+}
+.errorValue {
+  color: var(--error) !important;
+}

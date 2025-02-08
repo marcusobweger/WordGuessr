@@ -155,16 +155,18 @@ function Signin({ type }) {
               placeholder="Email"
               autoFocus
               maxLength={35}
+              spellCheck={false}
             />
             <input
               className={`${isError ? "error" : ""} inputfield login-inputfield row`}
-              type="text"
+              type="password"
               value={password}
               onChange={(e) => {
                 setPassword(e.target.value);
               }}
               placeholder="Password"
               maxLength={25}
+              spellCheck={false}
             />
             <button type="submit" className="submit-button row">
               Continue

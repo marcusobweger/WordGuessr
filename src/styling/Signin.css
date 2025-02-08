@@ -30,7 +30,7 @@
   font-size: clamp(20px, 5vw, 30px);
 }
 .error {
-  border-color: rgb(237, 49, 49);
+  border-color: var(--error);
   animation: shake 0.15s;
 }
 @keyframes shake {
@@ -45,8 +45,9 @@
   }
 }
 .error::placeholder {
-  color: rgb(237, 49, 49);
+  color: var(--error);
 }
+
 .passwordfield {
   margin-bottom: 0;
 }

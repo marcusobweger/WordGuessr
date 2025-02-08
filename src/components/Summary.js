@@ -16,7 +16,7 @@ import { useFirebaseContext } from "../utils/firebaseContext";
 import { updateLobbyData } from "../utils/lobbyUtils";
 import { updateUserData } from "../utils/userUtils";
 import { increment } from "firebase/firestore";
-import "../styling/Play.css";
+import "../styling/Summary.css";
 
 function Summary() {
   const navigate = useNavigate();
@@ -110,6 +110,7 @@ function Summary() {
               translation: translationFetched,
               finishCount: 0,
               retryCount: 0,
+              readyCount: 0,
               finishedRetryLoading: true,
               [`players.${currentUser.uid}.score`]: 0,
               [`players.${currentUser.uid}.scores`]: {},
@@ -118,6 +119,7 @@ function Summary() {
               [`players.${currentUser.uid}.isNewPb`]: false,
               [`players.${currentUser.uid}.finished`]: false,
               [`players.${currentUser.uid}.retry`]: false,
+              [`players.${currentUser.uid}.ready`]: false,
             });
           } else {
             console.error("Failed to fetch data for play.");
@@ -132,6 +134,7 @@ function Summary() {
           [`players.${currentUser.uid}.isNewPb`]: false,
           [`players.${currentUser.uid}.finished`]: false,
           [`players.${currentUser.uid}.retry`]: false,
+          [`players.${currentUser.uid}.ready`]: false,
         });
       }
     }

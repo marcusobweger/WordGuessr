@@ -13,7 +13,7 @@
   flex-wrap: nowrap;
   background: transparent;
   backdrop-filter: blur(10px);
-  height: 110px;
+  height: 100px;
 }
 
 .navbar::before {
@@ -46,8 +46,9 @@
   .main-title {
     display: none;
   }
-  .about {
-    display: none;
+
+  .logo {
+    margin-right: 0;
   }
 }
 

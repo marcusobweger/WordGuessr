@@ -7,6 +7,7 @@
   --bg-fade: repeating-linear-gradient(to left, rgb(49, 23, 73), rgb(51, 25, 61), rgb(56, 32, 69));
   --text-color: white;
   --grey: rgb(179, 179, 179);
+  --error: rgb(237, 49, 49);
 }
 body,
 html,
