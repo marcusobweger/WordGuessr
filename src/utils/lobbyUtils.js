@@ -48,6 +48,7 @@ export const searchOpenLobby = async (settings, setLobbyId, currentUser, userDat
               finished: false,
               retry: false,
               ready: false,
+              host: false,
               highScores: userData.highScores,
             },
           },
@@ -89,7 +90,7 @@ export const createNewLobby = async (settings, setLobbyId, currentUser, userData
         finished: false,
         retry: false,
         ready: false,
-        //host: true
+        host: true,
         highScores: userData.highScores,
       },
     },
@@ -155,6 +156,7 @@ export const joinLobbyWithCode = async (code, setLobbyId, currentUser, userData)
                   finished: false,
                   retry: false,
                   ready: false,
+                  host: false,
                   highScores: userData.highScores,
                 },
               },
@@ -192,24 +194,29 @@ export const deletePlayerFromLobby = async (currentUser, lobbyData, lobbyId) => 
   try {
     const docRef = await getDoc(doc(db, "lobbies", lobbyId));
     if (docRef.exists()) {
+      const updates = {};
       if (lobbyData.players[currentUser.uid].finished && lobbyData.finishCount > 0) {
-        await updateDoc(doc(db, "lobbies", lobbyId), {
-          finishCount: increment(-1),
-        });
+        updates.finishCount = increment(-1);
       }
       if (lobbyData.players[currentUser.uid].retry && lobbyData.retryCount > 0) {
-        await updateDoc(doc(db, "lobbies", lobbyId), {
-          retryCount: increment(-1),
-        });
+        updates.retryCount = increment(-1);
       }
       if (lobbyData.players[currentUser.uid].ready && lobbyData.readyCount > 0) {
-        await updateDoc(doc(db, "lobbies", lobbyId), {
-          readyCount: increment(-1),
-        });
+        updates.readyCount = increment(-1);
       }
-      await updateDoc(doc(db, "lobbies", lobbyId), {
-        [`players.${currentUser.uid}`]: deleteField(),
-      });
+      if (lobbyData.players[currentUser.uid].host) {
+        const remainingPlayers = Object.keys(lobbyData.players).filter(
+          (uid) => uid !== currentUser.uid
+        );
+
+        if (remainingPlayers.length > 0) {
+          const newHostUid = remainingPlayers[0]; // Select the first available player
+          updates[`players.${newHostUid}.host`] = true;
+        }
+      }
+      updates[`players.${currentUser.uid}`] = deleteField();
+
+      await updateDoc(doc(db, "lobbies", lobbyId), updates);
     }
   } catch (error) {
     console.log(error);
