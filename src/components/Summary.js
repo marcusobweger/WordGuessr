@@ -37,14 +37,14 @@ function Summary() {
   useEffect(() => {
     if (!currentUser || !lobbyData) return;
 
-    if (lobbyData.settings.gamemode !== 0 && Object.keys(lobbyData?.players).length === 1) {
+    if (lobbyData.settings.gamemode !== 0 && lobbyData?.playerCount === 1) {
       setDisableRetry(true);
     }
   }, [lobbyData?.players]);
 
-  const handleUpdateLobbyData = async (updatedFields) => {
+  const handleUpdateLobbyData = async (updatedLobbyFields, updatedPlayerFields) => {
     try {
-      await updateLobbyData(lobbyId, updatedFields);
+      await updateLobbyData(lobbyId, currentUser.uid, updatedLobbyFields, updatedPlayerFields);
     } catch (error) {
       console.log(error);
     }
@@ -57,17 +57,25 @@ function Summary() {
     }
   };
   const handleRetryButton = async () => {
-    if (lobbyData.settings.gamemode !== 0 && Object.keys(lobbyData?.players).length !== 1) {
+    if (lobbyData.settings.gamemode !== 0 && lobbyData?.playerCount !== 1) {
       if (!lobbyData?.players[currentUser.uid]?.retry) {
-        await handleUpdateLobbyData({
-          retryCount: increment(1),
-          [`players.${currentUser.uid}.retry`]: true,
-        });
+        await handleUpdateLobbyData(
+          {
+            retryCount: increment(1),
+          },
+          {
+            retry: true,
+          }
+        );
       } else {
-        await handleUpdateLobbyData({
-          retryCount: increment(-1),
-          [`players.${currentUser.uid}.retry`]: false,
-        });
+        await handleUpdateLobbyData(
+          {
+            retryCount: increment(-1),
+          },
+          {
+            retry: false,
+          }
+        );
       }
     }
   };
@@ -82,7 +90,7 @@ function Summary() {
   }, [lobbyData?.finishedRetryLoading]);
 
   const handleRetry = async () => {
-    if (lobbyData?.retryCount === Object.keys(lobbyData?.players).length) {
+    if (lobbyData?.retryCount === lobbyData?.playerCount) {
       setRetryLoading(true);
       if (lobbyData?.players[currentUser?.uid]?.host) {
         let wordsFetched = [];
@@ -98,44 +106,51 @@ function Summary() {
           console.error("Error during the play process:", error);
         } finally {
           if (wordsFetched.length > 0 && translationFetched.length > 0) {
-            await handleUpdateLobbyData({
-              words: wordsFetched,
-              translation: translationFetched,
-              finishCount: 0,
-              retryCount: 0,
-              readyCount: 0,
-              finishedRetryLoading: true,
-              [`players.${currentUser.uid}.score`]: 0,
-              [`players.${currentUser.uid}.scores`]: {},
-              [`players.${currentUser.uid}.times`]: {},
-              [`players.${currentUser.uid}.guesses`]: {},
-              [`players.${currentUser.uid}.isNewPb`]: false,
-              [`players.${currentUser.uid}.finished`]: false,
-              [`players.${currentUser.uid}.retry`]: false,
-              [`players.${currentUser.uid}.ready`]: false,
-            });
+            await handleUpdateLobbyData(
+              {
+                words: wordsFetched,
+                translation: translationFetched,
+                finishCount: 0,
+                retryCount: 0,
+                readyCount: 0,
+                finishedRetryLoading: true,
+              },
+              {
+                score: 0,
+                scores: {},
+                times: {},
+                guesses: {},
+                isNewPb: false,
+                finished: false,
+                retry: false,
+                ready: false,
+              }
+            );
           } else {
             console.error("Failed to fetch data for play.");
           }
         }
       } else {
-        await handleUpdateLobbyData({
-          [`players.${currentUser.uid}.score`]: 0,
-          [`players.${currentUser.uid}.scores`]: {},
-          [`players.${currentUser.uid}.times`]: {},
-          [`players.${currentUser.uid}.guesses`]: {},
-          [`players.${currentUser.uid}.isNewPb`]: false,
-          [`players.${currentUser.uid}.finished`]: false,
-          [`players.${currentUser.uid}.retry`]: false,
-          [`players.${currentUser.uid}.ready`]: false,
-        });
+        await handleUpdateLobbyData(
+          {},
+          {
+            score: 0,
+            scores: {},
+            times: {},
+            guesses: {},
+            isNewPb: false,
+            finished: false,
+            retry: false,
+            ready: false,
+          }
+        );
       }
     }
   };
   if (!currentPlayer || !userData || !lobbyData) {
     return <Loading />;
   } else if (
-    lobbyData.finishCount !== Object.keys(lobbyData.players).length &&
+    lobbyData.finishCount !== lobbyData?.playerCount &&
     lobbyData.players[currentUser.uid].finished
   ) {
     return (
@@ -151,10 +166,7 @@ function Summary() {
       {!retryLoading ? (
         <>
           <div className="container">
-            <div
-              className={`row playerNavBarRow ${
-                Object.keys(lobbyData.players).length === 1 ? "solo" : ""
-              }`}>
+            <div className={`row playerNavBarRow ${lobbyData?.playerCount === 1 ? "solo" : ""}`}>
               <PlayerNavBar
                 lobbyData={lobbyData}
                 setCurrentPlayer={setCurrentPlayer}
@@ -213,7 +225,7 @@ function Summary() {
                 onClick={handleRetryButton}
                 disabled={disableRetry}>
                 {lobbyData?.retryCount !== 0 ? (
-                  lobbyData?.retryCount + " of " + Object.keys(lobbyData?.players).length
+                  lobbyData?.retryCount + " of " + lobbyData?.playerCount
                 ) : (
                   <img className="retry" src={retry} alt="retry"></img>
                 )}

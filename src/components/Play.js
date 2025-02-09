@@ -23,13 +23,13 @@ function Play() {
   const progressBarRef = useRef(null);
   const feedbackTimeoutRef = useRef(null);
 
-  const { lobbyData, userData, lobbyId } = useFirebaseContext();
+  const { lobbyData, playerData, userData, lobbyId } = useFirebaseContext();
   const { currentUser } = useAuth();
   const navigate = useNavigate();
 
-  const handleUpdateLobbyData = async (updatedFields) => {
+  const handleUpdateLobbyData = async (updatedLobbyFields, updatedPlayerFields) => {
     try {
-      await updateLobbyData(lobbyId, updatedFields);
+      await updateLobbyData(lobbyId, currentUser.uid, updatedLobbyFields, updatedPlayerFields);
     } catch (error) {
       console.log(error);
     }
@@ -42,6 +42,7 @@ function Play() {
     }
   };
   console.log(lobbyData);
+  console.log(playerData);
 
   useEffect(() => {
     if (!currentUser || !lobbyData) return;
@@ -63,11 +64,14 @@ function Play() {
         [`highScores.${lobbyData?.settings?.wordCount}`]:
           lobbyData?.players[currentUser.uid]?.score,
       });
-      handleUpdateLobbyData({
-        [`players.${currentUser.uid}.isNewPb`]: true,
-        [`players.${currentUser.uid}.highScores.${lobbyData?.settings?.wordCount}`]:
-          lobbyData?.players[currentUser.uid]?.score,
-      });
+      handleUpdateLobbyData(
+        {},
+        {
+          isNewPb: true,
+          [`highScores.${lobbyData?.settings?.wordCount}`]:
+            lobbyData?.players[currentUser.uid]?.score,
+        }
+      );
     }
   }, [lobbyData?.players[currentUser.uid]?.score]);
 
@@ -99,38 +103,48 @@ function Play() {
 
         if (progressBarRef.current) {
           let timeLeft = progressBarRef.current.getTimeLeft();
-          handleUpdateLobbyData({
-            [`players.${currentUser.uid}.scores.${currentIndex}`]:
-              (timeLeft / 100).toFixed(0) * 90 + 1000,
-            [`players.${currentUser.uid}.times.${currentIndex}`]: (
-              (10000 - timeLeft) /
-              100
-            ).toFixed(0),
-          });
+          handleUpdateLobbyData(
+            {},
+            {
+              [`scores.${currentIndex}`]: (timeLeft / 100).toFixed(0) * 90 + 1000,
+              [`times.${currentIndex}`]: ((10000 - timeLeft) / 100).toFixed(0),
+            }
+          );
           if (closeGuessCounter === 1) {
-            handleUpdateLobbyData({
-              [`players.${currentUser.uid}.score`]: increment(-savedScoreAtIndex),
-            });
+            handleUpdateLobbyData(
+              {},
+              {
+                score: increment(-savedScoreAtIndex),
+              }
+            );
           }
-          handleUpdateLobbyData({
-            [`players.${currentUser.uid}.score`]: increment(
-              (timeLeft / 100).toFixed(0) * 90 + 1000
-            ),
-          });
+          handleUpdateLobbyData(
+            {},
+            {
+              score: increment((timeLeft / 100).toFixed(0) * 90 + 1000),
+            }
+          );
         }
         setGuess("");
         setCloseGuessCounter(0);
-        handleUpdateLobbyData({
-          [`players.${currentUser.uid}.guesses.${currentIndex}`]: guess,
-        });
+        handleUpdateLobbyData(
+          {},
+          {
+            [`guesses.${currentIndex}`]: guess,
+          }
+        );
 
         if (currentIndex < lobbyData?.translation?.length - 1) {
           setCurrentIndex(currentIndex + 1);
         } else {
-          handleUpdateLobbyData({
-            [`players.${currentUser.uid}.finished`]: true,
-            finishCount: increment(1),
-          });
+          handleUpdateLobbyData(
+            {
+              finishCount: increment(1),
+            },
+            {
+              finished: true,
+            }
+          );
 
           setFeedback("");
         }
@@ -146,22 +160,22 @@ function Play() {
         setFeedback("close!");
 
         if (closeGuessCounter === 0 && progressBarRef.current) {
-          handleUpdateLobbyData({
-            [`players.${currentUser.uid}.guesses.${currentIndex}`]: guess,
-          });
+          handleUpdateLobbyData(
+            {},
+            {
+              [`guesses.${currentIndex}`]: guess,
+            }
+          );
           if (progressBarRef.current) {
             let timeLeft = progressBarRef.current.getTimeLeft();
-            handleUpdateLobbyData({
-              [`players.${currentUser.uid}.scores.${currentIndex}`]:
-                ((timeLeft / 100).toFixed(0) * 90 + 1000) / 2,
-              [`players.${currentUser.uid}.times.${currentIndex}`]: (
-                (10000 - timeLeft) /
-                100
-              ).toFixed(0),
-              [`players.${currentUser.uid}.score`]: increment(
-                ((timeLeft / 100).toFixed(0) * 90 + 1000) / 2
-              ),
-            });
+            handleUpdateLobbyData(
+              {},
+              {
+                [`scores.${currentIndex}`]: ((timeLeft / 100).toFixed(0) * 90 + 1000) / 2,
+                [`times.${currentIndex}`]: ((10000 - timeLeft) / 100).toFixed(0),
+                score: increment(((timeLeft / 100).toFixed(0) * 90 + 1000) / 2),
+              }
+            );
             setCloseGuessCounter(1);
           }
         }
@@ -169,9 +183,12 @@ function Play() {
       } else {
         setFeedback("incorrect!");
         if (closeGuessCounter === 0) {
-          handleUpdateLobbyData({
-            [`players.${currentUser.uid}.guesses.${currentIndex}`]: guess,
-          });
+          handleUpdateLobbyData(
+            {},
+            {
+              [`guesses.${currentIndex}`]: guess,
+            }
+          );
         }
         setGuess("");
       }
@@ -185,10 +202,14 @@ function Play() {
       setFeedback("skipped!");
       setCloseGuessCounter(0);
     } else {
-      handleUpdateLobbyData({
-        [`players.${currentUser.uid}.finished`]: true,
-        finishCount: increment(1),
-      });
+      handleUpdateLobbyData(
+        {
+          finishCount: increment(1),
+        },
+        {
+          finished: true,
+        }
+      );
     }
 
     if (inputRef.current) {

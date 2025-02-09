@@ -7,7 +7,6 @@ import it from "../icons/italy.png";
 import fr from "../icons/france.png";
 import es from "../icons/spain.png";
 import "../styling/Home.css";
-import { AppContext } from "../App";
 import { useAuth } from "../utils/authContext";
 import { useSettings } from "../utils/settingsContext";
 import Loading from "./Loading";
@@ -20,7 +19,6 @@ import {
 import { updateUserData } from "../utils/userUtils";
 import { useFirebaseContext } from "../utils/firebaseContext";
 function Home() {
-  const { setHomeState } = useContext(AppContext);
   const [isLoading, setIsLoading] = useState(false);
 
   const navigate = useNavigate();
@@ -28,8 +26,6 @@ function Home() {
   const { settings, setSettings } = useSettings();
 
   const { lobbyData, lobbyId, setLobbyId, userData } = useFirebaseContext();
-
-  const [isSearching, setIsSearching] = useState(false);
 
   // values for generating buttons
   const targetLanguages = ["ja", "ko", "de", "it", "fr", "es"];
@@ -50,6 +46,8 @@ function Home() {
       if (currentUser) {
         handleUpdateUserData({ state: "idle" });
       }
+      // delete lobby or player functionality
+      /*
       if (currentUser && lobbyData) {
         // delete lobby if only one player left and this player is the current player, also in solo mode
         if (
@@ -69,8 +67,11 @@ function Home() {
           } catch (error) {
             console.log(error);
           }
+            
         }
+          
       }
+        */
     }
     const savedGamemode = localStorage.getItem("gamemode");
     const savedSourceLang = localStorage.getItem("sourceLang");
@@ -94,10 +95,6 @@ function Home() {
     localStorage.setItem("wordCount", settings.wordCount);
   };
 
-  useEffect(() => {
-    setHomeState(isLoading);
-  }, [isLoading]);
-
   const handleUpdateUserData = async (updatedFields) => {
     try {
       await updateUserData(currentUser, updatedFields);
@@ -113,24 +110,24 @@ function Home() {
       console.log("test");
       switch (settings.gamemode) {
         case 0:
-          await createNewLobby(settings, setLobbyId, currentUser, userData);
+          await createNewLobby(settings, setLobbyId, currentUser.uid, userData);
           navigate("/play");
           break;
         case 1:
           handleUpdateUserData({ state: "queueing" });
 
-          const lobbyFound = await searchOpenLobby(settings, setLobbyId, currentUser, userData);
+          const lobbyFound = await searchOpenLobby(settings, setLobbyId, currentUser.uid, userData);
           if (lobbyFound) {
             console.log("lobby found");
             navigate("/play");
           } else {
-            await createNewLobby(settings, setLobbyId, currentUser, userData);
+            await createNewLobby(settings, setLobbyId, currentUser.uid, userData);
 
             console.log("lobby created regardless");
           }
           break;
         case 2:
-          await createNewLobby(settings, setLobbyId, currentUser, userData);
+          await createNewLobby(settings, setLobbyId, currentUser.uid, userData);
           navigate("/lobby");
           break;
       }
@@ -142,7 +139,7 @@ function Home() {
   const handleCancel = async () => {
     handleUpdateUserData({ state: "idle" });
     try {
-      deleteLobby(lobbyId);
+      //deleteLobby(lobbyId);
     } catch (error) {
       console.log(error);
     }

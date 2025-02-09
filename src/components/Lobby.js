@@ -12,7 +12,6 @@ import copy from "../icons/copy.png";
 import HomeButton from "./HomeButton";
 function Lobby() {
   const [disableReady, setDisableReady] = useState(false);
-  const [copied, setCopied] = useState(false);
 
   const { lobbyData, userData, lobbyId } = useFirebaseContext();
   const { currentUser } = useAuth();
@@ -24,21 +23,21 @@ function Lobby() {
   useEffect(() => {
     if (!currentUser || !lobbyData) return;
 
-    if (Object.keys(lobbyData?.players).length === 1) {
+    if (lobbyData.playerCount === 1) {
       setDisableReady(true);
     } else {
       setDisableReady(false);
     }
-  }, [lobbyData?.players]);
+  }, [lobbyData?.playerCount]);
   useEffect(() => {
     if (!currentUser || !lobbyData) return;
-    if (lobbyData?.readyCount === Object.keys(lobbyData?.players)?.length) {
+    if (lobbyData?.readyCount === lobbyData?.playerCount) {
       navigate("/play");
     }
-  }, [lobbyData?.readyCount]);
-  const handleUpdateLobbyData = async (updatedFields) => {
+  }, [lobbyData?.readyCount, lobbyData?.playerCount]);
+  const handleUpdateLobbyData = async (updatedLobbyFields, updatedPlayerFields) => {
     try {
-      await updateLobbyData(lobbyId, updatedFields);
+      await updateLobbyData(lobbyId, currentUser.uid, updatedLobbyFields, updatedPlayerFields);
     } catch (error) {
       console.log(error);
     }
@@ -53,23 +52,30 @@ function Lobby() {
   console.log(lobbyData);
 
   const handleReady = async () => {
-    if (Object.keys(lobbyData?.players).length !== 1) {
+    if (lobbyData?.playerCount !== 1) {
       if (!lobbyData?.players[currentUser.uid]?.ready) {
-        await handleUpdateLobbyData({
-          readyCount: increment(1),
-          [`players.${currentUser.uid}.ready`]: true,
-        });
+        await handleUpdateLobbyData(
+          {
+            readyCount: increment(1),
+          },
+          {
+            ready: true,
+          }
+        );
       } else {
-        await handleUpdateLobbyData({
-          readyCount: increment(-1),
-          [`players.${currentUser.uid}.ready`]: false,
-        });
+        await handleUpdateLobbyData(
+          {
+            readyCount: increment(-1),
+          },
+          {
+            ready: false,
+          }
+        );
       }
     }
   };
   const handleCopyToClipboard = async () => {
     await navigator.clipboard.writeText(lobbyId);
-    setCopied(true);
   };
 
   if (!currentUser || !lobbyData || !userData) {

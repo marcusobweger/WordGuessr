@@ -19,7 +19,7 @@ function Profile() {
       const prevUser = currentUser;
       await doSignOut();
       await deleteAnonymousUser(prevUser);
-
+      /*
       if (lobbyData) {
         // delete lobby if only one player left and this player is the current player, also in solo mode
         console.log("lobbyData");
@@ -43,6 +43,7 @@ function Profile() {
           }
         }
       }
+        */
       setIsLoading(false);
       navigate("/");
     } catch (error) {

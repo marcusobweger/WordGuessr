@@ -1,7 +1,7 @@
 import crown from "../icons/crown2.png";
 
 const PlayerCard = ({ lobbyData }) => {
-  return Array.from({ length: Object.keys(lobbyData.players).length }, (_, index) => (
+  return Array.from({ length: lobbyData?.playerCount }, (_, index) => (
     <div key={index} className="col-12 col-xl wordCard player-card">
       <div className="col player-name">
         {Object.values(lobbyData.players)[index].name}

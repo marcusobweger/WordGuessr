@@ -1,7 +1,7 @@
 import { createContext, useContext, useState, useEffect } from "react";
 import { useAuth } from "./authContext";
 import { db } from "./firebase";
-import { onSnapshot, doc } from "firebase/firestore";
+import { onSnapshot, doc, collection } from "firebase/firestore";
 
 const FirebaseContext = createContext();
 
@@ -11,6 +11,7 @@ export const useFirebaseContext = () => {
 
 export const FirebaseProvider = ({ children }) => {
   const [lobbyData, setLobbyData] = useState(null);
+  const [playerData, setPlayerData] = useState(null);
   const [userData, setUserData] = useState(null);
   const [lobbyId, setLobbyId] = useState(null);
   const { currentUser } = useAuth();
@@ -22,8 +23,9 @@ export const FirebaseProvider = ({ children }) => {
     }
 
     const lobbyDocRef = doc(db, "lobbies", lobbyId);
+    const playersCollectionRef = collection(lobbyDocRef, "players");
 
-    const unsubscribe = onSnapshot(lobbyDocRef, (docSnapshot) => {
+    const unsubscribeLobby = onSnapshot(lobbyDocRef, (docSnapshot) => {
       if (docSnapshot.exists()) {
         console.log("Listening to lobby data:", docSnapshot.data());
         setLobbyData(docSnapshot.data());
@@ -32,10 +34,21 @@ export const FirebaseProvider = ({ children }) => {
         console.error("No lobby document found!");
       }
     });
+    const unsubscribePLayer = onSnapshot(playersCollectionRef, (docSnapshot) => {
+      if (docSnapshot.docs) {
+        console.log("Listening to player data:", docSnapshot);
+        setPlayerData(docSnapshot.docs);
+        console.log("context");
+      } else {
+        console.error("No player subcollection found!");
+      }
+    });
 
     // Cleanup the listener when the component unmounts
     return () => {
-      unsubscribe();
+      unsubscribeLobby();
+      unsubscribePLayer();
+      setPlayerData(null);
       setLobbyData(null);
     };
   }, [lobbyId]);
@@ -69,6 +82,8 @@ export const FirebaseProvider = ({ children }) => {
   const value = {
     lobbyData,
     setLobbyData,
+    playerData,
+    setPlayerData,
     userData,
     setUserData,
     lobbyId,

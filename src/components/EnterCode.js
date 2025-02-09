@@ -31,7 +31,7 @@ const EnterCode = () => {
   }, [code]);
   const handleJoinWithCode = async () => {
     try {
-      const lobbyFound = await joinLobbyWithCode(code, setLobbyId, currentUser, userData);
+      const lobbyFound = await joinLobbyWithCode(code, setLobbyId, currentUser.uid, userData);
       setIsLoading(false);
       if (lobbyFound) {
         navigate("/lobby");
