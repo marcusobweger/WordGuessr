@@ -1,6 +1,7 @@
 import React from "react";
 
 const PlayerNavBar = ({ lobbyData, setCurrentPlayerIndex, currentPlayerIndex, sortedPlayers }) => {
+  console.log(document.body.scrollHeight);
   return (
     <>
       {sortedPlayers.map((player, index) => (
@@ -11,6 +12,7 @@ const PlayerNavBar = ({ lobbyData, setCurrentPlayerIndex, currentPlayerIndex, so
           } ${currentPlayerIndex === index ? "selected" : ""}`}
           onClick={() => setCurrentPlayerIndex(index)}>
           {player.name}
+          {player.winner ? "🎉" : ""}
         </button>
       ))}
     </>

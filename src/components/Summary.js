@@ -4,6 +4,7 @@ import fire from "../icons/fire.png";
 import CountUp from "react-countup";
 import WordCard from "./WordCard";
 import { useNavigate } from "react-router-dom";
+import Confetti from "react-confetti";
 
 import retry from "../icons/reload.png";
 
@@ -52,8 +53,21 @@ function Summary() {
         ); // Sort by score then by joined date
 
       setSortedPlayers(sorted);
+      console.log("sorted");
+      console.log(sortedPlayers);
     }
   }, [lobbyData]);
+  useEffect(() => {
+    if (!lobbyData || !userData) return;
+    if (lobbyData?.finishCount === Object.keys(lobbyData?.players)) {
+      // everyone finished
+      const winnerId = sortedPlayers[0].id;
+      console.log(sortedPlayers[0].id);
+      handleUpdateLobbyData({
+        [`players.${winnerId}.winner`]: true,
+      });
+    }
+  }, [lobbyData?.finishCount, sortedPlayers]);
 
   const handleUpdateLobbyData = async (updatedFields) => {
     try {
@@ -133,6 +147,7 @@ function Summary() {
               [`players.${currentUser.uid}.finished`]: false,
               [`players.${currentUser.uid}.retry`]: false,
               [`players.${currentUser.uid}.ready`]: false,
+              [`players.${currentUser.uid}.winner`]: false,
             });
           } else {
             console.error("Failed to fetch data for play.");
@@ -148,6 +163,7 @@ function Summary() {
           [`players.${currentUser.uid}.finished`]: false,
           [`players.${currentUser.uid}.retry`]: false,
           [`players.${currentUser.uid}.ready`]: false,
+          [`players.${currentUser.uid}.winner`]: false,
         });
       }
     }
@@ -171,6 +187,27 @@ function Summary() {
       {!retryLoading && sortedPlayers.length !== 0 ? (
         <>
           <div className="container">
+            {currentPlayerIndex === 0 ? (
+              <Confetti
+                run={currentPlayerIndex === 0 ? true : false}
+                numberOfPieces={200}
+                recycle={false}
+                initialVelocityY={2}
+                gravity={0.09}
+                confettiSource={{
+                  x: 0,
+                  y: window.innerHeight / 15,
+                  w: window.innerWidth,
+                  h: window.innerHeight,
+                }}
+                width={window.innerWidth}
+                height={window.innerHeight}
+                opacity={0.8}
+                tweenDuration={500}
+              />
+            ) : (
+              ""
+            )}
             <div
               className={`row playerNavBarRow ${
                 Object.keys(lobbyData.players).length === 1 ? "solo" : ""

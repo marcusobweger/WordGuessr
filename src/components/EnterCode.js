@@ -19,11 +19,8 @@ const EnterCode = () => {
     setFeedback("Enter lobby code");
     if (code !== "") {
       if (code.length === 20) {
-        const typing = setTimeout(() => {
-          handleJoinWithCode();
-        }, 1500);
+        handleJoinWithCode();
         setIsLoading(true);
-        return () => clearTimeout(typing);
       }
     } else {
       setIsLoading(false);
@@ -48,9 +45,7 @@ const EnterCode = () => {
   return (
     <div className="container">
       <div className="container page code-page">
-        <div className="row justify-content-center">
-          <div className="loader">{isLoading ? <Loading /> : feedback}</div>
-        </div>
+        <div className="row justify-content-center">{feedback}</div>
         <div className="row">
           <form onSubmit={(e) => e.preventDefault()} id="code" className="col">
             <input
@@ -66,6 +61,7 @@ const EnterCode = () => {
             />
           </form>
         </div>
+        <div className="loader">{isLoading && <Loading />}</div>
       </div>
     </div>
   );

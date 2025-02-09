@@ -19,27 +19,28 @@ const EnterUserName = () => {
     setIsLoading(false);
     navigate("/");
   };
-  if (!currentUser || isLoading) {
+  if (!currentUser) {
     return <Loading />;
   }
   return (
     <div className="container">
-      <div className="container page">
+      <div className="container page code-page">
+        <div className="row justify-content-center">Enter username</div>
         <div className="row">
           <form id="username" onSubmit={handleSetUserName} className="col">
             <input
-              className="inputfield code-inputfield row"
+              className="inputfield code-inputfield"
               type="text"
               value={userName}
               onChange={(e) => {
                 setUserName(e.target.value);
               }}
-              placeholder="username"
               autoFocus
               maxLength={10}
             />
           </form>
         </div>
+        <div className="loader">{isLoading && <Loading />}</div>
       </div>
     </div>
   );
