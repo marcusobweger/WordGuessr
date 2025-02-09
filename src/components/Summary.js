@@ -42,10 +42,14 @@ function Summary() {
     }
   }, [lobbyData?.players]);
   useEffect(() => {
+    if (!lobbyData || !userData) return;
     if (lobbyData?.players) {
       const sorted = Object.entries(lobbyData.players) // Convert object to array
         .map(([id, player]) => ({ id, ...player })) // Add ID to each player object
-        .sort((a, b) => (b.score || 0) - (a.score || 0)); // Sort by timestamp
+        .sort(
+          (a, b) =>
+            (b.score || 0) - (a.score || 0) || (a.joined?.seconds || 0) - (b.joined?.seconds || 0)
+        ); // Sort by score then by joined date
 
       setSortedPlayers(sorted);
     }
@@ -86,9 +90,11 @@ function Summary() {
     }
   };
   useEffect(() => {
+    if (!lobbyData || !userData) return;
     handleRetry();
   }, [lobbyData?.retryCount]);
   useEffect(() => {
+    if (!lobbyData || !userData) return;
     if (lobbyData?.finishedRetryLoading) {
       setRetryLoading(false);
       navigate("/play");

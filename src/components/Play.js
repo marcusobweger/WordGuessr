@@ -50,11 +50,13 @@ function Play() {
   }, []);
 
   useEffect(() => {
+    if (!userData || !lobbyData) return;
     if (lobbyData?.players[currentUser.uid]?.finished) {
       navigate("/summary");
     }
   }, [lobbyData?.players[currentUser.uid]?.finished]);
   useEffect(() => {
+    if (!userData || !lobbyData) return;
     if (
       (lobbyData?.players[currentUser.uid]?.score ?? 0) >
       (userData?.highScores[lobbyData?.settings?.wordCount] ?? 0)

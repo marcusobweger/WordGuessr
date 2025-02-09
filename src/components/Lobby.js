@@ -18,7 +18,7 @@ function Lobby() {
   const { currentUser } = useAuth();
   const navigate = useNavigate();
   useEffect(() => {
-    if (!currentUser) return;
+    if (!currentUser || !lobbyData) return;
     handleUpdateUserData({ state: "lobby" });
   }, []);
   useEffect(() => {
