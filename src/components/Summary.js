@@ -69,6 +69,11 @@ function Summary() {
           [`players.${currentUser.uid}.retry`]: false,
         });
       }
+    } else {
+      await handleUpdateLobbyData({
+        retryCount: increment(1),
+        [`players.${currentUser.uid}.retry`]: true,
+      });
     }
   };
   useEffect(() => {
