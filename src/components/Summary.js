@@ -22,7 +22,8 @@ function Summary() {
   const navigate = useNavigate();
   const [retryLoading, setRetryLoading] = useState(false);
   const [disableRetry, setDisableRetry] = useState(false);
-  const [currentPlayer, setCurrentPlayer] = useState(null);
+  const [currentPlayerIndex, setCurrentPlayerIndex] = useState(0);
+  const [sortedPlayers, setSortedPlayers] = useState([]);
 
   const { lobbyData, userData, lobbyId } = useFirebaseContext();
 
@@ -32,7 +33,6 @@ function Summary() {
     console.log(currentUser);
     if (!currentUser || !lobbyData) return;
     handleUpdateUserData({ state: "summary" });
-    setCurrentPlayer(currentUser.uid);
   }, []);
   useEffect(() => {
     if (!currentUser || !lobbyData) return;
@@ -41,6 +41,15 @@ function Summary() {
       setDisableRetry(true);
     }
   }, [lobbyData?.players]);
+  useEffect(() => {
+    if (lobbyData?.players) {
+      const sorted = Object.entries(lobbyData.players) // Convert object to array
+        .map(([id, player]) => ({ id, ...player })) // Add ID to each player object
+        .sort((a, b) => (b.score || 0) - (a.score || 0)); // Sort by timestamp
+
+      setSortedPlayers(sorted);
+    }
+  }, [lobbyData]);
 
   const handleUpdateLobbyData = async (updatedFields) => {
     try {
@@ -137,7 +146,7 @@ function Summary() {
       }
     }
   };
-  if (!currentPlayer || !userData || !lobbyData) {
+  if (!userData || !lobbyData) {
     return <Loading />;
   } else if (
     lobbyData.finishCount !== Object.keys(lobbyData.players).length &&
@@ -153,7 +162,7 @@ function Summary() {
 
   return (
     <div className="container">
-      {!retryLoading ? (
+      {!retryLoading && sortedPlayers.length !== 0 ? (
         <>
           <div className="container">
             <div
@@ -162,8 +171,9 @@ function Summary() {
               }`}>
               <PlayerNavBar
                 lobbyData={lobbyData}
-                setCurrentPlayer={setCurrentPlayer}
-                currentPlayer={currentPlayer}
+                setCurrentPlayerIndex={setCurrentPlayerIndex}
+                currentPlayerIndex={currentPlayerIndex}
+                sortedPlayers={sortedPlayers}
               />
             </div>
           </div>
@@ -173,24 +183,24 @@ function Summary() {
                 <div className="score col-12 col-sm-12 col-lg-6">
                   Score:&nbsp;
                   <CountUp
-                    key={currentPlayer}
-                    end={lobbyData?.players[currentPlayer]?.score}
+                    key={currentPlayerIndex}
+                    end={sortedPlayers[currentPlayerIndex]?.score}
                     duration={2}
                     separator=""
                     redraw={true}
                   />
-                  {lobbyData?.players[currentPlayer]?.isNewPb && (
+                  {sortedPlayers[currentPlayerIndex]?.isNewPb && (
                     <img src={fire} className="fire" alt="new highScore"></img>
                   )}
                 </div>
                 <div className="score col-12 col-sm-12 col-lg-6">
                   Best:&nbsp;
-                  {lobbyData?.players[currentPlayer]?.isNewPb ? (
+                  {sortedPlayers[currentPlayerIndex]?.isNewPb ? (
                     <>
                       <CountUp
-                        key={currentPlayer}
+                        key={currentPlayerIndex}
                         end={
-                          lobbyData?.players[currentPlayer]?.highScores[
+                          sortedPlayers[currentPlayerIndex]?.highScores[
                             lobbyData.settings.wordCount
                           ]
                         }
@@ -201,12 +211,17 @@ function Summary() {
                       <img src={fire} className="fire" alt="new highScore"></img>
                     </>
                   ) : (
-                    lobbyData?.players[currentPlayer]?.highScores[lobbyData.settings.wordCount]
+                    sortedPlayers[currentPlayerIndex]?.highScores[lobbyData.settings.wordCount]
                   )}
                 </div>
               </div>
               <div className="row wordCardRow">
-                <WordCard lobbyData={lobbyData} userData={userData} currentPlayer={currentPlayer} />
+                <WordCard
+                  lobbyData={lobbyData}
+                  userData={userData}
+                  currentPlayerIndex={currentPlayerIndex}
+                  sortedPlayers={sortedPlayers}
+                />
               </div>
             </div>
           </div>

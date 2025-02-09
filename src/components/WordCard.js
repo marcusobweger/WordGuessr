@@ -20,18 +20,18 @@ const iconMap = {
   en: en,
 };
 
-const WordCard = ({ lobbyData, userData, currentPlayer }) => {
+const WordCard = ({ lobbyData, userData, currentPlayerIndex, sortedPlayers }) => {
   const targetLangIcon = iconMap[lobbyData.settings.targetLang];
   const sourceLangIcon = iconMap[lobbyData.settings.sourceLang];
   console.log(lobbyData);
-  console.log(currentPlayer);
+  console.log(currentPlayerIndex);
   return Array.from({ length: lobbyData.settings.wordCount }, (_, index) => (
     <div key={index} className="wordCard col-12 col-sm-12 col-md col-lg">
       <div className="row">
         <div className="col wordCardTime">
           <img src={time} className="time" alt="time icon"></img>
-          {lobbyData.players[currentPlayer].times[index] ? (
-            <>{lobbyData.players[currentPlayer].times[index] / 10}</>
+          {sortedPlayers[currentPlayerIndex].times[index] ? (
+            <>{sortedPlayers[currentPlayerIndex].times[index] / 10}</>
           ) : (
             0
           )}
@@ -39,8 +39,8 @@ const WordCard = ({ lobbyData, userData, currentPlayer }) => {
         </div>
         <div className="col wordCardScore">
           <CountUp
-            key={currentPlayer}
-            end={lobbyData.players[currentPlayer].scores[index]}
+            key={currentPlayerIndex}
+            end={sortedPlayers[currentPlayerIndex].scores[index]}
             duration={2}
             separator=""
             redraw={true}
@@ -66,8 +66,8 @@ const WordCard = ({ lobbyData, userData, currentPlayer }) => {
       </div>
       <div className="row wordCardWords">
         <img src={user} className="wordCardIcons" alt="user's guess"></img>
-        {lobbyData.players[currentPlayer].guesses[index] ? (
-          <>{lobbyData.players[currentPlayer].guesses[index]}</>
+        {sortedPlayers[currentPlayerIndex].guesses[index] ? (
+          <>{sortedPlayers[currentPlayerIndex].guesses[index]}</>
         ) : (
           "no guess"
         )}
