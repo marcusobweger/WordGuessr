@@ -9,10 +9,10 @@ import { replace, useNavigate } from "react-router-dom";
 import { increment } from "firebase/firestore";
 import { updateLobbyData } from "../utils/lobbyUtils";
 import copy from "../icons/copy.png";
+import check from "../icons/check.png";
 import HomeButton from "./HomeButton";
 function Lobby() {
   const [disableReady, setDisableReady] = useState(false);
-  const [copied, setCopied] = useState(false);
 
   const { lobbyData, userData, lobbyId } = useFirebaseContext();
   const { currentUser } = useAuth();
@@ -67,9 +67,21 @@ function Lobby() {
       }
     }
   };
-  const handleCopyToClipboard = async () => {
-    await navigator.clipboard.writeText(lobbyId);
-    setCopied(true);
+
+  const CopyButton = () => {
+    const handleCopyToClipboard = async () => {
+      await navigator.clipboard.writeText(lobbyId);
+      setCopied(true);
+      setTimeout(() => {
+        setCopied(false);
+      }, 3000);
+    };
+    const [copied, setCopied] = useState(false);
+    return (
+      <button onClick={handleCopyToClipboard} className="copy-button">
+        <img src={copied ? check : copy} className="copy" alt="copy"></img>
+      </button>
+    );
   };
 
   if (!currentUser || !lobbyData || !userData) {
@@ -82,9 +94,7 @@ function Lobby() {
         <div className="container">
           <div className="row lobby-code">
             {lobbyId}
-            <button onClick={handleCopyToClipboard} className="copy-button">
-              <img src={copy} className="copy" alt="copy"></img>
-            </button>
+            <CopyButton />
           </div>
           <div className="row player-card-row">
             <PlayerCard lobbyData={lobbyData} />
