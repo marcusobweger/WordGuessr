@@ -36,7 +36,7 @@ const EnterUserName = () => {
               }}
               placeholder="username"
               autoFocus
-              maxLength={12}
+              maxLength={10}
             />
           </form>
         </div>

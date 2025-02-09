@@ -42,7 +42,7 @@
   margin: 0;
   padding: 0;
 }
-@media (max-width: 1200px) {
+@media (max-width: 1080px) {
   .main-title {
     display: none;
   }

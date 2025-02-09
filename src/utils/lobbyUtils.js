@@ -13,6 +13,7 @@ import {
   deleteField,
   getDoc,
   increment,
+  Timestamp,
 } from "firebase/firestore";
 import { fetchRandomWords, fetchTranslation } from "./utils";
 
@@ -50,6 +51,7 @@ export const searchOpenLobby = async (settings, setLobbyId, currentUser, userDat
               ready: false,
               host: false,
               highScores: userData.highScores,
+              joined: Timestamp.now(),
             },
           },
         },
@@ -92,6 +94,7 @@ export const createNewLobby = async (settings, setLobbyId, currentUser, userData
         ready: false,
         host: true,
         highScores: userData.highScores,
+        joined: Timestamp.now(),
       },
     },
     settings: settings,
@@ -158,6 +161,7 @@ export const joinLobbyWithCode = async (code, setLobbyId, currentUser, userData)
                   ready: false,
                   host: false,
                   highScores: userData.highScores,
+                  joined: Timestamp.now(),
                 },
               },
             },

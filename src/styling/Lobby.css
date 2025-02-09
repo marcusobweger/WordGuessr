@@ -11,7 +11,7 @@
   padding-left: 8px;
   padding-right: 8px;
   padding-top: 4px;
-  font-size: clamp(20px, 5vw, 25px);
+  font-size: clamp(15px, 5vw, 25px);
   padding-bottom: 4px;
   border-radius: 15px;
   border-style: solid;
@@ -42,14 +42,24 @@
 }
 .player-name {
   text-align: start;
-  font-size: clamp(25px, 5vw, 45px);
+  font-size: clamp(15px, 5vw, 45px);
+  display: flex;
+  align-items: center;
 }
+.host-icon {
+  height: clamp(15px, 5vw, 45px);
+  width: auto;
+  margin-left: 8px;
+}
+
 .lobby-code {
-  font-size: clamp(25px, 5vw, 45px);
+  font-size: clamp(20px, 5vw, 45px);
   display: flex;
   justify-content: start;
   align-items: center;
   text-align: start;
+  margin-top: 14px;
+  margin-bottom: 14px;
 }
 .copy {
   height: clamp(20px, 5vw, 35px);
