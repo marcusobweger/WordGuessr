@@ -35,7 +35,7 @@ const NavBar = () => {
           className={({ isActive }) =>
             "link rightNavs" + (isActive && userLoggedIn ? " active" : "")
           }>
-          Enter Code
+          <span className="enter">Enter</span>&nbsp;Code
         </NavLink>
         <NavLink
           to="/leaderboard"
