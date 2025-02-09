@@ -6,7 +6,6 @@ import WordCard from "./WordCard";
 import { useNavigate } from "react-router-dom";
 
 import retry from "../icons/reload.png";
-import home from "../icons/home.png";
 
 import { fetchRandomWords, fetchTranslation } from "../utils/utils";
 import { useAuth } from "../utils/authContext";
@@ -17,13 +16,13 @@ import { updateLobbyData } from "../utils/lobbyUtils";
 import { updateUserData } from "../utils/userUtils";
 import { increment } from "firebase/firestore";
 import "../styling/Summary.css";
+import HomeButton from "./HomeButton";
 
 function Summary() {
   const navigate = useNavigate();
   const [retryLoading, setRetryLoading] = useState(false);
   const [disableRetry, setDisableRetry] = useState(false);
   const [currentPlayer, setCurrentPlayer] = useState(null);
-  const [leave, setLeave] = useState(false);
 
   const { lobbyData, userData, lobbyId } = useFirebaseContext();
 
@@ -42,9 +41,7 @@ function Summary() {
       setDisableRetry(true);
     }
   }, [lobbyData?.players]);
-  const handleHome = () => {
-    navigate("/");
-  };
+
   const handleUpdateLobbyData = async (updatedFields) => {
     try {
       await updateLobbyData(lobbyId, updatedFields);
@@ -210,20 +207,7 @@ function Summary() {
           </div>
           <div className="container">
             <div className="row buttonRow">
-              {!leave ? (
-                <button className="homeButton col-lg-3 col-12" onClick={() => setLeave(true)}>
-                  <img className="home" src={home} alt="home"></img>
-                </button>
-              ) : (
-                <>
-                  <button className="cancelButton col col-lg-2" onClick={() => setLeave(false)}>
-                    Cancel
-                  </button>
-                  <button className="leaveButton col col-lg-2" onClick={handleHome}>
-                    Leave
-                  </button>
-                </>
-              )}
+              <HomeButton />
               <button
                 className="retryButton col-lg-3 col-12"
                 onClick={handleRetryButton}

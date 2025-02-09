@@ -1,7 +1,6 @@
 import React, { useState, useRef, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import "../styling/Play.css";
-import home from "../icons/home.png";
 import share from "../icons/share.png";
 import ProgressBar from "./ProgressBar";
 import { useAuth } from "../utils/authContext";
@@ -10,6 +9,7 @@ import Loading from "./Loading";
 import { useFirebaseContext } from "../utils/firebaseContext";
 import { updateLobbyData } from "../utils/lobbyUtils";
 import { updateUserData } from "../utils/userUtils";
+import HomeButton from "./HomeButton";
 
 function Play() {
   // local
@@ -17,7 +17,6 @@ function Play() {
   const [guess, setGuess] = useState("");
   const [feedback, setFeedback] = useState("");
   const [closeGuessCounter, setCloseGuessCounter] = useState(0);
-  const [leave, setLeave] = useState(false);
 
   // refs
   const inputRef = useRef(null);
@@ -196,9 +195,6 @@ function Play() {
       inputRef.current.focus();
     }
   };
-  const handleHome = () => {
-    navigate("/");
-  };
 
   if (!userData || !lobbyData) {
     return <Loading />;
@@ -243,20 +239,7 @@ function Play() {
       </div>
       <div className="container">
         <div className="row buttonRow">
-          {!leave ? (
-            <button className="homeButton col-lg-3 col-12" onClick={() => setLeave(true)}>
-              <img className="home" src={home} alt="home"></img>
-            </button>
-          ) : (
-            <>
-              <button className="cancelButton col col-lg-2" onClick={() => setLeave(false)}>
-                Cancel
-              </button>
-              <button className="leaveButton col col-lg-2" onClick={handleHome}>
-                Leave
-              </button>
-            </>
-          )}
+          <HomeButton />
           <button className="skipButton col-lg-3 col-12" onClick={handleSkip}>
             <img className="skip" src={share} alt="skip"></img>
           </button>

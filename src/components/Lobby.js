@@ -4,12 +4,12 @@ import { useFirebaseContext } from "../utils/firebaseContext";
 import { updateUserData } from "../utils/userUtils";
 import { useAuth } from "../utils/authContext";
 import Loading from "./Loading";
-import home from "../icons/home.png";
 import "../styling/Lobby.css";
 import { replace, useNavigate } from "react-router-dom";
 import { increment } from "firebase/firestore";
 import { updateLobbyData } from "../utils/lobbyUtils";
 import copy from "../icons/copy.png";
+import HomeButton from "./HomeButton";
 function Lobby() {
   const [disableReady, setDisableReady] = useState(false);
   const [copied, setCopied] = useState(false);
@@ -52,9 +52,6 @@ function Lobby() {
   };
   console.log(lobbyData);
 
-  const handleHome = () => {
-    navigate("/");
-  };
   const handleReady = async () => {
     if (Object.keys(lobbyData?.players).length !== 1) {
       if (!lobbyData?.players[currentUser.uid]?.ready) {
@@ -78,27 +75,6 @@ function Lobby() {
   if (!currentUser || !lobbyData || !userData) {
     return <Loading />;
   }
-  const HomeButton = () => {
-    const [leave, setLeave] = useState(false);
-    return (
-      <>
-        {!leave ? (
-          <button className="homeButton col-lg-3 col-12" onClick={() => setLeave(true)}>
-            <img className="home" src={home} alt="home"></img>
-          </button>
-        ) : (
-          <>
-            <button className="cancelButton col col-lg-2" onClick={() => setLeave(false)}>
-              Cancel
-            </button>
-            <button className="leaveButton col col-lg-2" onClick={handleHome}>
-              Leave
-            </button>
-          </>
-        )}
-      </>
-    );
-  };
 
   return (
     <div className="container">
