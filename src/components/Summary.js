@@ -61,6 +61,7 @@ function Summary() {
     if (!lobbyData || !userData) return;
     if (lobbyData?.finishCount === Object.keys(lobbyData?.players)) {
       // everyone finished
+      // TODO: currently not fulfilling if condition
       const winnerId = sortedPlayers[0].id;
       console.log(sortedPlayers[0].id);
       handleUpdateLobbyData({
