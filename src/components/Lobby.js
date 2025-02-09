@@ -13,7 +13,7 @@ import HomeButton from "./HomeButton";
 function Lobby() {
   const [disableReady, setDisableReady] = useState(false);
 
-  const { lobbyData, userData, lobbyId } = useFirebaseContext();
+  const { lobbyData, userData, playerData, lobbyId } = useFirebaseContext();
   const { currentUser } = useAuth();
   const navigate = useNavigate();
   useEffect(() => {
@@ -53,7 +53,7 @@ function Lobby() {
 
   const handleReady = async () => {
     if (lobbyData?.playerCount !== 1) {
-      if (!lobbyData?.players[currentUser.uid]?.ready) {
+      if (!playerData[currentUser.uid]?.ready) {
         await handleUpdateLobbyData(
           {
             readyCount: increment(1),
@@ -93,7 +93,7 @@ function Lobby() {
             </button>
           </div>
           <div className="row player-card-row">
-            <PlayerCard lobbyData={lobbyData} />
+            <PlayerCard lobbyData={lobbyData} playerData={playerData} />
           </div>
         </div>
       </div>
@@ -102,11 +102,11 @@ function Lobby() {
           <HomeButton />
           <button
             className={`skipButton ${
-              lobbyData?.players[currentUser.uid]?.ready ? "unready" : "ready"
+              playerData[currentUser.uid]?.ready ? "unready" : "ready"
             } col-lg-3 col-12`}
             onClick={handleReady}
             disabled={disableReady}>
-            {lobbyData?.players[currentUser.uid]?.ready ? "Unready" : "Ready"}
+            {playerData[currentUser.uid]?.ready ? "Unready" : "Ready"}
           </button>
         </div>
       </div>

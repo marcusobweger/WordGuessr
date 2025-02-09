@@ -36,9 +36,19 @@ export const FirebaseProvider = ({ children }) => {
     });
     const unsubscribePLayer = onSnapshot(playersCollectionRef, (docSnapshot) => {
       if (docSnapshot.docs) {
-        console.log("Listening to player data:", docSnapshot);
-        setPlayerData(docSnapshot.docs);
-        console.log("context");
+        console.log("Listening to player data:");
+        docSnapshot.docs.forEach((player) => {
+          setPlayerData((prevData) => ({ ...prevData, [player.id]: player.data() }));
+        });
+        //setPlayerData(docSnapshot.docs);
+        /*
+        docSnapshot.docs.forEach((player) => {
+          console.log(player.id);
+          setPlayerData(...{ [player.id]: player.data() });
+        });
+        console.log(playerData);
+        console.log("context")
+        */
       } else {
         console.error("No player subcollection found!");
       }

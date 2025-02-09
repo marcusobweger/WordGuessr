@@ -45,35 +45,37 @@ function Play() {
   console.log(playerData);
 
   useEffect(() => {
-    if (!currentUser || !lobbyData) return;
+    console.log(lobbyData);
+    console.log(playerData);
+    if (!currentUser || !lobbyData || !playerData) return;
     handleUpdateUserData({ state: "playing" });
     handleUpdateLobbyData({ finishedRetryLoading: false });
   }, []);
 
   useEffect(() => {
-    if (lobbyData?.players[currentUser.uid]?.finished) {
+    if (!currentUser || !lobbyData || !playerData) return;
+    if (playerData[currentUser.uid]?.finished) {
       navigate("/summary");
     }
-  }, [lobbyData?.players[currentUser.uid]?.finished]);
+  }, [playerData[currentUser.uid]?.finished]);
   useEffect(() => {
+    if (!currentUser || !lobbyData || !playerData) return;
     if (
-      (lobbyData?.players[currentUser.uid]?.score ?? 0) >
+      (playerData[currentUser.uid]?.score ?? 0) >
       (userData?.highScores[lobbyData?.settings?.wordCount] ?? 0)
     ) {
       handleUpdateUserData({
-        [`highScores.${lobbyData?.settings?.wordCount}`]:
-          lobbyData?.players[currentUser.uid]?.score,
+        [`highScores.${lobbyData?.settings?.wordCount}`]: playerData[currentUser.uid]?.score,
       });
       handleUpdateLobbyData(
         {},
         {
           isNewPb: true,
-          [`highScores.${lobbyData?.settings?.wordCount}`]:
-            lobbyData?.players[currentUser.uid]?.score,
+          [`highScores.${lobbyData?.settings?.wordCount}`]: playerData[currentUser.uid]?.score,
         }
       );
     }
-  }, [lobbyData?.players[currentUser.uid]?.score]);
+  }, [playerData[currentUser.uid]?.score]);
 
   // handle the displayed feedback timeout
   useEffect(() => {
@@ -99,7 +101,7 @@ function Play() {
     if (guess !== "") {
       if (guess.trim().toLowerCase() === lobbyData?.words[currentIndex]?.toLowerCase()) {
         setFeedback("correct!");
-        const savedScoreAtIndex = lobbyData?.players[currentUser.uid]?.scores[currentIndex];
+        const savedScoreAtIndex = playerData[currentUser.uid]?.scores[currentIndex];
 
         if (progressBarRef.current) {
           let timeLeft = progressBarRef.current.getTimeLeft();
@@ -229,7 +231,7 @@ function Play() {
               ref={progressBarRef}
               handleSkip={handleSkip}
               currentIndex={currentIndex}
-              finished={lobbyData?.players[currentUser.uid]?.finished}
+              finished={playerData[currentUser.uid]?.finished}
             />
           </div>
           <div className="col-3 col-sm-3 col-lg-2">
