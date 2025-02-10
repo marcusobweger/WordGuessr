@@ -59,18 +59,24 @@ function Summary() {
   }, [lobbyData]);
   useEffect(() => {
     if (!lobbyData || !userData || sortedPlayers.length === 0) return;
-    console.log("test");
-    if (lobbyData?.finishCount === Object.keys(lobbyData?.players).length) {
-      // everyone finished
-      // TODO: currently not fulfilling if condition
-      console.log(sortedPlayers);
-      const winnerId = sortedPlayers[0].id;
-      console.log(sortedPlayers[0].id);
+    const gameJustReset =
+      lobbyData?.retryCount === Object.keys(lobbyData?.players).length &&
+      lobbyData?.finishedRetryLoading;
+
+    if (
+      lobbyData?.players[currentUser.uid]?.host &&
+      lobbyData?.finishCount === Object.keys(lobbyData?.players).length &&
+      !lobbyData?.finishedRetryLoading &&
+      !gameJustReset
+    ) {
+      const winnerId = sortedPlayers[0]?.id;
+      console.log("Updating winner:", winnerId);
+
       handleUpdateLobbyData({
         [`players.${winnerId}.winner`]: true,
       });
     }
-  }, [lobbyData?.finishCount, sortedPlayers]);
+  }, [sortedPlayers, lobbyData?.finishedRetryLoading, lobbyData?.retryCount]);
 
   const handleUpdateLobbyData = async (updatedFields) => {
     try {
