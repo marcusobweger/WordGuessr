@@ -59,6 +59,7 @@ function Summary() {
   }, [lobbyData]);
   useEffect(() => {
     if (!lobbyData || !userData || sortedPlayers.length === 0) return;
+    // TODO: dont update lobbydata at all, remove winner field, increment userdata wins[gamemode].wordCount new field
     const gameJustReset =
       lobbyData?.retryCount === Object.keys(lobbyData?.players).length &&
       lobbyData?.finishedRetryLoading;
@@ -147,7 +148,6 @@ function Summary() {
               finishCount: 0,
               retryCount: 0,
               readyCount: 0,
-              finishedRetryLoading: true,
               [`players.${currentUser.uid}.score`]: 0,
               [`players.${currentUser.uid}.scores`]: {},
               [`players.${currentUser.uid}.times`]: {},
@@ -157,6 +157,9 @@ function Summary() {
               [`players.${currentUser.uid}.retry`]: false,
               [`players.${currentUser.uid}.ready`]: false,
               [`players.${currentUser.uid}.winner`]: false,
+            });
+            await handleUpdateLobbyData({
+              finishedRetryLoading: true,
             });
           } else {
             console.error("Failed to fetch data for play.");
@@ -190,10 +193,18 @@ function Summary() {
       </div>
     );
   }
+  if (retryLoading) {
+    return (
+      <div className="container">
+        <div className="title">Retrying</div>
+        <Loading />
+      </div>
+    );
+  }
 
   return (
     <div className="container">
-      {!retryLoading && sortedPlayers.length !== 0 ? (
+      {!retryLoading && sortedPlayers.length !== 0 && !lobbyData?.finishedRetryLoading && (
         <>
           <div className="container">
             {currentPlayerIndex === 0 ? (
@@ -292,11 +303,6 @@ function Summary() {
               </button>
             </div>
           </div>
-        </>
-      ) : (
-        <>
-          <div className="title">Retrying</div>
-          <Loading />
         </>
       )}
     </div>

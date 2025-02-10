@@ -203,50 +203,54 @@ function Play() {
   }
   return (
     <div className="container">
-      <div className="container page shadow">
-        <div className="row align-items-center">
-          <div className="col-9 col-sm-9 col-lg-10">
-            <ProgressBar
-              ref={progressBarRef}
-              handleSkip={handleSkip}
-              currentIndex={currentIndex}
-              finished={lobbyData?.players[currentUser.uid]?.finished}
-            />
-          </div>
-          <div className="col-3 col-sm-3 col-lg-2">
-            <div className="progressNumber">
-              {currentIndex + 1}/{lobbyData?.settings?.wordCount}
+      {lobbyData && userData && (
+        <>
+          <div className="container page shadow">
+            <div className="row align-items-center">
+              <div className="col-9 col-sm-9 col-lg-10">
+                <ProgressBar
+                  ref={progressBarRef}
+                  handleSkip={handleSkip}
+                  currentIndex={currentIndex}
+                  finished={lobbyData?.players[currentUser.uid]?.finished}
+                />
+              </div>
+              <div className="col-3 col-sm-3 col-lg-2">
+                <div className="progressNumber">
+                  {currentIndex + 1}/{lobbyData?.settings?.wordCount}
+                </div>
+              </div>
+            </div>
+            <div className="row">
+              <div className="translation">{lobbyData?.translation[currentIndex]}</div>
+            </div>
+            <div className="row">
+              <form id="guess" onSubmit={handleGuessSubmit}>
+                <input
+                  ref={inputRef}
+                  className="inputfield"
+                  type="text"
+                  value={guess}
+                  onChange={(e) => {
+                    setGuess(e.target.value);
+                  }}
+                  placeholder={feedback !== "" ? feedback : "enter here"}
+                  autoFocus
+                  maxLength={15}
+                />
+              </form>
             </div>
           </div>
-        </div>
-        <div className="row">
-          <div className="translation">{lobbyData?.translation[currentIndex]}</div>
-        </div>
-        <div className="row">
-          <form id="guess" onSubmit={handleGuessSubmit}>
-            <input
-              ref={inputRef}
-              className="inputfield"
-              type="text"
-              value={guess}
-              onChange={(e) => {
-                setGuess(e.target.value);
-              }}
-              placeholder={feedback !== "" ? feedback : "enter here"}
-              autoFocus
-              maxLength={15}
-            />
-          </form>
-        </div>
-      </div>
-      <div className="container">
-        <div className="row buttonRow">
-          <HomeButton />
-          <button className="skipButton col-lg-3 col-12" onClick={handleSkip}>
-            <img className="skip" src={share} alt="skip"></img>
-          </button>
-        </div>
-      </div>
+          <div className="container">
+            <div className="row buttonRow">
+              <HomeButton />
+              <button className="skipButton col-lg-3 col-12" onClick={handleSkip}>
+                <img className="skip" src={share} alt="skip"></img>
+              </button>
+            </div>
+          </div>
+        </>
+      )}
     </div>
   );
 }
