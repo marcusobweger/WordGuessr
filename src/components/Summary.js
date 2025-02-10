@@ -58,10 +58,12 @@ function Summary() {
     }
   }, [lobbyData]);
   useEffect(() => {
-    if (!lobbyData || !userData) return;
-    if (lobbyData?.finishCount === Object.keys(lobbyData?.players)) {
+    if (!lobbyData || !userData || sortedPlayers.length === 0) return;
+    console.log("test");
+    if (lobbyData?.finishCount === Object.keys(lobbyData?.players).length) {
       // everyone finished
       // TODO: currently not fulfilling if condition
+      console.log(sortedPlayers);
       const winnerId = sortedPlayers[0].id;
       console.log(sortedPlayers[0].id);
       handleUpdateLobbyData({

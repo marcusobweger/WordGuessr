@@ -1,11 +1,6 @@
-import React, { useEffect, useState, useContext } from "react";
+import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import ja from "../icons/japan.png";
-import ko from "../icons/south-korea.png";
-import de from "../icons/germany.png";
-import it from "../icons/italy.png";
-import fr from "../icons/france.png";
-import es from "../icons/spain.png";
+import { iconMap, wordCounts, targetLanguages } from "../utils/utils";
 import "../styling/Home.css";
 import { useAuth } from "../utils/authContext";
 import { useSettings } from "../utils/settingsContext";
@@ -27,19 +22,6 @@ function Home() {
 
   const { lobbyData, lobbyId, setLobbyId, userData } = useFirebaseContext();
 
-  // values for generating buttons
-  const targetLanguages = ["ja", "ko", "de", "it", "fr", "es"];
-  const wordCounts = [3, 5, 10, 15];
-
-  // map icon names to corresponding strings for button generation
-  const iconMap = {
-    ja: ja,
-    ko: ko,
-    de: de,
-    it: it,
-    fr: fr,
-    es: es,
-  };
   // load preferences from LocalStorage
   useEffect(() => {
     if (userData?.state !== "queueing") {

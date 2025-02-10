@@ -1,26 +1,10 @@
 import React from "react";
 import CountUp from "react-countup";
-
+import { iconMap } from "../utils/utils";
 import time from "../icons/time.png";
-import ja from "../icons/japan.png";
-import ko from "../icons/south-korea.png";
-import de from "../icons/germany.png";
-import it from "../icons/italy.png";
-import fr from "../icons/france.png";
-import es from "../icons/spain.png";
-import en from "../icons/united-states.png";
 import user from "../icons/user.png";
-const iconMap = {
-  ja: ja,
-  ko: ko,
-  de: de,
-  it: it,
-  fr: fr,
-  es: es,
-  en: en,
-};
 
-const WordCard = ({ lobbyData, userData, currentPlayerIndex, sortedPlayers }) => {
+const WordCard = ({ lobbyData, currentPlayerIndex, sortedPlayers }) => {
   const targetLangIcon = iconMap[lobbyData.settings.targetLang];
   const sourceLangIcon = iconMap[lobbyData.settings.sourceLang];
   console.log(lobbyData);

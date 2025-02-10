@@ -72,6 +72,7 @@
   background-color: transparent;
 }
 .playerNavBarButtons {
+  font-size: clamp(30px, 10vw, 40px);
   height: 80px;
   background-color: transparent !important;
 }
@@ -81,6 +82,4 @@
 
 .playerNavBarButtons.selected {
   background-color: var(--light-purple) !important;
-}
-.confetti {
 }

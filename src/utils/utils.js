@@ -1,3 +1,10 @@
+import ja from "../icons/japan.png";
+import ko from "../icons/south-korea.png";
+import de from "../icons/germany.png";
+import it from "../icons/italy.png";
+import fr from "../icons/france.png";
+import es from "../icons/spain.png";
+import en from "../icons/united-states.png";
 export const fetchRandomWords = async (wordCount) => {
   const API1 = `https://random-word-api.herokuapp.com/word?number=${wordCount}`;
   const API2 = `https://random-word-api.vercel.app/api?words=${wordCount}`;
@@ -57,4 +64,19 @@ export const fetchTranslation = async (wordsFetched, sourceLang, targetLang) => 
     console.error("Error fetching translation:", error);
     return [];
   }
+};
+// globals
+// values for generating buttons
+export const targetLanguages = ["ja", "ko", "de", "it", "fr", "es"];
+export const wordCounts = [3, 5, 10, 15];
+
+// map icon names to corresponding strings for button generation
+export const iconMap = {
+  ja: ja,
+  ko: ko,
+  de: de,
+  it: it,
+  fr: fr,
+  es: es,
+  en: en,
 };
