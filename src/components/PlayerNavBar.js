@@ -1,4 +1,5 @@
 import React from "react";
+import confetti from "../icons/confetti.png";
 
 const PlayerNavBar = ({ lobbyData, setCurrentPlayerIndex, currentPlayerIndex, sortedPlayers }) => {
   console.log(document.body.scrollHeight);
@@ -12,7 +13,7 @@ const PlayerNavBar = ({ lobbyData, setCurrentPlayerIndex, currentPlayerIndex, so
           } ${currentPlayerIndex === index ? "selected" : ""}`}
           onClick={() => setCurrentPlayerIndex(index)}>
           {player.name}&nbsp;
-          {player.winner && "🎉"}
+          {player.winner && <img className="confetti" src={confetti} alt="winner"></img>}
         </button>
       ))}
     </>
