@@ -10,20 +10,32 @@ import { useFirebaseContext } from "../utils/firebaseContext";
 const NavBar = () => {
   const { userLoggedIn } = useAuth();
   const { userData } = useFirebaseContext();
+  const handleCode = (e) => {
+    if (userData?.state !== "idle") {
+      e.preventDefault();
+    }
+  };
+  const handleHomeAndProfile = (e) => {
+    if (
+      userData?.state !== "idle" &&
+      userData?.state !== "queueing" &&
+      userData?.state !== "summary"
+    ) {
+      e.preventDefault();
+    }
+  };
+  const handleLeaderboardAndAbout = (e) => {
+    if (userData?.state === "playing") {
+      e.preventDefault();
+    }
+  };
 
   return (
     <nav className="navbar">
       <div className="leftSelection ">
         <Link
-          to={
-            userData?.state === "playing"
-              ? "/play"
-              : userData?.state === "summary"
-              ? "/summary"
-              : userData?.state === "lobby"
-              ? "/lobby"
-              : "/"
-          }
+          to={userData?.state === "summary" ? "/summary" : "/"}
+          onClick={handleHomeAndProfile}
           className="logoLink link">
           <img src={logo} alt="Logo" className="logo" />
           <span className="title main-title">WordGuessr</span>
@@ -31,7 +43,8 @@ const NavBar = () => {
       </div>
       <div className="rightSection">
         <NavLink
-          to={`${userLoggedIn ? "/code" : "/continue"}`}
+          to={userLoggedIn ? "/code" : "/continue"}
+          onClick={handleCode}
           className={({ isActive }) =>
             "link rightNavs" + (isActive && userLoggedIn ? " active" : "")
           }>
@@ -39,15 +52,20 @@ const NavBar = () => {
         </NavLink>
         <NavLink
           to="/leaderboard"
+          onClick={handleLeaderboardAndAbout}
           className={({ isActive }) => "link rightNavs" + (isActive ? " active" : "")}>
           <img src={podium} alt="Leaderboard" className="leaderboard" />
         </NavLink>
         <NavLink
           to="/about"
+          onClick={handleLeaderboardAndAbout}
           className={({ isActive }) => "link rightNavs" + (isActive ? " active" : "")}>
           About
         </NavLink>
-        <NavLink to={`${userLoggedIn ? "/profile" : "/login"}`} className="link rightNavs">
+        <NavLink
+          to={userLoggedIn ? "/profile" : "/login"}
+          onClick={handleHomeAndProfile}
+          className="link rightNavs">
           <img src={userImage} alt="Profile" className="user" />
         </NavLink>
       </div>

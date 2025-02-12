@@ -111,7 +111,6 @@ function Home() {
     } else {
       navigate("/continue");
     }
-    setIsLoading(false);
   };
   const handleCancel = async () => {
     handleUpdateUserData({ state: "idle" });
