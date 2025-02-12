@@ -9,6 +9,11 @@ export const createNewUser = async (currentUser) => {
     await setDoc(docRef, {
       name: "Anonymous",
       highScores: { 3: 0, 5: 0, 10: 0, 15: 0 },
+      wins: {
+        0: { 3: 0, 5: 0, 10: 0, 15: 0 },
+        1: { 3: 0, 5: 0, 10: 0, 15: 0 },
+        2: { 3: 0, 5: 0, 10: 0, 15: 0 },
+      },
       state: "idle",
     });
   }

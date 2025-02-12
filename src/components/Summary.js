@@ -59,25 +59,23 @@ function Summary() {
   }, [lobbyData]);
   useEffect(() => {
     if (!lobbyData || !userData || sortedPlayers.length === 0) return;
-    // TODO: dont update lobbydata at all, remove winner field, increment userdata wins[gamemode].wordCount new field
-    const gameJustReset =
-      lobbyData?.retryCount === Object.keys(lobbyData?.players).length &&
-      lobbyData?.finishedRetryLoading;
+    // TODO: currently runs multiple times since sortedPlayers changes multiple times
 
     if (
-      lobbyData?.players[currentUser.uid]?.host &&
       lobbyData?.finishCount === Object.keys(lobbyData?.players).length &&
       !lobbyData?.finishedRetryLoading &&
-      !gameJustReset
+      sortedPlayers.length === Object.keys(lobbyData?.players).length
     ) {
       const winnerId = sortedPlayers[0]?.id;
       console.log("Updating winner:", winnerId);
-
-      handleUpdateLobbyData({
-        [`players.${winnerId}.winner`]: true,
-      });
+      if (winnerId === currentUser.uid) {
+        /*
+        handleUpdateUserData({
+          [`wins.${lobbyData?.settings?.gamemode}.${lobbyData?.settings?.wordCount}`]: increment(1),
+        });*/
+      }
     }
-  }, [sortedPlayers, lobbyData?.finishedRetryLoading, lobbyData?.retryCount]);
+  }, [sortedPlayers]);
 
   const handleUpdateLobbyData = async (updatedFields) => {
     try {
@@ -120,7 +118,6 @@ function Summary() {
   useEffect(() => {
     if (!lobbyData || !userData) return;
     if (lobbyData?.finishedRetryLoading) {
-      setRetryLoading(false);
       navigate("/play");
     }
   }, [lobbyData?.finishedRetryLoading]);

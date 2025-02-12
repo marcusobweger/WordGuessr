@@ -44,9 +44,11 @@ function Play() {
   console.log(lobbyData);
 
   useEffect(() => {
-    if (!currentUser || !lobbyData) return;
+    if (!currentUser) return;
     handleUpdateUserData({ state: "playing" });
-    handleUpdateLobbyData({ finishedRetryLoading: false });
+    if (lobbyData) {
+      handleUpdateLobbyData({ finishedRetryLoading: false });
+    }
   }, []);
 
   useEffect(() => {
