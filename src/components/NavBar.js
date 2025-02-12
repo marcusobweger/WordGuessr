@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Link, NavLink, useNavigate, useLocation } from "react-router-dom";
+import { Link, NavLink, useLocation } from "react-router-dom";
 import logo from "../icons/wordguessr_logo1.png";
 import userImage from "../icons/user.png";
 import podium from "../icons/podium.png";
@@ -8,15 +8,17 @@ import { useAuth } from "../utils/authContext";
 import { useFirebaseContext } from "../utils/firebaseContext";
 
 const NavBar = () => {
-  const { userLoggedIn } = useAuth();
+  const { userLoggedIn, currentUser } = useAuth();
   const { userData } = useFirebaseContext();
+  const location = useLocation();
   const handleCode = (e) => {
-    if (userData?.state !== "idle") {
+    if (userData && userData?.state !== "idle") {
       e.preventDefault();
     }
   };
   const handleHomeAndProfile = (e) => {
     if (
+      userData &&
       userData?.state !== "idle" &&
       userData?.state !== "queueing" &&
       userData?.state !== "summary"
@@ -46,7 +48,7 @@ const NavBar = () => {
           to={userLoggedIn ? "/code" : "/continue"}
           onClick={handleCode}
           className={({ isActive }) =>
-            "link rightNavs" + (isActive && userLoggedIn ? " active" : "")
+            "link rightNavs" + (userLoggedIn && isActive ? " active" : "")
           }>
           <span className="enter">Enter&nbsp;</span>Code
         </NavLink>
@@ -65,7 +67,9 @@ const NavBar = () => {
         <NavLink
           to={userLoggedIn ? "/profile" : "/login"}
           onClick={handleHomeAndProfile}
-          className="link rightNavs">
+          className={({ isActive }) =>
+            "link rightNavs" + (isActive || location.pathname === "/signup" ? " active" : "")
+          }>
           <img src={userImage} alt="Profile" className="user" />
         </NavLink>
       </div>

@@ -1,4 +1,15 @@
-import { setDoc, doc, updateDoc, getDoc, deleteDoc } from "firebase/firestore";
+import {
+  setDoc,
+  doc,
+  updateDoc,
+  getDoc,
+  deleteDoc,
+  orderBy,
+  limit,
+  query,
+  collection,
+  getDocs,
+} from "firebase/firestore";
 import { db } from "./firebase";
 import { deleteUser } from "firebase/auth";
 
@@ -25,5 +36,21 @@ export const deleteAnonymousUser = async (currentUser) => {
   if (currentUser?.isAnonymous) {
     await deleteDoc(doc(db, "users", currentUser.uid));
     await deleteUser(currentUser);
+  }
+};
+//currently only works for highscores, when win functionality implemented adjust query accordingly
+export const getLeaderboardData = async (type, wordCount) => {
+  try {
+    const orderString = `${type}.${wordCount}`;
+    const q = query(collection(db, "users"), orderBy(orderString), limit(50));
+    const querySnapshot = await getDocs(q);
+    console.log(querySnapshot);
+    if (!querySnapshot.empty) {
+      return querySnapshot.docs;
+    } else {
+      return [];
+    }
+  } catch (error) {
+    console.log(error);
   }
 };

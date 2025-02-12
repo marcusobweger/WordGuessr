@@ -1,0 +1,11 @@
+.about-content,
+.about-title {
+  font-size: 30px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  color: var(--text-color);
+}
+.about-title {
+  font-size: 80px;
+}

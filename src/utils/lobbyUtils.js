@@ -110,24 +110,6 @@ export const createNewLobby = async (settings, setLobbyId, currentUser, userData
   setLobbyId(docRef.id);
 };
 
-export const getPlayersOrderByScore = async (newLobbyId) => {
-  try {
-    const playersRef = collection(db, "lobbies", newLobbyId, "players");
-    const q = query(playersRef, orderBy("score", "desc"));
-
-    const querySnapshot = await getDocs(q);
-    const players = querySnapshot.docs.map((doc) => ({
-      id: doc.id,
-      ...doc.data(),
-    }));
-
-    console.log(players);
-    return players;
-  } catch (error) {
-    console.error("Error fetching players:", error);
-    return [];
-  }
-};
 export const updateLobbyData = async (lobbyId, updatedFields) => {
   try {
     await updateDoc(doc(db, "lobbies", lobbyId), updatedFields);
