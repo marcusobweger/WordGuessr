@@ -69,6 +69,7 @@ export const fetchTranslation = async (wordsFetched, sourceLang, targetLang) => 
 // values for generating buttons
 export const targetLanguages = ["ja", "ko", "de", "it", "fr", "es"];
 export const wordCounts = [3, 5, 10, 15];
+export const types = ["highScores", "wins"];
 
 // map icon names to corresponding strings for button generation
 export const iconMap = {

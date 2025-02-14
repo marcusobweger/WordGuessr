@@ -7,6 +7,10 @@ button {
   height: 110px;
   font-size: 40px;
   transition: transform ease 0.1s, background-color ease 0.2s;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
 }
 button:active:not(:disabled) {
   transform: scale(0.9);

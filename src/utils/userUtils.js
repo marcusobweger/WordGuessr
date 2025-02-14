@@ -18,7 +18,7 @@ export const createNewUser = async (currentUser) => {
   const userRef = await getDoc(docRef);
   if (!userRef.exists()) {
     await setDoc(docRef, {
-      name: "Anonymous",
+      name: "Guest",
       highScores: { 3: 0, 5: 0, 10: 0, 15: 0 },
       wins: {
         0: { 3: 0, 5: 0, 10: 0, 15: 0 },
@@ -42,7 +42,7 @@ export const deleteAnonymousUser = async (currentUser) => {
 export const getLeaderboardData = async (type, wordCount) => {
   try {
     const orderString = `${type}.${wordCount}`;
-    const q = query(collection(db, "users"), orderBy(orderString), limit(50));
+    const q = query(collection(db, "users"), orderBy(orderString, "desc"), limit(50));
     const querySnapshot = await getDocs(q);
     console.log(querySnapshot);
     if (!querySnapshot.empty) {

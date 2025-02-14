@@ -45,7 +45,7 @@ const EnterCode = () => {
   return (
     <div className="container">
       <div className="container page code-page">
-        <div className="row justify-content-center">{feedback}</div>
+        <div className="row code-title-row">{feedback}</div>
         <div className="row">
           <form onSubmit={(e) => e.preventDefault()} id="code" className="col">
             <input

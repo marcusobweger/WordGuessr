@@ -1,5 +1,38 @@
-.leaderboard-page {
+.leaderboard-title-row {
   display: flex;
   justify-content: center;
   align-items: center;
+  text-align: center;
+  font-size: clamp(40px, 5vw, 60px);
+  color: var(--text-color);
+}
+
+.page {
+  font-size: clamp(25px, 5vw, 60px) !important;
+  padding: 14px;
+  padding-top: 0;
+}
+tr:hover {
+  background-color: var(--middle-purple);
+}
+.header-row:hover {
+  background-color: transparent !important;
+}
+.selection-buttons {
+  height: clamp(60px, 10vw, 80px);
+  font-size: clamp(25px, 5vw, 40px) !important;
+}
+.table-container {
+  border-radius: 15px;
+  table-layout: fixed;
+}
+
+.table-container tr td:first-child {
+  border-top-left-radius: 15px;
+  border-bottom-left-radius: 15px;
+}
+
+.table-container tr td:last-child {
+  border-top-right-radius: 15px;
+  border-bottom-right-radius: 15px;
 }

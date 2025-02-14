@@ -44,7 +44,7 @@
 }
 
 .page {
-  font-size: 100px;
+  font-size: 75px;
   color: var(--text-color);
   background-color: var(--light-purple);
   border-radius: 15px;
@@ -57,11 +57,20 @@
 .code-page {
   background-color: transparent;
 }
+.code-title-row {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+  font-size: clamp(40px, 5vw, 60px);
+  color: var(--text-color);
+}
+
 .loader {
   height: 110px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
 }
 .translation {
   display: flex;
