@@ -24,7 +24,7 @@ export default function Continue() {
     if (!currentUser) return;
     if (userData) {
       setIsLoading(false);
-      if (userData.name === "Anonymous") {
+      if (userData.name === "Guest") {
         navigate("/username");
       } else {
         navigate("/play");

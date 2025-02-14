@@ -75,7 +75,7 @@ function Summary() {
         });*/
       }
     }
-  }, [sortedPlayers]);
+  }, [sortedPlayers, lobbyData.finishCount]);
 
   const handleUpdateLobbyData = async (updatedFields) => {
     try {
@@ -204,7 +204,7 @@ function Summary() {
       {!retryLoading && sortedPlayers.length !== 0 && !lobbyData?.finishedRetryLoading && (
         <>
           <div className="container">
-            {currentPlayerIndex === 0 ? (
+            {currentPlayerIndex === 0 && (
               <Confetti
                 run={currentPlayerIndex === 0 ? true : false}
                 numberOfPieces={200}
@@ -222,8 +222,6 @@ function Summary() {
                 opacity={0.8}
                 tweenDuration={500}
               />
-            ) : (
-              ""
             )}
             <div
               className={`row playerNavBarRow ${

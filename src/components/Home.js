@@ -228,7 +228,7 @@ function Home() {
           <button
             className="col"
             onClick={userData?.state !== "queueing" ? handlePlay : handleCancel}
-            disabled={isLoading}>
+            disabled={isLoading || (userLoggedIn && !userData)}>
             <PlayButtonContent />
           </button>
         </div>
