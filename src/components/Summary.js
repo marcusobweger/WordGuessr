@@ -25,6 +25,7 @@ function Summary() {
   const [disableRetry, setDisableRetry] = useState(false);
   const [currentPlayerIndex, setCurrentPlayerIndex] = useState(0);
   const [sortedPlayers, setSortedPlayers] = useState([]);
+  const [updateWinner, setUpdateWinner] = useState(false);
 
   const { lobbyData, userData, lobbyId } = useFirebaseContext();
 
@@ -69,13 +70,18 @@ function Summary() {
       const winnerId = sortedPlayers[0]?.id;
       console.log("Updating winner:", winnerId);
       if (winnerId === currentUser.uid) {
-        /*
-        handleUpdateUserData({
-          [`wins.${lobbyData?.settings?.gamemode}.${lobbyData?.settings?.wordCount}`]: increment(1),
-        });*/
+        setUpdateWinner(true);
       }
     }
   }, [sortedPlayers, lobbyData.finishCount]);
+  useEffect(() => {
+    if (!lobbyData || !userData) return;
+    if (updateWinner) {
+      handleUpdateUserData({
+        [`wins.${lobbyData?.settings?.gamemode}.${lobbyData?.settings?.wordCount}`]: increment(1),
+      });
+    }
+  }, [updateWinner]);
 
   const handleUpdateLobbyData = async (updatedFields) => {
     try {

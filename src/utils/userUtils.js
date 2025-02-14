@@ -39,9 +39,16 @@ export const deleteAnonymousUser = async (currentUser) => {
   }
 };
 //currently only works for highscores, when win functionality implemented adjust query accordingly
-export const getLeaderboardData = async (type, wordCount) => {
+export const getLeaderboardData = async (type, wordCount, gamemode) => {
   try {
-    const orderString = `${type}.${wordCount}`;
+    let orderString = "";
+    if (type === "highScores") {
+      orderString = `${type}.${wordCount}`;
+    } else if (type === "wins") {
+      console.log("tes");
+      orderString = `${type}.${gamemode}.${wordCount}`;
+      console.log(orderString);
+    }
     const q = query(collection(db, "users"), orderBy(orderString, "desc"), limit(50));
     const querySnapshot = await getDocs(q);
     console.log(querySnapshot);

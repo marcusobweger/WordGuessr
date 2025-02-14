@@ -91,7 +91,7 @@ function Home() {
           navigate("/play");
           break;
         case 1:
-          handleUpdateUserData({ state: "queueing" });
+          await handleUpdateUserData({ state: "queueing" });
 
           const lobbyFound = await searchOpenLobby(settings, setLobbyId, currentUser, userData);
           if (lobbyFound) {
@@ -101,6 +101,7 @@ function Home() {
             await createNewLobby(settings, setLobbyId, currentUser, userData);
 
             console.log("lobby created regardless");
+            setIsLoading(false);
           }
           break;
         case 2:
