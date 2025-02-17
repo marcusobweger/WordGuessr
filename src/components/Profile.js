@@ -19,8 +19,8 @@ function Profile() {
     try {
       setIsLoading(true);
       const prevUser = currentUser;
-      await doSignOut();
       await deleteAnonymousUser(prevUser);
+      await doSignOut();
 
       if (lobbyData) {
         // delete lobby if only one player left and this player is the current player, also in solo mode
