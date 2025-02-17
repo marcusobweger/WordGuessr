@@ -56,16 +56,27 @@ function Profile() {
       return "Sign Out";
     }
   };
+  const handleNavigateUsername = () => {
+    navigate("/username");
+  };
 
   if (!userData || !currentUser) {
     return <Loading />;
   }
   return (
-    <div>
-      <h1 className="title">{userData.name}</h1>
-      <button onClick={handleSignOut}>
-        <SignOutButtonContent />
-      </button>
+    <div className="container">
+      <div className="container">
+        <div className="row leaderboard-title-row">Profile</div>
+        <div className="row page">
+          {userData.name}
+          <button className="edit-username-button" onClick={handleNavigateUsername}></button>
+        </div>
+        <div className="row profile-button-row">
+          <button className="signout-button" onClick={handleSignOut}>
+            <SignOutButtonContent />
+          </button>
+        </div>
+      </div>
     </div>
   );
 }

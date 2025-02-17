@@ -3,15 +3,23 @@ import { useNavigate } from "react-router-dom";
 import Loading from "../components/Loading";
 import { updateUserData } from "../utils/userUtils";
 import { useAuth } from "../utils/authContext";
+import { useFirebaseContext } from "../utils/firebaseContext";
 
 const EnterUserName = () => {
   const [userName, setUserName] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const navigate = useNavigate();
   const { currentUser } = useAuth();
+  const { userData } = useFirebaseContext() || null;
   useEffect(() => {
     if (!currentUser) return;
   }, []);
+  useEffect(() => {
+    if (userData) {
+      console.log("entered");
+      setUserName(userData.name);
+    }
+  }, [userData]);
   const handleSetUserName = async (e) => {
     e.preventDefault();
     setIsLoading(true);
@@ -25,7 +33,9 @@ const EnterUserName = () => {
   return (
     <div className="container">
       <div className="container page code-page">
-        <div className="row justify-content-center">Enter username</div>
+        <div className="row justify-content-center">
+          {userData ? "Edit username" : "Enter username"}
+        </div>
         <div className="row">
           <form id="username" onSubmit={handleSetUserName} className="col">
             <input
