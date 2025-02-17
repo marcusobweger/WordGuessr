@@ -37,16 +37,11 @@ function Home() {
         ) {
           try {
             deleteLobby(lobbyId);
-          } catch (error) {
-            console.log(error);
-          }
+          } catch (error) {}
         } else {
-          console.log("attempting delete player");
           try {
             deletePlayerFromLobby(currentUser, lobbyData, lobbyId);
-          } catch (error) {
-            console.log(error);
-          }
+          } catch (error) {}
         }
       }
     }
@@ -62,7 +57,6 @@ function Home() {
         targetLang: savedTargetLang,
         wordCount: parseInt(savedWordCount),
       });
-    console.log(lobbyData);
   }, []);
   // save preferences to LocalStorage
   const savePreferences = () => {
@@ -75,16 +69,13 @@ function Home() {
   const handleUpdateUserData = async (updatedFields) => {
     try {
       await updateUserData(currentUser, updatedFields);
-    } catch (error) {
-      console.log(error);
-    }
+    } catch (error) {}
   };
   // executes when the play button is pressed, if userLoggedIn play directly else go to continue page
   const handlePlay = async () => {
     setIsLoading(true);
     savePreferences();
     if (userLoggedIn) {
-      console.log("test");
       switch (settings.gamemode) {
         case 0:
           await createNewLobby(settings, setLobbyId, currentUser, userData);
@@ -95,12 +86,10 @@ function Home() {
 
           const lobbyFound = await searchOpenLobby(settings, setLobbyId, currentUser, userData);
           if (lobbyFound) {
-            console.log("lobby found");
             navigate("/play");
           } else {
             await createNewLobby(settings, setLobbyId, currentUser, userData);
 
-            console.log("lobby created regardless");
             setIsLoading(false);
           }
           break;
@@ -117,9 +106,7 @@ function Home() {
     handleUpdateUserData({ state: "idle" });
     try {
       deleteLobby(lobbyId);
-    } catch (error) {
-      console.log(error);
-    }
+    } catch (error) {}
   };
 
   useEffect(() => {

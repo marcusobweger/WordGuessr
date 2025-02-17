@@ -16,7 +16,6 @@ export default function Continue() {
 
   useEffect(() => {
     if (hasFinishedSigningIn) {
-      console.log(currentUser);
       handleCreateNewUser();
     }
   }, [hasFinishedSigningIn]);
@@ -33,11 +32,8 @@ export default function Continue() {
   }, [userData, currentUser]);
   const handleCreateNewUser = async () => {
     try {
-      console.log(currentUser);
       await createNewUser(currentUser);
-    } catch (error) {
-      console.log(error);
-    }
+    } catch (error) {}
   };
   const handleNavigateToLogin = () => {
     navigate("/login");
@@ -51,7 +47,6 @@ export default function Continue() {
         setHasFinishedSigningIn(true);
         setIsSigningIn(false);
       } catch (error) {
-        console.log(error);
         setHasFinishedSigningIn(false);
         setIsSigningIn(false);
       }

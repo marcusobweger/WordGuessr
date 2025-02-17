@@ -7,8 +7,6 @@ import user from "../icons/user.png";
 const WordCard = ({ lobbyData, currentPlayerIndex, sortedPlayers }) => {
   const targetLangIcon = iconMap[lobbyData.settings.targetLang];
   const sourceLangIcon = iconMap[lobbyData.settings.sourceLang];
-  console.log(lobbyData);
-  console.log(currentPlayerIndex);
   return Array.from({ length: lobbyData.settings.wordCount }, (_, index) => (
     <div key={index} className="wordCard col-12 col-sm-12 col-md col-lg">
       <div className="row">

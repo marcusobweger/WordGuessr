@@ -28,11 +28,10 @@ export const searchOpenLobby = async (settings, setLobbyId, currentUser, userDat
     where("maxPlayers", "==", 2)
   );
   const querySnapshot = await getDocs(q);
-  console.log(querySnapshot);
 
   if (!querySnapshot.empty) {
     const currentDoc = querySnapshot.docs[0];
-    console.log(currentDoc.id);
+
     setLobbyId(currentDoc.id);
     await setDoc(
       doc(db, "lobbies", currentDoc.id),
@@ -66,7 +65,6 @@ export const searchOpenLobby = async (settings, setLobbyId, currentUser, userDat
 };
 
 export const createNewLobby = async (settings, setLobbyId, currentUser, userData) => {
-  console.log(userData);
   let wordsFetched = [];
   let translationFetched = [];
   try {
@@ -77,7 +75,6 @@ export const createNewLobby = async (settings, setLobbyId, currentUser, userData
       settings.targetLang
     );
   } catch (error) {
-    console.error("Error during the play process:", error);
     return;
   }
   const docRef = await addDoc(collection(db, "lobbies"), {
@@ -113,17 +110,14 @@ export const createNewLobby = async (settings, setLobbyId, currentUser, userData
 export const updateLobbyData = async (lobbyId, updatedFields) => {
   try {
     await updateDoc(doc(db, "lobbies", lobbyId), updatedFields);
-  } catch (error) {
-    console.log(error);
-  }
+  } catch (error) {}
 }; //handleRetry and player data updates
 
 export const joinLobbyWithCode = async (code, setLobbyId, currentUser, userData) => {
   try {
     const currentDoc = await getDoc(doc(db, "lobbies", code));
-    console.log(currentDoc);
+
     if (currentDoc.exists()) {
-      console.log(currentDoc.id);
       setLobbyId(currentDoc.id);
       if (currentDoc?.data()?.isOpen) {
         await setDoc(
@@ -162,9 +156,7 @@ export const joinLobbyWithCode = async (code, setLobbyId, currentUser, userData)
     } else {
       return false;
     }
-  } catch (error) {
-    console.log(error);
-  }
+  } catch (error) {}
 };
 export const deleteLobby = async (lobbyId) => {
   try {
@@ -172,9 +164,7 @@ export const deleteLobby = async (lobbyId) => {
     if (docRef.exists()) {
       await deleteDoc(doc(db, "lobbies", lobbyId));
     }
-  } catch (error) {
-    console.log(error);
-  }
+  } catch (error) {}
 };
 export const deletePlayerFromLobby = async (currentUser, lobbyData, lobbyId) => {
   try {
@@ -204,7 +194,5 @@ export const deletePlayerFromLobby = async (currentUser, lobbyData, lobbyId) => 
 
       await updateDoc(doc(db, "lobbies", lobbyId), updates);
     }
-  } catch (error) {
-    console.log(error);
-  }
+  } catch (error) {}
 };

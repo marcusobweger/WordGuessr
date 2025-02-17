@@ -2,7 +2,6 @@ import React from "react";
 import confetti from "../icons/confetti.png";
 
 const PlayerNavBar = ({ lobbyData, setCurrentPlayerIndex, currentPlayerIndex, sortedPlayers }) => {
-  console.log(document.body.scrollHeight);
   return (
     <>
       {sortedPlayers.map((player, index) => (

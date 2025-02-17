@@ -51,9 +51,7 @@ function Signin({ type }) {
   const handleCreateNewUser = async () => {
     try {
       await createNewUser(currentUser);
-    } catch (error) {
-      console.log(error);
-    }
+    } catch (error) {}
   };
 
   const handleEmail = async (e) => {
@@ -70,7 +68,6 @@ function Signin({ type }) {
         setIsError(false);
         setIsSigningIn(false);
       } catch (error) {
-        console.log(error);
         setHasFinishedSigningIn(false);
         setIsError(true);
         setEmail("");
@@ -87,7 +84,6 @@ function Signin({ type }) {
         setHasFinishedSigningIn(true);
         setIsSigningIn(false);
       } catch (error) {
-        console.log(error);
         setHasFinishedSigningIn(false);
         setIsSigningIn(false);
       }
@@ -101,7 +97,6 @@ function Signin({ type }) {
         setHasFinishedSigningIn(true);
         setIsSigningIn(false);
       } catch (error) {
-        console.log(error);
         setHasFinishedSigningIn(false);
         setIsSigningIn(false);
       }

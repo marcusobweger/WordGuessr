@@ -35,8 +35,6 @@ export const fetchRandomWords = async (wordCount) => {
       throw new Error("Network response was not ok");
     }
   } catch (error) {
-    console.error("First API failed", error);
-
     try {
       const response2 = await fetch(otherApi, { signal: AbortSignal.timeout(4000) });
       if (response2.ok) {
@@ -44,9 +42,7 @@ export const fetchRandomWords = async (wordCount) => {
       } else {
         throw new Error("Network response was not ok");
       }
-    } catch (error) {
-      console.error("Second API failed", error);
-    }
+    } catch (error) {}
   }
 };
 
@@ -61,7 +57,6 @@ export const fetchTranslation = async (wordsFetched, sourceLang, targetLang) => 
     const data = await response.json();
     return data.translation.replace(/\s+/g, "").split(/[、,]/);
   } catch (error) {
-    console.error("Error fetching translation:", error);
     return [];
   }
 };

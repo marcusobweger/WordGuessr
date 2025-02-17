@@ -39,18 +39,13 @@ function Lobby() {
   const handleUpdateLobbyData = async (updatedFields) => {
     try {
       await updateLobbyData(lobbyId, updatedFields);
-    } catch (error) {
-      console.log(error);
-    }
+    } catch (error) {}
   };
   const handleUpdateUserData = async (updatedFields) => {
     try {
       await updateUserData(currentUser, updatedFields);
-    } catch (error) {
-      console.log(error);
-    }
+    } catch (error) {}
   };
-  console.log(lobbyData);
 
   const handleReady = async () => {
     if (Object.keys(lobbyData?.players).length !== 1) {

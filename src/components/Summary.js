@@ -32,7 +32,6 @@ function Summary() {
   const { currentUser } = useAuth();
 
   useEffect(() => {
-    console.log(currentUser);
     if (!currentUser || !lobbyData) return;
     handleUpdateUserData({ state: "summary" });
   }, []);
@@ -54,21 +53,17 @@ function Summary() {
         ); // Sort by score then by joined date
 
       setSortedPlayers(sorted);
-      console.log("sorted");
-      console.log(sortedPlayers);
     }
   }, [lobbyData]);
   useEffect(() => {
     if (!lobbyData || !userData || sortedPlayers.length === 0) return;
-    // TODO: currently runs multiple times since sortedPlayers changes multiple times
-
     if (
       lobbyData?.finishCount === Object.keys(lobbyData?.players).length &&
       !lobbyData?.finishedRetryLoading &&
       sortedPlayers.length === Object.keys(lobbyData?.players).length
     ) {
       const winnerId = sortedPlayers[0]?.id;
-      console.log("Updating winner:", winnerId);
+
       if (winnerId === currentUser.uid) {
         setUpdateWinner(true);
       }
@@ -86,16 +81,12 @@ function Summary() {
   const handleUpdateLobbyData = async (updatedFields) => {
     try {
       await updateLobbyData(lobbyId, updatedFields);
-    } catch (error) {
-      console.log(error);
-    }
+    } catch (error) {}
   };
   const handleUpdateUserData = async (updatedFields) => {
     try {
       await updateUserData(currentUser, updatedFields);
-    } catch (error) {
-      console.log(error);
-    }
+    } catch (error) {}
   };
   const handleRetryButton = async () => {
     if (lobbyData.settings.gamemode !== 0 && Object.keys(lobbyData?.players).length !== 1) {
@@ -142,7 +133,6 @@ function Summary() {
             lobbyData.settings.targetLang
           );
         } catch (error) {
-          console.error("Error during the play process:", error);
         } finally {
           if (wordsFetched.length > 0 && translationFetched.length > 0) {
             await handleUpdateLobbyData({
@@ -165,7 +155,6 @@ function Summary() {
               finishedRetryLoading: true,
             });
           } else {
-            console.error("Failed to fetch data for play.");
           }
         }
       } else {

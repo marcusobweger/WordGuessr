@@ -17,7 +17,6 @@ export const FirebaseProvider = ({ children }) => {
 
   useEffect(() => {
     if (!lobbyId) {
-      console.error("No lobby available.");
       return;
     }
 
@@ -25,11 +24,8 @@ export const FirebaseProvider = ({ children }) => {
 
     const unsubscribe = onSnapshot(lobbyDocRef, (docSnapshot) => {
       if (docSnapshot.exists()) {
-        console.log("Listening to lobby data:", docSnapshot.data());
         setLobbyData(docSnapshot.data());
-        console.log("context");
       } else {
-        console.error("No lobby document found!");
       }
     });
 
@@ -43,7 +39,6 @@ export const FirebaseProvider = ({ children }) => {
   useEffect(() => {
     // Ensure the currentUser is available
     if (!currentUser) {
-      console.error("No user is logged in.");
       return;
     }
 
@@ -52,10 +47,8 @@ export const FirebaseProvider = ({ children }) => {
     // Add a real-time listener
     const unsubscribe = onSnapshot(userDocRef, (docSnapshot) => {
       if (docSnapshot.exists()) {
-        console.log("Listening to user data:", docSnapshot.data());
         setUserData(docSnapshot.data()); // Update state with user data
       } else {
-        console.error("No user document found!");
       }
     });
 

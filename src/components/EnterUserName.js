@@ -16,7 +16,6 @@ const EnterUserName = () => {
   }, []);
   useEffect(() => {
     if (userData) {
-      console.log("entered");
       setUserName(userData.name);
     }
   }, [userData]);

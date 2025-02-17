@@ -35,11 +35,8 @@ const EnterCode = () => {
       } else {
         setIsError(true);
         setFeedback("Lobby not found!");
-        console.log("lobby not found try again");
       }
-    } catch (error) {
-      console.log(error);
-    }
+    } catch (error) {}
   };
 
   return (

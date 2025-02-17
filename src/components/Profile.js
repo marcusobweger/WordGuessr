@@ -24,32 +24,24 @@ function Profile() {
 
       if (lobbyData) {
         // delete lobby if only one player left and this player is the current player, also in solo mode
-        console.log("lobbyData");
+
         if (
           Object.keys(lobbyData?.players).includes(prevUser.uid) &&
           Object.keys(lobbyData?.players).length === 1 &&
           Object.keys(lobbyData?.players)[0] === prevUser.uid
         ) {
-          console.log("if");
           try {
             deleteLobby(lobbyId);
-          } catch (error) {
-            console.log(error);
-          }
+          } catch (error) {}
         } else {
-          console.log("attempting delete player");
           try {
             deletePlayerFromLobby(prevUser, lobbyData, lobbyId);
-          } catch (error) {
-            console.log(error);
-          }
+          } catch (error) {}
         }
       }
       setIsLoading(false);
       navigate("/");
-    } catch (error) {
-      console.log(error);
-    }
+    } catch (error) {}
   };
   const SignOutButtonContent = () => {
     if (isLoading) {
@@ -69,7 +61,7 @@ function Profile() {
     <div className="container">
       <div className="container">
         <div className="row leaderboard-title-row">Profile</div>
-        <div className="row page">
+        <div className="row page pb-0">
           {userData.name}
           <button className="edit-username-button" onClick={handleNavigateUsername}>
             <img src={edit} className="edit" alt="edit username"></img>

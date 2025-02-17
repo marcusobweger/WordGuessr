@@ -30,18 +30,13 @@ function Play() {
   const handleUpdateLobbyData = async (updatedFields) => {
     try {
       await updateLobbyData(lobbyId, updatedFields);
-    } catch (error) {
-      console.log(error);
-    }
+    } catch (error) {}
   };
   const handleUpdateUserData = async (updatedFields) => {
     try {
       await updateUserData(currentUser, updatedFields);
-    } catch (error) {
-      console.log(error);
-    }
+    } catch (error) {}
   };
-  console.log(lobbyData);
 
   useEffect(() => {
     if (!currentUser) return;
