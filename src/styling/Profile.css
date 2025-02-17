@@ -1,0 +1,13 @@
+.edit-username-button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: clamp(20px, 5vw, 35px);
+  width: auto;
+  background-color: transparent !important;
+  padding: 0;
+  margin-left: clamp(4px, 3vw, 8px);
+}
+.edit {
+  height: 100%;
+}

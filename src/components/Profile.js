@@ -6,6 +6,8 @@ import { deleteAnonymousUser } from "../utils/userUtils";
 import { deleteLobby, deletePlayerFromLobby } from "../utils/lobbyUtils";
 import { useFirebaseContext } from "../utils/firebaseContext";
 import { useAuth } from "../utils/authContext";
+import edit from "../icons/edit.png";
+import "../styling/Profile.css";
 function Profile() {
   const navigate = useNavigate();
   const { userData, lobbyData, lobbyId } = useFirebaseContext();
@@ -69,7 +71,9 @@ function Profile() {
         <div className="row leaderboard-title-row">Profile</div>
         <div className="row page">
           {userData.name}
-          <button className="edit-username-button" onClick={handleNavigateUsername}></button>
+          <button className="edit-username-button" onClick={handleNavigateUsername}>
+            <img src={edit} className="edit" alt="edit username"></img>
+          </button>
         </div>
         <div className="row profile-button-row">
           <button className="signout-button" onClick={handleSignOut}>
