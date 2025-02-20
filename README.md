@@ -7,7 +7,7 @@
   
 |Languages|Technologies| 
 |:---:|:---:|
-|![js-icon](https://skillicons.dev/icons?i=js)&nbsp;&nbsp;&nbsp;![html-icon](https://skillicons.dev/icons?i=html)&nbsp;&nbsp;&nbsp;![css-icon](https://skillicons.dev/icons?i=css)|[![react-icon](https://skillicons.dev/icons?i=react)](https://react.dev/)&nbsp;&nbsp;&nbsp;[![bootstrap-icon](https://skillicons.dev/icons?i=bootstrap)](https://getbootstrap.com/)&nbsp;&nbsp;&nbsp;[![firebase-icon](https://skillicons.dev/icons?i=firebase)](https://firebase.google.com/)|
+|[![js-icon](https://skillicons.dev/icons?i=js)](https://en.wikipedia.org/wiki/JavaScript)&nbsp;&nbsp;&nbsp;[![html-icon](https://skillicons.dev/icons?i=html)](https://en.wikipedia.org/wiki/HTML)&nbsp;&nbsp;&nbsp;[![css-icon](https://skillicons.dev/icons?i=css)](https://en.wikipedia.org/wiki/CSS)|[![react-icon](https://skillicons.dev/icons?i=react)](https://react.dev/)&nbsp;&nbsp;&nbsp;[![bootstrap-icon](https://skillicons.dev/icons?i=bootstrap)](https://getbootstrap.com/)&nbsp;&nbsp;&nbsp;[![firebase-icon](https://skillicons.dev/icons?i=firebase)](https://firebase.google.com/)|
 </div>
 
 # About
