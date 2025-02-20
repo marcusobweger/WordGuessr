@@ -1,7 +1,8 @@
-<p align="center">WordGuessr<img src=https://github.com/user-attachments/assets/25f5835b-0ccf-4b62-8287-5367e6247157 alt="wordguessr-logo" width="55" align="center"/></p>//custom logo
+[![wordguessr-heading-logo](https://github.com/user-attachments/assets/2b45a44d-41b0-46c0-8fa9-56b6a1a3bc4f)](https://INSERTLINKHERE.com)
 <hr/>
 
-### <p align="">A browser game for language learners and for those looking for a fun challenge!</p>
+
+### <p align="center">A browser game for language learners and for those looking for a fun challenge!</p>
 ### Languages
 ![js-icon](https://skillicons.dev/icons?i=js)
 ![html-icon](https://skillicons.dev/icons?i=html)
