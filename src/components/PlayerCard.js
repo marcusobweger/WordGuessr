@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import crown from "../icons/crown2.png";
+import crown from "../icons/crown.png";
 
 const PlayerCard = ({ lobbyData }) => {
   const [sortedPlayers, setSortedPlayers] = useState([]);
