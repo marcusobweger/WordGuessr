@@ -14,7 +14,7 @@ WordGuessr can be played Solo, Online in a 1vs1 setting or in a private lobby wi
 Be the fastest to translate the words in one of the supported languages to English and earn the highest score to win the game.<br/><br/>
 Currently supported languages: Japanese🇯🇵 Korean🇰🇷 German 🇩🇪 Italian🇮🇹 French🇫🇷 Spanish🇪🇸
 
-### Check out the live demo <a href="https://wordguessr-765ac.web.app" target="_blank">here</a>!
+### Check out the live demo [here](https://wordguessr-765ac.web.app{:target="_blank"})!
 
 # How it works
 The following section will provide insight into how the game and its functionalities work.
