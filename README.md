@@ -6,7 +6,8 @@
   
 |Languages|Technologies| 
 |:---:|:---:|
-|[![js-icon](https://skillicons.dev/icons?i=js)](https://en.wikipedia.org/wiki/JavaScript)&nbsp;&nbsp;&nbsp;[![html-icon](https://skillicons.dev/icons?i=html)](https://en.wikipedia.org/wiki/HTML)&nbsp;&nbsp;&nbsp;[![css-icon](https://skillicons.dev/icons?i=css)](https://en.wikipedia.org/wiki/CSS)|[![react-icon](https://skillicons.dev/icons?i=react)](https://react.dev/)&nbsp;&nbsp;&nbsp;[![firebase-icon](https://skillicons.dev/icons?i=firebase)](https://firebase.google.com/)&nbsp;&nbsp;&nbsp;[![bootstrap-icon](https://skillicons.dev/icons?i=bootstrap)](https://getbootstrap.com/)|
+|[![js-icon](https://skillicons.dev/icons?i=js)](https://en.wikipedia.org/wiki/JavaScript) [![html-icon](https://skillicons.dev/icons?i=html)](https://en.wikipedia.org/wiki/HTML) [![css-icon](https://skillicons.dev/icons?i=css)](https://en.wikipedia.org/wiki/CSS)|[![react-icon](https://skillicons.dev/icons?i=react)](https://react.dev/) [![firebase-icon](https://skillicons.dev/icons?i=firebase)](https://firebase.google.com/) [![bootstrap-icon](https://skillicons.dev/icons?i=bootstrap)](https://getbootstrap.com/)|
+
 </div>
 
 # About
