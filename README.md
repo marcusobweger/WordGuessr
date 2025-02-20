@@ -3,14 +3,13 @@
 
 
 ### <p align="center">A browser game for language learners and for those looking for a fun challenge!</p>
-### Languages
-![js-icon](https://skillicons.dev/icons?i=js)
-![html-icon](https://skillicons.dev/icons?i=html)
-![css-icon](https://skillicons.dev/icons?i=css)
-### Technologies
-[![react-icon](https://skillicons.dev/icons?i=react)](https://react.dev/)
-[![bootstrap-icon](https://skillicons.dev/icons?i=bootstrap)](https://getbootstrap.com/)
-[![firebase-icon](https://skillicons.dev/icons?i=firebase)](https://firebase.google.com/)
+<div align="center">
+  
+|Languages|Technologies| 
+|:---:|:---:|
+|![js-icon](https://skillicons.dev/icons?i=js)&nbsp;&nbsp;&nbsp;![html-icon](https://skillicons.dev/icons?i=html)&nbsp;&nbsp;&nbsp;![css-icon](https://skillicons.dev/icons?i=css)|[![react-icon](https://skillicons.dev/icons?i=react)](https://react.dev/)&nbsp;&nbsp;&nbsp;[![bootstrap-icon](https://skillicons.dev/icons?i=bootstrap)](https://getbootstrap.com/)&nbsp;&nbsp;&nbsp;[![firebase-icon](https://skillicons.dev/icons?i=firebase)](https://firebase.google.com/)|
+</div>
+
 # About
 WordGuessr can be played Solo, Online in a 1vs1 setting or in a private lobby with up to 8 people!<br/>
 Be the fastest to translate the words in one of the supported languages to English and earn the highest score to win the game.<br/><br/>
@@ -36,11 +35,17 @@ If the user is logged in, either as a Guest or with an account, he can choose a 
 
 ## Online
 When selecting online mode, an opponent, which is also searching an online game with equivalent settings, will be searched for. If an opponent exists, the game will start, else the user will be put in queue until a matching opponent is found.
-// insert demo
+
+![online-demo-part1](https://github.com/user-attachments/assets/5fcb9019-fece-4e19-a3c1-5cdf43deb38f)
+
+As soon as both players have finished, the summary screen will show where the scores of both players can be viewed. The same principle also applies to private lobbies with more than 2 players.
+
+![online-demo-part2](https://github.com/user-attachments/assets/5a7a1f71-560a-4b2a-b6f5-1c998ac29039)
 
 ## Lobby
 If the user wants to set up a private game to play with his friends, he can choose create a new lobby with the specified game settings. He will then be able to share the displayed lobby code with his friends which can, after signing up, join the lobby via the enter code tab. If all players in the lobby are ready, the game will start. 
-// insert demo
+
+![lobby-demo](https://github.com/user-attachments/assets/5ede70b1-b0cb-49df-aa6a-bace362ea756)
 
 ### Other features
 For other features, please give the [live demo](https://INSERTLINKHERE.com) a try!
