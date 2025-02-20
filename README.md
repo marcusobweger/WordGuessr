@@ -1,13 +1,12 @@
-[![wordguessr-heading-logo](https://github.com/user-attachments/assets/2b45a44d-41b0-46c0-8fa9-56b6a1a3bc4f)](https://INSERTLINKHERE.com)
+[![wordguessr-heading-logo](https://github.com/user-attachments/assets/2b45a44d-41b0-46c0-8fa9-56b6a1a3bc4f)](https://wordguessr-765ac.web.app)
 <hr/>
 
-
-### <p align="center">A browser game for language learners and for those looking for a fun challenge!</p>
+### <p align="center">The browser game for language learners and for those looking for a fun challenge!</p>
 <div align="center">
   
 |Languages|Technologies| 
 |:---:|:---:|
-|[![js-icon](https://skillicons.dev/icons?i=js)](https://en.wikipedia.org/wiki/JavaScript)&nbsp;&nbsp;&nbsp;[![html-icon](https://skillicons.dev/icons?i=html)](https://en.wikipedia.org/wiki/HTML)&nbsp;&nbsp;&nbsp;[![css-icon](https://skillicons.dev/icons?i=css)](https://en.wikipedia.org/wiki/CSS)|[![react-icon](https://skillicons.dev/icons?i=react)](https://react.dev/)&nbsp;&nbsp;&nbsp;[![bootstrap-icon](https://skillicons.dev/icons?i=bootstrap)](https://getbootstrap.com/)&nbsp;&nbsp;&nbsp;[![firebase-icon](https://skillicons.dev/icons?i=firebase)](https://firebase.google.com/)|
+|[![js-icon](https://skillicons.dev/icons?i=js)](https://en.wikipedia.org/wiki/JavaScript)&nbsp;&nbsp;&nbsp;[![html-icon](https://skillicons.dev/icons?i=html)](https://en.wikipedia.org/wiki/HTML)&nbsp;&nbsp;&nbsp;[![css-icon](https://skillicons.dev/icons?i=css)](https://en.wikipedia.org/wiki/CSS)|[![react-icon](https://skillicons.dev/icons?i=react)](https://react.dev/)&nbsp;&nbsp;&nbsp;[![firebase-icon](https://skillicons.dev/icons?i=firebase)](https://firebase.google.com/)&nbsp;&nbsp;&nbsp;[![bootstrap-icon](https://skillicons.dev/icons?i=bootstrap)](https://getbootstrap.com/)|
 </div>
 
 # About
@@ -15,7 +14,7 @@ WordGuessr can be played Solo, Online in a 1vs1 setting or in a private lobby wi
 Be the fastest to translate the words in one of the supported languages to English and earn the highest score to win the game.<br/><br/>
 Currently supported languages: Japanese🇯🇵 Korean🇰🇷 German 🇩🇪 Italian🇮🇹 French🇫🇷 Spanish🇪🇸
 
-### Check out the live demo [here](https://INSERTLINKHERE.com)!
+### Check out the live demo [here](https://wordguessr-765ac.web.app)!
 
 # How it works
 The following section will provide insight into how the game and its functionalities work.
@@ -48,10 +47,10 @@ If the user wants to set up a private game to play with his friends, he can choo
 ![lobby-demo](https://github.com/user-attachments/assets/5ede70b1-b0cb-49df-aa6a-bace362ea756)
 
 ### Other features
-For other features, please give the [live demo](https://INSERTLINKHERE.com) a try!
+For other features, please give the [live demo](https://wordguessr-765ac.web.app) a try!
 
 # TODO
-I made this project for fun and for practice reasons, which is why it isn't (and probably never will be) fully finished, but as we all know, good software is never finished!
+I made this project for fun and for practice reasons, which is why it isn't (and probably never will be) fully finished, but, as they say, good software is never finished!
 ## Known issues/todos
 - [ ] Fix UI sizing on some (larger) screen sizes
 - [ ] Improve password field with hidden letters and option to show/hide password via a button
@@ -65,3 +64,15 @@ I made this project for fun and for practice reasons, which is why it isn't (and
 - [ ] Add a level to the player which increases with wins
 - [ ] Add more metrics to the profile page
 - [ ] Improve about page
+- [ ] Improve change index functionality on mobile devices/slower browsers
+
+# Credits
+- Random word APIs:
+  - [Random Word API](https://random-word-api.herokuapp.com/home)
+  - [Rando](https://random-word-api.vercel.app/)
+- Translation API: [Lingva Translate](https://github.com/thedaviddelta/lingva-translate)
+- Icons: [Flaticon](https://www.flaticon.com/)
+- Confetti animation: [react-confetti](https://www.npmjs.com/package/react-confetti)
+- Loaders: [ldrs](https://uiball.com/ldrs/)
+- Countup animation: [react-countup](https://www.npmjs.com/package/react-countup)
+- Routing: [react-router](https://reactrouter.com/)
