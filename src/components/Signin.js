@@ -138,7 +138,7 @@ function Signin({ type }) {
           </button>
         </div>
         <div className="row or-text">or</div>
-        <div className="row ">
+        <div className="row signin-form-row">
           <form id="signin" onSubmit={handleEmail} className="col">
             <input
               className={`${isError ? "error" : ""} inputfield login-inputfield row `}
@@ -168,9 +168,11 @@ function Signin({ type }) {
             </button>
           </form>
         </div>
-        <button className="row create-button" onClick={handleNavigate}>
-          {type === "login" ? "Don't have an account?" : "Already have an account?"}
-        </button>
+        <div className="row create-button-row">
+          <button className="create-button" onClick={handleNavigate}>
+            {type === "login" ? "Don't have an account?" : "Already have an account?"}
+          </button>
+        </div>
       </div>
     </div>
   );

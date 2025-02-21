@@ -2,7 +2,7 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  height: clamp(20px, 5vw, 35px);
+  height: 30px;
   width: auto;
   background-color: transparent !important;
   padding: 0;
@@ -10,4 +10,9 @@
 }
 .edit {
   height: 100%;
+}
+
+.profile-page {
+  height: 200px !important;
+  font-size: 40px !important;
 }

@@ -9,3 +9,6 @@
 .about-title {
   font-size: clamp(40px, 5vw, 60px);
 }
+.about-info-content {
+  font-size: 20px;
+}

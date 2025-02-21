@@ -61,7 +61,7 @@ function Profile() {
     <div className="container">
       <div className="container">
         <div className="row leaderboard-title-row">Profile</div>
-        <div className="row page pb-0">
+        <div className="row page profile-page pb-0">
           {userData.name}
           <button className="edit-username-button" onClick={handleNavigateUsername}>
             <img src={edit} className="edit" alt="edit username"></img>

@@ -115,3 +115,15 @@
   height: 40px;
   background-color: transparent !important;
 }
+.signin-form-row {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+}
+.create-button-row {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+}
