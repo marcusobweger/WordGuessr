@@ -12,7 +12,7 @@
 /build
 
 # firebase hosting
-/.firebase
+.firebase
 .firebaserc
 firebase.json
 
