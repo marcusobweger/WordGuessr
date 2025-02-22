@@ -1,14 +1,11 @@
 .about-content,
 .about-title {
-  font-size: 25px;
+  font-size: clamp(40px, 5vw, 60px);
   display: flex;
   justify-content: center;
   align-items: center;
   color: var(--text-color);
 }
-.about-title {
-  font-size: clamp(40px, 5vw, 60px);
-}
-.about-info-content {
-  font-size: 20px;
+.about-content {
+  font-size: 25px;
 }
