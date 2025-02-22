@@ -1,6 +1,6 @@
 import React from "react";
 import { orbit } from "ldrs";
-
+// the loader from the ldrs library, see https://uiball.com/ldrs/
 orbit.register();
 
 const Loading = () => {

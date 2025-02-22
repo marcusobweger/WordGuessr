@@ -8,14 +8,21 @@ import { useAuth } from "../utils/authContext";
 import { useFirebaseContext } from "../utils/firebaseContext";
 
 const NavBar = () => {
-  const { userLoggedIn, currentUser } = useAuth();
+  // get the userLoggedIn boolean from firebase auth
+  const { userLoggedIn } = useAuth();
+  // get the userData from the context
   const { userData } = useFirebaseContext();
+  // location from react-router to know what the current URL is
   const location = useLocation();
+  // disable enter code route if the user's state is anything but idle
+  // to prevent entering a lobby code if the user is already in a lobby or in game
   const handleCode = (e) => {
     if (userData && userData?.state !== "idle") {
       e.preventDefault();
     }
   };
+  // disable home and profile page route if the user is in game or in a lobby
+  // to make sure that the user uses the provided home button and the lobby deletion is properly handled
   const handleHomeAndProfile = (e) => {
     if (
       userData &&
@@ -26,16 +33,17 @@ const NavBar = () => {
       e.preventDefault();
     }
   };
+  // disable leaderboard and about route if the user's state is playing
   const handleLeaderboardAndAbout = (e) => {
     if (userData?.state === "playing") {
       e.preventDefault();
     }
   };
-
   return (
     <nav className="navbar">
       <div className="leftSelection ">
         <Link
+          // link to the summary page if the user's state is summary else link to the home page
           to={userData?.state === "summary" ? "/summary" : "/"}
           onClick={handleHomeAndProfile}
           className="logoLink link">
@@ -45,6 +53,7 @@ const NavBar = () => {
       </div>
       <div className="rightSection">
         <NavLink
+          // if the user is not logged in link to continue where he can log in first, else link to the code page
           to={userLoggedIn ? "/code" : "/continue"}
           onClick={handleCode}
           className={({ isActive }) =>
@@ -65,9 +74,11 @@ const NavBar = () => {
           About
         </NavLink>
         <NavLink
+          // if the user is logged in link to the user's profile, else link to the login page
           to={userLoggedIn ? "/profile" : "/login"}
           onClick={handleHomeAndProfile}
           className={({ isActive }) =>
+            // add the active className if the location is login OR signup, since only login is declared in the to={} property
             "link rightNavs" + (isActive || location.pathname === "/signup" ? " active" : "")
           }>
           <img src={userImage} alt="Profile" className="user" />
