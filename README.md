@@ -26,26 +26,26 @@ When the page is first loaded, the user is greeted with the homepage, where he c
 - About: A simple about page
 - Signin/Profile: If the user is not signed in yet, the signin-form will be displayed, else this tab will show the profile page 
 
-![homepage-demo](https://github.com/user-attachments/assets/468b3293-e641-4199-8b9c-ef42622a4d75)
+[![homepage-demo](https://github.com/user-attachments/assets/468b3293-e641-4199-8b9c-ef42622a4d75)](https://wordguessr-765ac.web.app)
 
 ## Playing
 If the user is logged in, either as a Guest or with an account, he can choose a gamemode and begin playing. The goal is to guess the displayed words as fast as possible to earn the highest score. If the maximum time per word of 10 seconds is over, the word is automatically skipped. As soon as all players have finished, the summary page is shown where the results of all players are displayed. The retry button on the bottom right restarts the game with the same settings but new words.
 
-![play-demo](https://github.com/user-attachments/assets/c1f7bc4e-ad2a-4be8-a06e-97077407c642)
+[![play-demo](https://github.com/user-attachments/assets/c1f7bc4e-ad2a-4be8-a06e-97077407c642)](https://wordguessr-765ac.web.app)
 
 ## Online
 When selecting online mode, an opponent, which is also searching an online game with equivalent settings, will be searched for. If an opponent exists, the game will start, else the user will be put in queue until a matching opponent is found.
 
-![online-demo-part1](https://github.com/user-attachments/assets/5fcb9019-fece-4e19-a3c1-5cdf43deb38f)
+[![online-demo-part1](https://github.com/user-attachments/assets/5fcb9019-fece-4e19-a3c1-5cdf43deb38f)](https://wordguessr-765ac.web.app)
 
 As soon as both players have finished, the summary screen will show where the scores of both players can be viewed. The same principle also applies to private lobbies with more than 2 players.
 
-![online-demo-part2](https://github.com/user-attachments/assets/5a7a1f71-560a-4b2a-b6f5-1c998ac29039)
+[![online-demo-part2](https://github.com/user-attachments/assets/5a7a1f71-560a-4b2a-b6f5-1c998ac29039)](https://wordguessr-765ac.web.app)
 
 ## Lobby
 If the user wants to set up a private game to play with his friends, he can choose create a new lobby with the specified game settings. He will then be able to share the displayed lobby code with his friends which can, after signing up, join the lobby via the enter code tab. If all players in the lobby are ready, the game will start. 
 
-![lobby-demo](https://github.com/user-attachments/assets/5ede70b1-b0cb-49df-aa6a-bace362ea756)
+[![lobby-demo](https://github.com/user-attachments/assets/5ede70b1-b0cb-49df-aa6a-bace362ea756)](https://wordguessr-765ac.web.app)
 
 ### Other features
 For other features, please give the [live demo](https://wordguessr-765ac.web.app) a try!
