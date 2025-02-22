@@ -6,19 +6,27 @@ import { useAuth } from "../utils/authContext";
 import { useFirebaseContext } from "../utils/firebaseContext";
 
 const EnterUserName = () => {
+  // state for storing the username the user inputs
   const [userName, setUserName] = useState("");
+  // loading state
   const [isLoading, setIsLoading] = useState(false);
+  // navigate from react-router
   const navigate = useNavigate();
+  // get the currentUser object from firebase auth
   const { currentUser } = useAuth();
+  // get the userData from context, can be null if the user is not logged in yet
   const { userData } = useFirebaseContext() || null;
+  // do nothing if the user is not signed in
   useEffect(() => {
     if (!currentUser) return;
   }, []);
+  // as soon as the userData updates, set the userName to the name saved on the database
   useEffect(() => {
     if (userData) {
       setUserName(userData.name);
     }
   }, [userData]);
+  // handles userName updates
   const handleSetUserName = async (e) => {
     e.preventDefault();
     setIsLoading(true);

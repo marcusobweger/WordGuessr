@@ -5,7 +5,6 @@ import { joinLobbyWithCode } from "../utils/lobbyUtils";
 import { useNavigate } from "react-router-dom";
 import Loading from "./Loading";
 
-// exports the EnterCode component for the corresponding page
 const EnterCode = () => {
   // the code the user types or pastes into the input field
   const [code, setCode] = useState("");

@@ -5,20 +5,27 @@ import Loading from "./Loading";
 import "../styling/Leaderboard.css";
 
 const LeaderBoard = () => {
+  // loading state
   const [isLoading, setIsLoading] = useState(true);
+  // the data displayed on the leaderboard which is fetched from the database
   const [leaderboardData, setLeaderboardData] = useState([]);
+  // states for setting which data to fetch from the database and in what order
   const [selectedType, setSelectedType] = useState("highScores");
   const [selectedWordCount, setSelectedWordCount] = useState(3);
   const [selectedGamemode, setSelectedGamemode] = useState(0);
+  // handler for fetching the data
   const handleGetLeaderboardData = async () => {
     setIsLoading(true);
+    // see userUtils.js since it fetches from the users collection on firebase
     const data = await getLeaderboardData(selectedType, selectedWordCount, selectedGamemode);
     setLeaderboardData(data);
     setIsLoading(false);
   };
+  // fetch up-to-date data on mount and everytime a different setting is selected
   useEffect(() => {
     handleGetLeaderboardData();
   }, [selectedType, selectedWordCount, selectedGamemode]);
+  // generates the buttons for selecting the wordCount
   const WordCountButtons = () => {
     return Array.from({ length: wordCounts.length }, (_, index) => (
       <button
@@ -31,6 +38,7 @@ const LeaderBoard = () => {
       </button>
     ));
   };
+  // generates the buttons for selecting the type
   const TypeButtons = () => {
     return Array.from({ length: types.length }, (_, index) => (
       <button
@@ -43,6 +51,7 @@ const LeaderBoard = () => {
       </button>
     ));
   };
+  // generates the buttons for selecting the gamemode
   const GamemodeButtons = () => {
     return Array.from({ length: gamemodes.length }, (_, index) => (
       <button
@@ -56,7 +65,7 @@ const LeaderBoard = () => {
       </button>
     ));
   };
-  //TODO: wip
+  // displays the table on the leaderboard page which displayed the top 50 users in the selected category
   const LeaderboardContent = () => {
     return (
       <table className="table-container">

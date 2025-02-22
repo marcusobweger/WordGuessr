@@ -5,7 +5,7 @@ import { createNewUser } from "../utils/userUtils";
 import Loading from "./Loading";
 import { useFirebaseContext } from "../utils/firebaseContext";
 import { useAuth } from "../utils/authContext";
-// exports the Continue component
+
 export default function Continue() {
   // navigate from react-router
   const navigate = useNavigate();

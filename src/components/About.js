@@ -1,6 +1,6 @@
 import React from "react";
 import "../styling/About.css";
-// exports the About component
+
 export default function About() {
   // returns simple static html describing the webapp
   return (

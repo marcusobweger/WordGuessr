@@ -14,16 +14,19 @@ import {
 import { updateUserData } from "../utils/userUtils";
 import { useFirebaseContext } from "../utils/firebaseContext";
 function Home() {
+  // loading state
   const [isLoading, setIsLoading] = useState(false);
-
+  // navigate from react-router
   const navigate = useNavigate();
+  // get the currentUser object and userLoggedIn boolean from firebase auth
   const { userLoggedIn, currentUser } = useAuth();
+  // get settings state and corresponding setter from settings context
   const { settings, setSettings } = useSettings();
-
+  // get data from the context
   const { lobbyData, lobbyId, setLobbyId, userData } = useFirebaseContext();
 
-  // load preferences from LocalStorage
   useEffect(() => {
+    // if the home page is accessed while the player is not queueing, set state to idle again
     if (userData?.state !== "queueing") {
       if (currentUser) {
         handleUpdateUserData({ state: "idle" });
@@ -38,6 +41,7 @@ function Home() {
           try {
             deleteLobby(lobbyId);
           } catch (error) {}
+          // else remove only the currentPlayer from the lobby if the user leaves
         } else {
           try {
             deletePlayerFromLobby(currentUser, lobbyData, lobbyId);
@@ -45,10 +49,12 @@ function Home() {
         }
       }
     }
+    // load preferences from LocalStorage
     const savedGamemode = localStorage.getItem("gamemode");
     const savedSourceLang = localStorage.getItem("sourceLang");
     const savedTargetLang = localStorage.getItem("targetLang");
     const savedWordCount = localStorage.getItem("wordCount");
+    // update the settings context with the information from LocalStorage
     if (savedGamemode && savedSourceLang && savedTargetLang && savedWordCount)
       setSettings({
         ...settings,
@@ -58,14 +64,14 @@ function Home() {
         wordCount: parseInt(savedWordCount),
       });
   }, []);
-  // save preferences to LocalStorage
+  // save preferences from settings context to LocalStorage
   const savePreferences = () => {
     localStorage.setItem("gamemode", settings.gamemode);
     localStorage.setItem("sourceLang", settings.sourceLang);
     localStorage.setItem("targetLang", settings.targetLang);
     localStorage.setItem("wordCount", settings.wordCount);
   };
-
+  // handler for updating the users collection on firebase
   const handleUpdateUserData = async (updatedFields) => {
     try {
       await updateUserData(currentUser, updatedFields);
@@ -77,23 +83,30 @@ function Home() {
     savePreferences();
     if (userLoggedIn) {
       switch (settings.gamemode) {
+        // if gamemode is "Solo"
         case 0:
+          // simply create a new lobby with solo settings (see lobbyUtils.js), then navigate to play
           await createNewLobby(settings, setLobbyId, currentUser, userData);
           navigate("/play");
           break;
+        // if the gamemode is "Online"
         case 1:
+          // set the user's state to queueing
           await handleUpdateUserData({ state: "queueing" });
-
+          // check if a fitting lobby is available (see lobbyUtils.js)
           const lobbyFound = await searchOpenLobby(settings, setLobbyId, currentUser, userData);
+          // if a lobby is available, go to play
           if (lobbyFound) {
             navigate("/play");
+            // if not, create a new lobby with online settings and wait in queue
           } else {
             await createNewLobby(settings, setLobbyId, currentUser, userData);
-
             setIsLoading(false);
           }
           break;
+        // if gamemode is "Private"
         case 2:
+          // create a new lobby with private settings (see lobbyUtils.js) and go to the lobby page
           await createNewLobby(settings, setLobbyId, currentUser, userData);
           navigate("/lobby");
           break;
@@ -102,13 +115,16 @@ function Home() {
       navigate("/continue");
     }
   };
+  // handler for canceling the queue
   const handleCancel = async () => {
+    // set user's state back from queueing to idle
     handleUpdateUserData({ state: "idle" });
     try {
+      // delete the lobby that was created
       deleteLobby(lobbyId);
     } catch (error) {}
   };
-
+  // executes when a player joins the current user's lobby while in queue
   useEffect(() => {
     if (
       lobbyData &&
@@ -121,6 +137,7 @@ function Home() {
     }
   }, [lobbyData?.isOpen]);
 
+  // generates the buttons for selecting the targetLanguage setting
   const LanguageButtons = () => {
     return Array.from({ length: targetLanguages.length }, (_, index) => (
       <button
@@ -135,6 +152,7 @@ function Home() {
       </button>
     ));
   };
+  // generates the buttons for selecting the wordCount setting
   const WordCountButtons = () => {
     return Array.from({ length: wordCounts.length }, (_, index) => (
       <button
@@ -146,6 +164,7 @@ function Home() {
       </button>
     ));
   };
+  // formats the two button rows
   const Settings = () => {
     return (
       <>
@@ -158,6 +177,7 @@ function Home() {
       </>
     );
   };
+  // returns the 3 buttons for selecting the gamemode at the top of the page
   const Gamemode = () => {
     return (
       <>
@@ -184,6 +204,7 @@ function Home() {
       </>
     );
   };
+  // returns different content displayed on the play button at the bottom based on the selected gamemode
   const PlayButtonContent = () => {
     if (!isLoading) {
       if (settings.gamemode === 0) {
