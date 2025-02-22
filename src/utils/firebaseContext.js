@@ -4,7 +4,7 @@ import { db } from "./firebase";
 import { onSnapshot, doc } from "firebase/firestore";
 
 const FirebaseContext = createContext();
-
+// export custom hook for accessing the context
 export const useFirebaseContext = () => {
   return useContext(FirebaseContext);
 };
@@ -22,6 +22,7 @@ export const FirebaseProvider = ({ children }) => {
 
     const lobbyDocRef = doc(db, "lobbies", lobbyId);
 
+    // add a real-time listener
     const unsubscribe = onSnapshot(lobbyDocRef, (docSnapshot) => {
       if (docSnapshot.exists()) {
         setLobbyData(docSnapshot.data());
@@ -29,7 +30,7 @@ export const FirebaseProvider = ({ children }) => {
       }
     });
 
-    // Cleanup the listener when the component unmounts
+    // cleanup the listener when the component unmounts
     return () => {
       unsubscribe();
       setLobbyData(null);
@@ -37,22 +38,22 @@ export const FirebaseProvider = ({ children }) => {
   }, [lobbyId]);
 
   useEffect(() => {
-    // Ensure the currentUser is available
+    // ensure the currentUser is available
     if (!currentUser) {
       return;
     }
 
-    const userDocRef = doc(db, "users", currentUser.uid); // Reference to the user's document
+    const userDocRef = doc(db, "users", currentUser.uid);
 
-    // Add a real-time listener
+    // add a real-time listener
     const unsubscribe = onSnapshot(userDocRef, (docSnapshot) => {
       if (docSnapshot.exists()) {
-        setUserData(docSnapshot.data()); // Update state with user data
+        setUserData(docSnapshot.data());
       } else {
       }
     });
 
-    // Cleanup the listener when the component unmounts
+    // cleanup the listener when the component unmounts
     return () => {
       unsubscribe();
       setUserData(null);

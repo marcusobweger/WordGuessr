@@ -5,10 +5,12 @@ import it from "../icons/italy.png";
 import fr from "../icons/france.png";
 import es from "../icons/spain.png";
 import en from "../icons/united-states.png";
+// function for fetching the random english words
 export const fetchRandomWords = async (wordCount) => {
+  // two APIs for additional variety and fallback
   const API1 = `https://random-word-api.herokuapp.com/word?number=${wordCount}`;
   const API2 = `https://random-word-api.vercel.app/api?words=${wordCount}`;
-
+  // return a random API from the APIs above
   function getRandomApi() {
     const number = Math.round(Math.random());
     if (number === 0) {
@@ -17,6 +19,7 @@ export const fetchRandomWords = async (wordCount) => {
       return API2;
     }
   }
+  // return the other API
   function getOtherApi() {
     if (currentApi === API1) {
       return API2;
@@ -28,13 +31,16 @@ export const fetchRandomWords = async (wordCount) => {
   const otherApi = getOtherApi();
 
   try {
+    // try to fetch from the random API, abort after 4 seconds
     const response1 = await fetch(currentApi, { signal: AbortSignal.timeout(4000) });
+    // return the json data if statuscode is 200
     if (response1.ok) {
       return await response1.json();
     } else {
       throw new Error("Network response was not ok");
     }
   } catch (error) {
+    // if an error occurred, try the other API
     try {
       const response2 = await fetch(otherApi, { signal: AbortSignal.timeout(4000) });
       if (response2.ok) {
@@ -45,16 +51,21 @@ export const fetchRandomWords = async (wordCount) => {
     } catch (error) {}
   }
 };
-
+// function for fetching the translation data
 export const fetchTranslation = async (wordsFetched, sourceLang, targetLang) => {
+  // build the URL
   const baseUrl = "https://lingva.ml/api/v1";
   const endpoint = `${baseUrl}/${sourceLang}/${targetLang}/${wordsFetched}`;
   try {
+    // fetch the data
     const response = await fetch(endpoint);
+    // throw and error if the statuscode isn't 200
     if (!response.ok) {
       throw new Error(`Error: ${response.statusText}`);
     }
+    // convert to json
     const data = await response.json();
+    // remove spaces and split the data by certain regexes since languages like japanese and korean use different commas
     return data.translation.replace(/\s+/g, "").split(/[、,]/);
   } catch (error) {
     return [];

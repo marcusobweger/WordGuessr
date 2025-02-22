@@ -18,6 +18,7 @@ import { FirebaseProvider } from "./utils/firebaseContext";
 import EnterUserName from "./components/EnterUserName";
 
 function App() {
+  // context providers wrap the routes and the navbar
   return (
     <AuthProvider>
       <SettingsProvider>

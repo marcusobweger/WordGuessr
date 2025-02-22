@@ -3,7 +3,7 @@ import { createContext, useContext, useEffect, useState } from "react";
 import { auth } from "./firebase";
 
 const AuthContext = createContext();
-
+// export custom hook for accessing the context
 export const useAuth = () => {
   return useContext(AuthContext);
 };

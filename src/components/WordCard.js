@@ -4,6 +4,7 @@ import { iconMap } from "../utils/utils";
 import time from "../icons/time.png";
 import user from "../icons/user.png";
 
+// displays the word cards on the summary page
 const WordCard = ({ lobbyData, currentPlayerIndex, sortedPlayers }) => {
   const targetLangIcon = iconMap[lobbyData.settings.targetLang];
   const sourceLangIcon = iconMap[lobbyData.settings.sourceLang];
