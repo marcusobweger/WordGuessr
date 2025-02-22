@@ -15,17 +15,22 @@ import { createNewUser } from "../utils/userUtils";
 import { useAuth } from "../utils/authContext";
 
 function Signin({ type }) {
+  // states for storing email and password
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  // error and loading states
   const [isSigningIn, setIsSigningIn] = useState(false);
   const [hasFinishedSigningIn, setHasFinishedSigningIn] = useState(false);
   const [isError, setIsError] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
+  // get userData from context
   const { userData } = useFirebaseContext();
+  // get the currentUser object from firebase auth
   const { currentUser } = useAuth();
-
+  // navigate from react-router
   const navigate = useNavigate();
 
+  // clear the error if isError is true and the user types again
   useEffect(() => {
     if ((email || password !== "") && isError) {
       setIsError(false);
@@ -37,6 +42,7 @@ function Signin({ type }) {
       handleCreateNewUser();
     }
   }, [hasFinishedSigningIn]);
+  // see if username is the default "Guest" then navigate to username page else navigate to home
   useEffect(() => {
     if (!currentUser || currentUser.isAnonymous) return;
     if (userData) {
@@ -48,20 +54,24 @@ function Signin({ type }) {
       }
     }
   }, [userData, currentUser]);
+  // handler for creating a new user doc in the users collection on firebase
   const handleCreateNewUser = async () => {
     try {
       await createNewUser(currentUser);
     } catch (error) {}
   };
-
+  // handler for the sign in with email form
   const handleEmail = async (e) => {
     e.preventDefault();
     if (!isSigningIn) {
       setIsSigningIn(true);
       try {
+        // check if the type is login or signup
         if (type === "login") {
+          // an account already exists, sign the user in
           await doSignInWithEmailAndPassword(email, password);
         } else {
+          // no account exists, create a new one
           await doCreateUserWithEmailAndPassword(email, password);
         }
         setHasFinishedSigningIn(true);
@@ -76,6 +86,7 @@ function Signin({ type }) {
       }
     }
   };
+  // handler for the sign in with goole button
   const handleGoogleSignIn = async () => {
     if (!isSigningIn) {
       setIsSigningIn(true);
@@ -89,6 +100,7 @@ function Signin({ type }) {
       }
     }
   };
+  // handler for the sign in with github button
   const handleGithubSignIn = async () => {
     if (!isSigningIn) {
       setIsSigningIn(true);
@@ -102,7 +114,7 @@ function Signin({ type }) {
       }
     }
   };
-
+  // switch between login and signup pages
   const handleNavigate = () => {
     setIsError(false);
     if (type === "login") {
@@ -111,8 +123,8 @@ function Signin({ type }) {
       navigate("/login");
     }
   };
-  //add currentUser if users should not be able to sign in via /login url if they are already signed in
-  if (isLoading) {
+  // users should not be able to sign in via /login url if they are already signed in
+  if (isLoading || currentUser) {
     return <Loading />;
   }
   return (

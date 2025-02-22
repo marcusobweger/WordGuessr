@@ -5,9 +5,7 @@ import CountUp from "react-countup";
 import WordCard from "./WordCard";
 import { useNavigate } from "react-router-dom";
 import Confetti from "react-confetti";
-
 import retry from "../icons/reload.png";
-
 import { fetchRandomWords, fetchTranslation } from "../utils/utils";
 import { useAuth } from "../utils/authContext";
 import Loading from "./Loading";
@@ -20,15 +18,21 @@ import "../styling/Summary.css";
 import HomeButton from "./HomeButton";
 
 function Summary() {
+  // navigate from react-router
   const navigate = useNavigate();
+  // loading state
   const [retryLoading, setRetryLoading] = useState(false);
+  // disable retry button based on conditions
   const [disableRetry, setDisableRetry] = useState(false);
+  // state to store what player is currently selected to show the matching results
   const [currentPlayerIndex, setCurrentPlayerIndex] = useState(0);
+  // store players sorted by their score to determine winner
   const [sortedPlayers, setSortedPlayers] = useState([]);
+  // state to make sure winner is only set once on database
   const [updateWinner, setUpdateWinner] = useState(false);
-
+  // data from context
   const { lobbyData, userData, lobbyId } = useFirebaseContext();
-
+  // get the currentUser object from firebase auth
   const { currentUser } = useAuth();
 
   useEffect(() => {

@@ -1,13 +1,14 @@
 import { useEffect, useState } from "react";
 import crown from "../icons/crown.png";
-
+// displays the player cards in the lobby
 const PlayerCard = ({ lobbyData }) => {
   const [sortedPlayers, setSortedPlayers] = useState([]);
+  // sort the players based on their joined date
   useEffect(() => {
     if (lobbyData?.players) {
       const sorted = Object.entries(lobbyData.players) // Convert object to array
         .map(([id, player]) => ({ id, ...player })) // Add ID to each player object
-        .sort((a, b) => (a.joined?.seconds || 0) - (b.joined?.seconds || 0)); // Sort by timestamp
+        .sort((a, b) => (a.joined?.seconds || 0) - (b.joined?.seconds || 0)); // Sort by joined date
 
       setSortedPlayers(sorted);
     }

@@ -1,6 +1,6 @@
 import React from "react";
 import confetti from "../icons/confetti.png";
-
+// the bar at the to of the summary page which allows switching between the results of all players
 const PlayerNavBar = ({ lobbyData, setCurrentPlayerIndex, currentPlayerIndex, sortedPlayers }) => {
   return (
     <>
