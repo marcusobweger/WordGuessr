@@ -13,7 +13,7 @@
 # About
 WordGuessr can be played Solo, Online in a 1vs1 setting or in a private lobby with up to 8 people!<br/>
 Be the fastest to translate the words in one of the supported languages to English and earn the highest score to win the game.<br/><br/>
-Currently supported languages: Japanese🇯🇵 Korean🇰🇷 German 🇩🇪 Italian🇮🇹 French🇫🇷 Spanish🇪🇸
+Currently supported languages: Japanese <img src="src/icons/japan.png" height="20px" align="center"></img> Korean <img src="src/icons/south-korea.png" height="20px" align="center"></img> German <img src="src/icons/germany.png" height="20px" align="center"></img> Italian <img src="src/icons/italy.png" height="20px" align="center"></img> French <img src="src/icons/france.png" height="20px" align="center"></img> Spanish <img src="src/icons/spain.png" height="20px" align="center"></img>
 
 ### Check out the live demo [here](https://wordguessr-765ac.web.app)!
 
